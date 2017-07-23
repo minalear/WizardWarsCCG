@@ -21,5 +21,10 @@ namespace WizardWars
             Types = new string[0];
             SubTypes = new string[0];
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0} - {1}", Name, Cost);
+        }
     }
 }

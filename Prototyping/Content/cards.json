@@ -10,11 +10,18 @@
 	"defense" : 3
 },
 {
-	"name" : "Best Laid Plans",
+	"name" : "Fireball",
 	"cost" : 1,
 	"types" : ["spell"],
 	"rulestext" : "Deal 3 damage to target creature or player.",
 	"flavortext" : "One of the most basic, yet key power, in a wizard's arsenal... fire."
+},
+{
+	"name" : "Best Laid Plans",
+	"cost" : 1,
+	"types" : ["spell"],
+	"rulestext" : "Scry 3.",
+	"flavortext" : "The best wizards can see three steps ahead."
 },
 {
 	"name" : "Obliterate",
