@@ -1,0 +1,33 @@
+﻿[
+{
+	"name" : "Tetsu, Warrior of the Path",
+	"cost" : 4,
+	"types" : ["hero", "creature"],
+	"subtypes" : ["human", "monk"],
+	"rulestext" : "Tetsu can only be blocked by two or more creatures.  Whenever Tetsu deals combat damage to a creature, it gains Passive until your next turn.",
+	"flavortext" : "\"Your destiny lies within this box, guard it with your life.\" - Master Wutang",
+	"attack" : 3,
+	"defense" : 3
+},
+{
+	"name" : "Best Laid Plans",
+	"cost" : 1,
+	"types" : ["spell"],
+	"rulestext" : "Deal 3 damage to target creature or player.",
+	"flavortext" : "One of the most basic, yet key power, in a wizard's arsenal... fire."
+},
+{
+	"name" : "Obliterate",
+	"cost" : 4,
+	"types" : ["spell"],
+	"rulestext" : "Destroy target creature.",
+	"flavortext" : "Not even the mightiest warriors can stand against the might of a god!"
+},
+{
+	"name" : "Mask of Razmir",
+	"cost" : 7,
+	"types" : ["relic"],
+	"rulestext" : "Destined - Does something when Razmir, the False God is on the battlefield.",
+	"flavortext" : "When the masked figure emerged from the remains of Melcat, the people knew... their God has arrived."
+}
+]
