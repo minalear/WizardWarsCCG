@@ -34,7 +34,10 @@ namespace WizardWars
             if (mainType == Types.Creature)
             {
                 //Trigger ETB effects
+                TriggerEffects(caster, card, Triggers.EnterBattlefield);
+
                 //Add creature to the battlefield
+                FieldOne.AddCard(card);
             }
         }
         public void TriggerEffects(Player caster, Card card, Triggers triggerType)
@@ -45,6 +48,8 @@ namespace WizardWars
                 {
                     if (triggerType == Triggers.Cast)
                         triggerCastEffect(caster, card, effect);
+                    else if (triggerType == Triggers.EnterBattlefield)
+                        triggerETBEffect(caster, card, effect);
                 }
             }
         }
@@ -72,6 +77,11 @@ namespace WizardWars
                 }
             }
         }
+        private void triggerETBEffect(Player caster, Card card, Effect effect)
+        {
+
+        }
+
         private int parseNumberVariable(Player caster, Card card, object var)
         {
             Type varType = var.GetType();
@@ -98,6 +108,13 @@ namespace WizardWars
                     else if (argSegments[1] == "Health")
                     {
                         return target.Health;
+                    }
+                    else if (argSegments[1] == "Creatures")
+                    {
+                        if (argSegments[2] == "OfType")
+                        {
+                            //X = number of creatures of the type
+                        }
                     }
                 }
             }

@@ -32,6 +32,7 @@ namespace WizardWars
     {
         Self,
         Player,
+        Opponent,
         Creature
     }
 

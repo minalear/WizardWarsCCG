@@ -1,15 +1,43 @@
 ﻿[{
 	"name" : "Grunka Lunkan",
+	"image" : "../../",
 	"cost" : 0,
 	"types" : ["creature"],
-	"subtypes" : ["Grunkan"],
+	"subtypes" : ["grunkan"],
 	"rulestext" : "Passive (This creature cannot attack.)",
 	"flavortext" : "The residents of the Isle of Grunk are small, fat creatures without much redeeming factors.",
 	"attack" : 0,
 	"defense" : 1
 },
 {
+	"name" : "Pirate of the Run",
+	"image" : "../../",
+	"cost" : 5,
+	"types" : ["creature"],
+	"subtypes" : ["human", "pirate"],
+	"rulestext" : "When Pirate of the Run enters the battlefield, Pirate of the Run deals damage to target opponent equal to the number of Grunkan creatures they control.  Draw a card.",
+	"flavortext" : "The Pirates of Namundias prize Grunka Lunkan hide very highly.",
+	"attack" : 3,
+	"defense" : 4,
+	"effects" : 
+	[{
+		"trigger" : "enterbattlefield",
+		"prompt" : "Target opponent takes damage equal to the number of Grunka Lunkas they control.",
+		"validtargets" : ["opponent"],
+		"actions" : ["damage"],
+		"vars" : ["Opponent.Creatures.OfType.Grunkan"]
+	},
+	{
+		"trigger" : "enterbattlefield",
+		"prompt" : "Draw a card.",
+		"validtargets" : ["self"],
+		"actions" : ["draw"],
+		"vars" : [1]
+	}]
+},
+{
 	"name" : "Cantrip",
+	"image" : "../../",
 	"cost" : 1,
 	"types" : ["spell"],
 	"rulestext" : "Draw a card.",
@@ -25,6 +53,7 @@
 },
 {
 	"name" : "Heal",
+	"image" : "../../",
 	"cost" : 3,
 	"types" : ["spell"],
 	"rulestext" : "You gain 7 health.",
@@ -40,6 +69,7 @@
 },
 {
 	"name" : "Lightning Helix",
+	"image" : "../../",
 	"cost" : 2,
 	"types" : ["spell"],
 	"rulestext" : "Deal 3 damage to target creature or player and you gain 3 life.",
@@ -62,6 +92,7 @@
 },
 {
 	"name" : "Overwhelming Knowledge",
+	"image" : "../../",
 	"cost" : 4,
 	"types" : ["spell"],
 	"rulestext" : "Deal X damage to target player where X is the number of cards in his or her hand.",

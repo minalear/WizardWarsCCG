@@ -40,8 +40,12 @@ namespace WizardWars
     }
     public enum SubTypes
     {
+        //Races
         Human,
+        Grunkan,
+
+        //Roles
         Monk,
-        Grunkan
+        Pirate
     }
 }
