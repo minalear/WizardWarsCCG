@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Minalear;
 using WizardWars;
@@ -34,9 +35,12 @@ namespace Prototyping
 
         public override void Draw(GameTime gameTime)
         {
+            //Draw Hand
+            float cardWidth = CardCollection[0].Art.Width * 0.35f;
+            float cardHeight = CardCollection[0].Art.Height * 0.35f;
             for (int i = 0; i < CardCollection.Count; i++)
             {
-                spriteBatch.Draw(CardCollection[i].Art, new Vector2(i * 100, 0), new Vector2(0.5f, 0.5f));
+                spriteBatch.Draw(CardCollection[i].Art, new Vector2(i * cardWidth, Window.Height - cardHeight), new Vector2(0.35f), new Color4(0.7f, 1f, 0.3f, 0.5f));
             }
         }
     }

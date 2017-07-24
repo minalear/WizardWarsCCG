@@ -13,6 +13,7 @@ namespace Minalear
         //Uniform Locations
         private int modelLoc;
         private int projLoc;
+        private int colorLoc;
 
         public SpriteBatch(Shader shader, int renderWidth, int renderHeight)
         {
@@ -50,16 +51,17 @@ namespace Minalear
             //Locations
             modelLoc = GL.GetUniformLocation(shader.ID, "model");
             projLoc = GL.GetUniformLocation(shader.ID, "proj");
+            colorLoc = GL.GetUniformLocation(shader.ID, "drawColor");
 
             //Projection Matrix
             Matrix4 projMat4 = Matrix4.CreateOrthographicOffCenter(0f, renderWidth, renderHeight, 0f, -1f, 1f);
             GL.UniformMatrix4(projLoc, false, ref projMat4);
         }
 
-        public void Draw(Texture2D texture, Vector2 position, Vector2 scale)
+        public void Draw(Texture2D texture, Vector2 position, Vector2 scale, Color4 color)
         {
             shader.UseProgram();
-            setUniforms(position, 0f, Vector2.Zero, new Vector2(texture.Width * scale.X, texture.Height * scale.Y));
+            setUniforms(position, 0f, Vector2.Zero, new Vector2(texture.Width * scale.X, texture.Height * scale.Y), color);
 
             GL.ActiveTexture(TextureUnit.Texture0);
             texture.Bind();
@@ -69,7 +71,7 @@ namespace Minalear
             GL.BindVertexArray(0);
         }
 
-        private void setUniforms(Vector2 position, float rotation, Vector2 origin, Vector2 size)
+        private void setUniforms(Vector2 position, float rotation, Vector2 origin, Vector2 size, Color4 color)
         {
             //Matrix
             Matrix4 model =
@@ -78,6 +80,8 @@ namespace Minalear
                 Matrix4.CreateRotationZ(rotation) *
                 Matrix4.CreateTranslation(position.X, position.Y, 0f);
             GL.UniformMatrix4(modelLoc, false, ref model);
+
+            GL.Uniform4(colorLoc, color);
         }
 
         public void Dispose()
