@@ -102,7 +102,7 @@ namespace WizardWars
                     {
                         if (argSegments[2] == "Count")
                         {
-                            return HandOne.RawList.Count;
+                            return HandOne.Count;
                         }
                     }
                     else if (argSegments[1] == "Health")

@@ -7,7 +7,9 @@ namespace WizardWars
     public class Collection : IEnumerable<Card>
     {
         public Player Owner;
-        public List<Card> RawList;
+        public int Count { get { return RawList.Count; } }
+
+        private List<Card> RawList;
 
         public Collection(Player owner)
         {
@@ -91,7 +93,6 @@ namespace WizardWars
             RawList = cards;
         }
         
-
         public IEnumerator<Card> GetEnumerator()
         {
             return ((IEnumerable<Card>)this.RawList).GetEnumerator();

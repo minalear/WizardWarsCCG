@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Minalear;
 
 namespace WizardWars
 {
     public class Card
     {
         public string Name;
+        public string ImagePath;
         public int Cost;
 
         public string RulesText;
@@ -20,11 +21,22 @@ namespace WizardWars
 
         public Player Owner, Controller;
 
+        public Texture2D Art;
+
         public Card()
         {
             Types = new Types[0];
             SubTypes = new SubTypes[0];
             Effects = new Effect[0];
+        }
+
+        public void LoadCardArt()
+        {
+            Art = Texture2D.LoadFromSource(ImagePath);
+        }
+        public void UnloadCardArt()
+        {
+            Art.Dispose();
         }
 
         public override string ToString()

@@ -1,6 +1,6 @@
 ﻿[{
 	"name" : "Grunka Lunkan",
-	"image" : "../../",
+	"imagepath" : "Content/Art/grunka_lunkan.png",
 	"cost" : 0,
 	"types" : ["creature"],
 	"subtypes" : ["grunkan"],
@@ -11,7 +11,7 @@
 },
 {
 	"name" : "Pirate of the Run",
-	"image" : "../../",
+	"imagepath" : "Content/Art/pirate_of_the_run.png",
 	"cost" : 5,
 	"types" : ["creature"],
 	"subtypes" : ["human", "pirate"],
@@ -37,7 +37,7 @@
 },
 {
 	"name" : "Cantrip",
-	"image" : "../../",
+	"imagepath" : "Content/Art/cantrip.png",
 	"cost" : 1,
 	"types" : ["spell"],
 	"rulestext" : "Draw a card.",
@@ -53,7 +53,7 @@
 },
 {
 	"name" : "Heal",
-	"image" : "../../",
+	"imagepath" : "Content/Art/heal.png",
 	"cost" : 3,
 	"types" : ["spell"],
 	"rulestext" : "You gain 7 health.",
@@ -69,7 +69,7 @@
 },
 {
 	"name" : "Lightning Helix",
-	"image" : "../../",
+	"imagepath" : "Content/Art/lightning_helix.png",
 	"cost" : 2,
 	"types" : ["spell"],
 	"rulestext" : "Deal 3 damage to target creature or player and you gain 3 life.",
@@ -92,7 +92,7 @@
 },
 {
 	"name" : "Overwhelming Knowledge",
-	"image" : "../../",
+	"imagepath" : "Content/Art/overwhelming_knowledge.png",
 	"cost" : 4,
 	"types" : ["spell"],
 	"rulestext" : "Deal X damage to target player where X is the number of cards in his or her hand.",

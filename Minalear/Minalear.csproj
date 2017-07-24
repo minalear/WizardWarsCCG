@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BAAD02D2-B5AD-4041-8505-D60A3018C308}</ProjectGuid>
+    <ProjectGuid>{D3DD8EF1-10DD-4AF0-87B4-F1A2372F235B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WizardWars</RootNamespace>
-    <AssemblyName>WizardWars</AssemblyName>
+    <RootNamespace>Minalear</RootNamespace>
+    <AssemblyName>Minalear</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,11 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,20 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Card.cs" />
-    <Compile Include="CardFactory.cs" />
-    <Compile Include="Collection.cs" />
-    <Compile Include="Effect.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="GameTime.cs" />
+    <Compile Include="Shader.cs" />
+    <Compile Include="SpriteBatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BoardState.cs" />
-    <Compile Include="RNG.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Minalear\Minalear.csproj">
-      <Project>{d3dd8ef1-10dd-4af0-87b4-f1a2372f235b}</Project>
-      <Name>Minalear</Name>
-    </ProjectReference>
+    <Compile Include="Texture2D.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
