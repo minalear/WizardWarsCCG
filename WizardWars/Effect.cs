@@ -2,16 +2,38 @@
 
 namespace WizardWars
 {
-    public abstract class Effect
+    public class Effect
     {
-        public abstract void ApplyEffect(BoardState state);
+        public Triggers Trigger;
+        public string Prompt;
+
+        public Targets[] ValidTargets;
+        public Actions[] Actions;
+
+        public object[] Vars;
     }
 
-    public class DrawEffect : Effect
+    public enum Actions
     {
-        public override void ApplyEffect(BoardState state)
-        {
+        Draw,
+        Damage,
+        Destroy,
+        Exile,
+        Sacrifice,
+        Heal
+    }
 
-        }
+    public enum Targets
+    {
+        Player,
+        Creature
+    }
+
+    public enum Triggers
+    {
+        Cast,
+        Attack,
+        EnterBattlefield,
+        Death
     }
 }

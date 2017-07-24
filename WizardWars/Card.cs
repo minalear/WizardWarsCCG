@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WizardWars
 {
@@ -10,21 +6,41 @@ namespace WizardWars
     {
         public string Name;
         public int Cost;
+
         public string RulesText;
         public string FlavorText;
 
-        public string[] Types;
-        public string[] SubTypes;
+        public int Attack;
+        public int Defense;
+
+        public Types[] Types;
+        public SubTypes[] SubTypes;
+
+        public Effect[] Effects;
+
+        public Player Owner, Controller;
 
         public Card()
         {
-            Types = new string[0];
-            SubTypes = new string[0];
+            Types = new Types[0];
+            SubTypes = new SubTypes[0];
         }
 
         public override string ToString()
         {
             return string.Format("{0} - {1}", Name, Cost);
         }
+    }
+
+    public enum Types
+    {
+        Spell,
+        Creature
+    }
+    public enum SubTypes
+    {
+        Human,
+        Monk,
+        Grunkan
     }
 }

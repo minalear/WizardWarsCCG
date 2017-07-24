@@ -1,47 +1,55 @@
-﻿[
+﻿[{
+	"name" : "Grunka Lunkan",
+	"cost" : 0,
+	"types" : ["creature"],
+	"subtypes" : ["Grunkan"],
+	"rulestext" : "Passive (This creature cannot attack.)",
+	"flavortext" : "The residents of the Isle of Grunk are small, fat creatures without much redeeming factors.",
+	"attack" : 0,
+	"defense" : 1
+},
 {
-	"name" : "Filter",
+	"name" : "Cantrip",
 	"cost" : 1,
 	"types" : ["spell"],
 	"rulestext" : "Draw a card.",
-	"effects" : ""
+	"flavortext" : "Even the most powerful wizards need more than one spell up their sleeve.",
+	"effects" : 
+	[{
+		"trigger" : "cast",
+		"prompt" : "Target player draws a card.",
+		"actions" : ["draw"],
+		"vars" : [1],
+		"validtargets" : ["player"]
+	}]
 },
 {
-	"name" : "Tetsu, Warrior of the Path",
+	"name" : "Lightning Helix",
+	"cost" : 2,
+	"types" : ["spell"],
+	"rulestext" : "Deal 3 damage to target creature or player and you gain 3 life.",
+	"flavortext" : "Though less well-known than its army of soldiers, the Boros Legion's mage-priests are as repsected by the innocent as they are hated by the ghosts of the guilty.",
+	"effects" : 
+	[{
+		"trigger" : "cast",
+		"prompt" : "Target player draws a card.",
+		"actions" : ["damage", "heal"],
+		"vars" : [3, 3],
+		"validtargets" : ["player"]
+	}]
+},
+{
+	"name" : "Overwhelming Knowledge",
 	"cost" : 4,
-	"types" : ["hero", "creature"],
-	"subtypes" : ["human", "monk"],
-	"rulestext" : "Tetsu can only be blocked by two or more creatures.  Whenever Tetsu deals combat damage to a creature, it gains Passive until your next turn.",
-	"flavortext" : "\"Your destiny lies within this box, guard it with your life.\" - Master Wutang",
-	"attack" : 3,
-	"defense" : 3
-},
-{
-	"name" : "Fireball",
-	"cost" : 1,
 	"types" : ["spell"],
-	"rulestext" : "Deal 3 damage to target creature or player.",
-	"flavortext" : "One of the most basic, yet key power, in a wizard's arsenal... fire."
-},
-{
-	"name" : "Best Laid Plans",
-	"cost" : 1,
-	"types" : ["spell"],
-	"rulestext" : "Scry 3.",
-	"flavortext" : "The best wizards can see three steps ahead."
-},
-{
-	"name" : "Obliterate",
-	"cost" : 4,
-	"types" : ["spell"],
-	"rulestext" : "Destroy target creature.",
-	"flavortext" : "Not even the mightiest warriors can stand against the might of a god!"
-},
-{
-	"name" : "Mask of Razmir",
-	"cost" : 7,
-	"types" : ["relic"],
-	"rulestext" : "Destined - Does something when Razmir, the False God is on the battlefield.",
-	"flavortext" : "When the masked figure emerged from the remains of Melcat, the people knew... their God has arrived."
-}
-]
+	"rulestext" : "Deal X damage to target player where X is the number of cards in his or her hand.",
+	"flavortext" : "The feeble cannot wield true power.",
+	"effects" : 
+	[{
+		"trigger" : "cast",
+		"prompt" : "Target player receives damage equal to the cards in their hand.",
+		"validtargets" : ["player"],
+		"actions" : ["damage"],
+		"vars" : ["Target.Hand.Count"]
+	}]
+}]
