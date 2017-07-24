@@ -1,5 +1,12 @@
 ﻿[
 {
+	"name" : "Filter",
+	"cost" : 1,
+	"types" : ["spell"],
+	"rulestext" : "Draw a card.",
+	"effects" : ""
+},
+{
 	"name" : "Tetsu, Warrior of the Path",
 	"cost" : 4,
 	"types" : ["hero", "creature"],

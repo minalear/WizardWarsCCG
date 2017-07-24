@@ -81,12 +81,22 @@ namespace Prototyping
                     case "hand":
                         if (commands[1] == "one")
                         {
+                            Console.WriteLine(" --- Hand One --- ");
                             PrintCardList(ActiveState.HandOne);
                         }
                         else
                         {
+                            Console.WriteLine(" --- Hand Two --- ");
                             PrintCardList(ActiveState.HandTwo);
                         }
+                        break;
+                    case "play":
+                        int id = 0;
+                        if (int.TryParse(commands[1], out id))
+                        {
+
+                        }
+
                         break;
                     default:
                         Console.Clear();
