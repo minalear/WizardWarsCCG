@@ -37,6 +37,11 @@ namespace WizardWars
         {
             RawList.Insert(index, card);
         }
+        public void AddCards(List<Card> cards, Location location)
+        {
+            foreach (Card card in cards)
+                AddCard(card, location);
+        }
 
         public Card GetCard(Location location)
         {
@@ -69,11 +74,23 @@ namespace WizardWars
 
             return card;
         }
+        public List<Card> RemoveCards(int num, Location location)
+        {
+            List<Card> cards = new List<Card>();
+
+            for (int i = 0; i < num; i++)
+            {
+                cards.Add(RemoveCard(location));
+            }
+
+            return cards;
+        }
 
         public void SetList(List<Card> cards)
         {
             RawList = cards;
         }
+        
 
         public IEnumerator<Card> GetEnumerator()
         {

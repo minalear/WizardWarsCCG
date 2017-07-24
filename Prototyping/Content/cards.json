@@ -17,10 +17,25 @@
 	"effects" : 
 	[{
 		"trigger" : "cast",
-		"prompt" : "Target player draws a card.",
+		"prompt" : "You draw a card",
 		"actions" : ["draw"],
 		"vars" : [1],
-		"validtargets" : ["player"]
+		"validtargets" : ["self"]
+	}]
+},
+{
+	"name" : "Heal",
+	"cost" : 3,
+	"types" : ["spell"],
+	"rulestext" : "You gain 7 health.",
+	"flavortext" : "Warriors may fall, but clerics are there to help.",
+	"effects" : 
+	[{
+		"trigger" : "cast",
+		"prompt" : "You gain health.",
+		"actions" : ["heal"],
+		"vars" : [7],
+		"validtargets" : ["self"]
 	}]
 },
 {
@@ -32,10 +47,17 @@
 	"effects" : 
 	[{
 		"trigger" : "cast",
-		"prompt" : "Target player draws a card.",
-		"actions" : ["damage", "heal"],
-		"vars" : [3, 3],
+		"prompt" : "Target player takes damage.",
+		"actions" : ["damage"],
+		"vars" : [3],
 		"validtargets" : ["player"]
+	},
+	{
+		"trigger" : "cast",
+		"prompt" : "You are healed.",
+		"actions" : ["heal"],
+		"vars" : [3],
+		"validtargets" : ["self"]
 	}]
 },
 {
@@ -50,6 +72,6 @@
 		"prompt" : "Target player receives damage equal to the cards in their hand.",
 		"validtargets" : ["player"],
 		"actions" : ["damage"],
-		"vars" : ["Target.Hand.Count"]
+		"vars" : ["Player.Hand.Count"]
 	}]
 }]

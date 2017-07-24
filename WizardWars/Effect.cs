@@ -11,6 +11,11 @@ namespace WizardWars
         public Actions[] Actions;
 
         public object[] Vars;
+
+        public override string ToString()
+        {
+            return Actions[0].ToString();
+        }
     }
 
     public enum Actions
@@ -25,6 +30,7 @@ namespace WizardWars
 
     public enum Targets
     {
+        Self,
         Player,
         Creature
     }

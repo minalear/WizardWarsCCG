@@ -24,6 +24,7 @@ namespace WizardWars
         {
             Types = new Types[0];
             SubTypes = new SubTypes[0];
+            Effects = new Effect[0];
         }
 
         public override string ToString()

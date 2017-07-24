@@ -14,8 +14,15 @@ namespace Prototyping
 
             BoardState state = new BoardState();
             state.HandOne.SetList(cardList);
-            
-            state.PlayCard(state.HandOne.RemoveCard(Location.Top));
+            state.DeckOne.AddCards(cardList, Location.Random);
+            state.DeckOne.AddCards(cardList, Location.Random);
+            state.DeckOne.AddCards(cardList, Location.Random);
+
+            for (int i = 0; i < state.HandOne.RawList.Count; i++)
+            {
+                Card card = state.HandOne[i];
+                state.PlayCard(state.PlayerOne, card);
+            }
         }
     }
 }
