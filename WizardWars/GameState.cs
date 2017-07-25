@@ -30,8 +30,12 @@ namespace WizardWars
                 TriggerEffects(caster, card, Triggers.EnterBattlefield);
 
                 //Add creature to the battlefield
-                caster.Field.AddCard(card);
+                caster.Field.AddCard(card, Location.Bottom);
             }
+
+            Console.WriteLine("Player 1 HP: {0}", PlayerOne.Health);
+            Console.WriteLine("Player 2 HP: {0}", PlayerTwo.Health);
+            Console.WriteLine();
         }
         public void TriggerEffects(Player caster, Card card, Triggers triggerType)
         {
