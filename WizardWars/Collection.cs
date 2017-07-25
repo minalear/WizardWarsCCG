@@ -88,6 +88,32 @@ namespace WizardWars
             return cards;
         }
 
+        public int CountTypes(Types cardType)
+        {
+            int num = 0;
+            foreach (Card card in this)
+            {
+                foreach (Types type in card.Types)
+                {
+                    if (type == cardType)
+                        num++;
+                }
+            }
+
+            return num;
+        }
+        public int CountTypes(SubTypes cardSubType)
+        {
+            int num = 0;
+            foreach (Card card in this)
+            {
+                foreach (SubTypes type in card.SubTypes)
+                    num++;
+            }
+
+            return num;
+        }
+
         public void SetList(List<Card> cards)
         {
             RawList = cards;

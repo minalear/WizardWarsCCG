@@ -2,24 +2,17 @@
 
 namespace WizardWars
 {
-    public class BoardState
+    public class GameState
     {
         public Player PlayerOne, PlayerTwo;
-        public Collection DeckOne, DeckTwo;
-        public Collection FieldOne, FieldTwo;
-        public Collection HandOne, HandTwo;
 
         public Player PlayerTarget;
         public Card CardTarget;
 
-        public BoardState()
+        public GameState()
         {
             PlayerOne = new Player();
             PlayerTwo = new Player();
-
-            DeckOne = new Collection(PlayerOne);
-            FieldOne = new Collection(PlayerOne);
-            HandOne = new Collection(PlayerOne);
 
             //Temporary
             PlayerTarget = PlayerOne;
@@ -37,7 +30,7 @@ namespace WizardWars
                 TriggerEffects(caster, card, Triggers.EnterBattlefield);
 
                 //Add creature to the battlefield
-                FieldOne.AddCard(card);
+                caster.Field.AddCard(card);
             }
         }
         public void TriggerEffects(Player caster, Card card, Triggers triggerType)
@@ -63,7 +56,7 @@ namespace WizardWars
                 if (effect.Actions[0] == Actions.Draw)
                 {
                     int num = parseNumberVariable(caster, card, effect.Vars[0]);
-                    HandOne.AddCards(DeckOne.RemoveCards(num, Location.Top), Location.Bottom);
+                    caster.DrawCards(num);
                 }
                 else if (effect.Actions[0] == Actions.Heal)
                 {
@@ -102,7 +95,7 @@ namespace WizardWars
                     {
                         if (argSegments[2] == "Count")
                         {
-                            return HandOne.Count;
+                            return caster.Hand.Count;
                         }
                     }
                     else if (argSegments[1] == "Health")
@@ -114,6 +107,7 @@ namespace WizardWars
                         if (argSegments[2] == "OfType")
                         {
                             //X = number of creatures of the type
+                            return target.Field.CountTypes((SubTypes)Enum.Parse(typeof(SubTypes), argSegments[3]));
                         }
                     }
                 }

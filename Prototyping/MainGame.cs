@@ -10,11 +10,12 @@ namespace Prototyping
     public class MainGame : Game
     {
         private SpriteBatch spriteBatch;
-        private Collection CardCollection;
+        private GameState gameState;
+        private Card reference;
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
         {
-
+            gameState = new GameState();
         }
 
         public override void LoadContent()
@@ -26,21 +27,49 @@ namespace Prototyping
 
             spriteBatch = new SpriteBatch(shader, Window.Width, Window.Height);
 
-            CardCollection = new Collection(null, CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json")));
-            foreach (Card card in CardCollection)
+            var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
+            foreach (Card card in cardList)
             {
                 card.LoadCardArt();
             }
+
+            reference = cardList[0];
+
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
+
+            gameState.PlayerOne.DrawCards(7);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            //Draw Hand
-            float cardWidth = CardCollection[0].Art.Width * 0.35f;
-            float cardHeight = CardCollection[0].Art.Height * 0.35f;
-            for (int i = 0; i < CardCollection.Count; i++)
+            float scale = 0.25f;
+            float cardWidth = reference.Art.Width * scale;
+            float cardHeight = reference.Art.Height * scale;
+
+            //Draw Field
+            for (int i = 0; i < gameState.PlayerOne.Deck.Count; i++)
             {
-                spriteBatch.Draw(CardCollection[i].Art, new Vector2(i * cardWidth, Window.Height - cardHeight), new Vector2(0.35f), new Color4(0.7f, 1f, 0.3f, 0.5f));
+                spriteBatch.Draw(gameState.PlayerOne.Deck[i].Art,
+                    new Vector2(i * cardWidth + 10, Window.Height - cardHeight * 3),
+                    new Vector2(scale), Color4.White);
+            }
+
+            //Draw Hand
+            scale = 0.4f;
+            cardWidth = reference.Art.Width * scale;
+            cardHeight = reference.Art.Height * scale;
+
+            float start = (Window.Width / 2.0f) - (gameState.PlayerOne.Hand.Count * cardWidth) / 2.0f;
+
+            for (int i = 0; i < gameState.PlayerOne.Hand.Count; i++)
+            {
+                spriteBatch.Draw(gameState.PlayerOne.Hand[i].Art,
+                    new Vector2(start + i * cardWidth, Window.Height - cardHeight),
+                    new Vector2(scale), Color4.White);
             }
         }
     }
