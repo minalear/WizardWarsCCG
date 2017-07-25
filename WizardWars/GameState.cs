@@ -33,25 +33,40 @@ namespace WizardWars
                 caster.Field.AddCard(card, Location.Bottom);
             }
 
-            Console.WriteLine("Player 1 HP: {0}", PlayerOne.Health);
-            Console.WriteLine("Player 2 HP: {0}", PlayerTwo.Health);
+            Console.WriteLine("Player 1: {0} - {1}", PlayerOne.Health, PlayerOne.Mana);
+            Console.WriteLine("Player 2: {0} - {1}", PlayerTwo.Health, PlayerTwo.Mana);
             Console.WriteLine();
         }
+        public bool StageCard(Player caster, Card card)
+        {
+            //Check costs of the card
+            if (caster.Mana >= card.Cost)
+            {
+                caster.Mana -= card.Cost;
+                PlayCard(caster, card);
+
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Not enough mana!");
+
+                return false;
+            }
+        }
+
         public void TriggerEffects(Player caster, Card card, Triggers triggerType)
         {
             foreach (Effect effect in card.Effects)
             {
                 if (effect.Trigger == triggerType)
                 {
-                    if (triggerType == Triggers.Cast)
-                        triggerCastEffect(caster, card, effect);
-                    else if (triggerType == Triggers.EnterBattlefield)
-                        triggerETBEffect(caster, card, effect);
+                    triggerEffect(caster, card, effect);
                 }
             }
         }
 
-        private void triggerCastEffect(Player caster, Card card, Effect effect)
+        private void triggerEffect(Player caster, Card card, Effect effect)
         {
             //Determine if it has targets
             if (/*effect.ValidTargets[0] == Targets.Self*/true)
@@ -73,10 +88,6 @@ namespace WizardWars
                     caster.Health -= num;
                 }
             }
-        }
-        private void triggerETBEffect(Player caster, Card card, Effect effect)
-        {
-
         }
 
         private int parseNumberVariable(Player caster, Card card, object var)

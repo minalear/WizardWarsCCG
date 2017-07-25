@@ -15,11 +15,15 @@ namespace Prototyping
         private Vector2 mousePos;
         private bool mouseUp = false;
 
+        private StateRenderer renderer;
+
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
         {
             gameState = new GameState();
             Window.MouseUp += Window_MouseUp;
             Window.MouseMove += Window_MouseMove;
+
+            renderer = new StateRenderer(this);
         }
         
         public override void LoadContent()
@@ -45,65 +49,21 @@ namespace Prototyping
             gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
             gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
 
+            gameState.PlayerOne.AllCards.AddCards(gameState.PlayerOne.Deck, Location.Top);
+
             gameState.PlayerOne.DrawCards(7);
+            gameState.PlayerOne.Field.AddCard(gameState.PlayerOne.Deck.RemoveCard(Location.Top));
+
+            renderer.SetGameState(gameState);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            float scale = 0.25f;
-            float cardWidth = reference.Art.Width * scale;
-            float cardHeight = reference.Art.Height * scale;
-
-            //Draw Field
-            for (int i = 0; i < gameState.PlayerOne.Field.Count; i++)
-            {
-                bool highlight = false;
-
-                Vector2 pos = new Vector2(i * cardWidth + 10, Window.Height - cardHeight * 3);
-                if (mousePos.X >= pos.X && mousePos.X <= pos.X + cardWidth && mousePos.Y >= pos.Y && mousePos.Y <= pos.Y + cardHeight)
-                {
-                    highlight = true;
-                }
-
-                Color4 color = (highlight) ? Color4.Green : Color4.White;
-
-                spriteBatch.Draw(gameState.PlayerOne.Field[i].Art, pos, new Vector2(scale), color);
-            }
-
-            //Draw Hand
-            scale = 0.4f;
-            cardWidth = reference.Art.Width * scale;
-            cardHeight = reference.Art.Height * scale;
-
-            float start = (Window.Width / 2.0f) - (gameState.PlayerOne.Hand.Count * cardWidth) / 2.0f;
-
-            for (int i = 0; i < gameState.PlayerOne.Hand.Count; i++)
-            {
-                bool highlight = false;
-
-                Vector2 pos = new Vector2(start + i * cardWidth, Window.Height - cardHeight);
-                if (mousePos.X >= pos.X && mousePos.X <= pos.X + cardWidth && mousePos.Y >= pos.Y && mousePos.Y <= pos.Y + cardHeight)
-                {
-                    highlight = true;
-
-                    if (mouseUp)
-                    {
-                        mouseUp = false;
-                        Card card = gameState.PlayerOne.Hand.RemoveCard(i);
-                        gameState.PlayCard(gameState.PlayerOne, card);
-
-                        i--;
-
-                        continue;
-                    }
-                }
-
-                Color4 color = (highlight) ? Color4.Green : Color4.White;
-
-                spriteBatch.Draw(gameState.PlayerOne.Hand[i].Art, pos, new Vector2(scale), color);
-            }
-
-            mouseUp = false;
+            renderer.Draw(gameTime, spriteBatch);
+        }
+        public override void Update(GameTime gameTime)
+        {
+            renderer.Update(gameTime);
         }
 
         private void Window_MouseUp(object sender, OpenTK.Input.MouseButtonEventArgs e)

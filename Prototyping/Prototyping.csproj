@@ -54,6 +54,7 @@
     <Compile Include="MainGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StateRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Minalear\Minalear.csproj">

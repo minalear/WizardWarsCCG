@@ -5,6 +5,10 @@ namespace WizardWars
     public class Player
     {
         public int Health;
+        public int Mana;
+
+        public Collection AllCards;
+
         public Collection Hand;
         public Collection Deck;
         public Collection Graveyard;
@@ -15,6 +19,9 @@ namespace WizardWars
         public Player()
         {
             Health = 20;
+            Mana = 10;
+
+            AllCards = new Collection(this);
 
             Hand = new Collection(this);
             Deck = new Collection(this);

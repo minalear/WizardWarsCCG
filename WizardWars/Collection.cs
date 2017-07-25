@@ -39,7 +39,7 @@ namespace WizardWars
         {
             RawList.Insert(index, card);
         }
-        public void AddCards(List<Card> cards, Location location)
+        public void AddCards(IEnumerable<Card> cards, Location location)
         {
             foreach (Card card in cards)
                 AddCard(card, location);
