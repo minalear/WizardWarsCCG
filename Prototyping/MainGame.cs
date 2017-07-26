@@ -11,17 +11,12 @@ namespace Prototyping
     {
         private SpriteBatch spriteBatch;
         private GameState gameState;
-        private Card reference;
-        private Vector2 mousePos;
-        private bool mouseUp = false;
 
         private StateRenderer renderer;
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
         {
             gameState = new GameState();
-            Window.MouseUp += Window_MouseUp;
-            Window.MouseMove += Window_MouseMove;
 
             renderer = new StateRenderer(this);
         }
@@ -36,25 +31,20 @@ namespace Prototyping
             spriteBatch = new SpriteBatch(shader, Window.Width, Window.Height);
 
             var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
-            foreach (Card card in cardList)
+            foreach (CardInfo card in cardList)
             {
                 card.LoadCardArt();
+
+                //Add 4 copies of each card to our deck
+                for (int i = 0; i < 4; i++)
+                {
+                    Card instance = new Card(card);
+                    gameState.PlayerOne.Deck.AddCard(instance, Location.Bottom);
+                }
             }
-
-            reference = cardList[0];
-
-            gameState.PlayerOne.Field.AddCard(cardList[0]);
-
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
-
-            //gameState.PlayerOne.Deck.Shuffle();
-
             gameState.PlayerOne.AllCards.AddCards(gameState.PlayerOne.Deck, Location.Top);
 
+            gameState.PlayerOne.Deck.Shuffle();
             gameState.PlayerOne.DrawCards(7);
 
             renderer.SetGameState(gameState);
@@ -67,15 +57,6 @@ namespace Prototyping
         public override void Update(GameTime gameTime)
         {
             renderer.Update(gameTime);
-        }
-
-        private void Window_MouseUp(object sender, OpenTK.Input.MouseButtonEventArgs e)
-        {
-            mouseUp = true;
-        }
-        private void Window_MouseMove(object sender, OpenTK.Input.MouseMoveEventArgs e)
-        {
-            mousePos = new Vector2(e.X, e.Y);
         }
     }
 }

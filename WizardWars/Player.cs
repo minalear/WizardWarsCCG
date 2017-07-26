@@ -19,7 +19,7 @@ namespace WizardWars
         public Player()
         {
             Health = 20;
-            Mana = 10;
+            Mana = 100;
 
             AllCards = new Collection(this);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace WizardWars
 {
@@ -27,10 +28,10 @@ namespace WizardWars
             stagedCard = card;
 
             //Check costs of the card
-            if (caster.Mana >= card.Cost)
+            if (caster.Mana >= card.Meta.Cost)
             {
                 IsCasting = true;
-                caster.Mana -= card.Cost;
+                caster.Mana -= card.Meta.Cost;
                 PlayCard(caster, card);
 
                 return true;
@@ -66,7 +67,7 @@ namespace WizardWars
             stagedEffectIndex = 0;
 
             //Refund mana
-            caster.Mana += stagedCard.Cost;
+            caster.Mana += stagedCard.Meta.Cost;
         }
 
         public void PlayCard(Player caster, Card card)
@@ -74,7 +75,7 @@ namespace WizardWars
             //Here we would add the card to the stack and wait for a response from the opponent
             TriggerEffects(caster, card, Triggers.Cast); //Trigger on-cast triggers
 
-            if (card.Types[0] == Types.Creature || card.Types[0] == Types.Hero)
+            if (card.Meta.Types[0] == Types.Creature || card.Meta.Types[0] == Types.Hero)
             {
                 //Trigger ETB effects
                 TriggerEffects(caster, card, Triggers.EnterBattlefield);
@@ -92,17 +93,14 @@ namespace WizardWars
         public void TriggerEffects(Player caster, Card card, Triggers trigger, int index = 0)
         {
             //Loop through all effects, starting at the provided index
-            for (int i = index; i < card.Effects.Length; i++)
+            for (int i = index; i < card.Meta.Effects.Length; i++)
             {
-                Effect effect = card.Effects[i];
+                Effect effect = card.Meta.Effects[i];
 
                 //Trigger only the effects that match the given type
                 if (effect.Trigger == trigger)
                 {
-                    //Check if the effect requires a target
-                    bool targetRequired = requiresTarget(effect);
-
-                    if (targetRequired && !hasTarget)
+                    if (effect.Targeted && !hasTarget)
                     {
                         stagedTriggers = trigger;
                         stagedEffect = effect;
@@ -111,14 +109,19 @@ namespace WizardWars
                         Console.WriteLine("Target required.");
                         return;
                     }
-                    else if (targetRequired && hasTarget)
+                    else if (effect.Targeted && hasTarget)
                     {
                         applyTargetedEffect(caster, card, effect, effectTarget);
                         hasTarget = false; //Reset target
                     }
                     else
                     {
-                        applySelfEffect(caster, card, effect);
+                        //These effects can be Self casted spells or things that affect multiple cards (ie Wrath of God)
+                        List<Target> affectedCreatures = getAllTargets(caster, effect);
+                        foreach (Target target in affectedCreatures)
+                        {
+                            applyTargetedEffect(caster, card, effect, target);
+                        }
                     }
                 }
             }
@@ -172,9 +175,48 @@ namespace WizardWars
                 if (effect.Actions[0] == Actions.Damage)
                 {
                     int num = parseNumberVariable(caster, card, effect.Vars[0]);
-                    target.CardTarget.Defense -= num;
+                    target.CardTarget.Meta.Defense -= num;
+                }
+                else if (effect.Actions[0] == Actions.Destroy)
+                {
+                    TriggerEffects(caster, target.CardTarget, Triggers.Death);
+
+                    //Check is dead and remove from battlefield
+                    if (caster.Field.HasCardID(target.CardTarget.ID))
+                    {
+                        caster.Graveyard.AddCard(caster.Field.RemoveCardID(target.CardTarget.ID));
+                    }
                 }
             }
+        }
+
+        private bool isValidTarget(Effect effect, Target target)
+        {
+            //Submitted target is a card (assuming field card for now)
+            if (target.CurrentMode == Target.Current.Card)
+            {
+                return effect.HasTarget(Targets.Creature);
+            }
+            else if (target.CurrentMode == Target.Current.Self)
+            {
+                return (effect.HasTarget(Targets.Self) || effect.HasTarget(Targets.Player));
+            }
+            else if (target.CurrentMode == Target.Current.Opponent)
+            {
+                return (effect.HasTarget(Targets.Opponent) || effect.HasTarget(Targets.Player));
+            }
+
+            return false;
+        }
+        private List<Target> getAllTargets(Player caster, Effect effect)
+        {
+            List<Target> targets = new List<Target>();
+            foreach (object target in effect.Affects)
+            {
+                targets.AddRange(parseTargets(caster, target));
+            }
+
+            return targets;
         }
 
         private int parseNumberVariable(Player caster, Card card, object var)
@@ -217,30 +259,50 @@ namespace WizardWars
 
             throw new ArgumentException(string.Format("Invalid syntax for variable: {0}", var));
         }
-        private bool requiresTarget(Effect effect)
+        private List<Target> parseTargets(Player caster, object var)
         {
-            if (effect.ValidTargets[0] == Targets.Self && effect.ValidTargets.Length == 1)
-                return false;
+            List<Target> targets = new List<Target>();
 
-            return true;
-        }
-        private bool isValidTarget(Effect effect, Target target)
-        {
-            //Submitted target is a card (assuming field card for now)
-            if (target.CurrentMode == Target.Current.Card)
+            string str = (string)var;
+            string[] split = str.Split('.');
+
+            if (split[0] == "self")
+                targets.Add(new Target(caster, true));
+            if (split[0] == "creatures")
             {
-                return effect.HasTarget(Targets.Creature);
-            }
-            else if (target.CurrentMode == Target.Current.Self)
-            {
-                return (effect.HasTarget(Targets.Self) || effect.HasTarget(Targets.Player));
-            }
-            else if (target.CurrentMode == Target.Current.Opponent)
-            {
-                return (effect.HasTarget(Targets.Opponent) || effect.HasTarget(Targets.Player));
+                if (split[1] == "all" && split.Length == 2)
+                {
+                    //Target all creatures
+                    foreach (Card card in PlayerOne.Field)
+                    {
+                        if (card.Meta.IsType(Types.Creature))
+                            targets.Add(new Target(card));
+                    }
+                    foreach (Card card in PlayerTwo.Field)
+                    {
+                        if (card.Meta.IsType(Types.Creature))
+                            targets.Add(new Target(card));
+                    }
+                }
+                else if (split[1] == "all" && split[2] == "OfType")
+                {
+                    SubTypes creatureType = (SubTypes)Enum.Parse(typeof(SubTypes), split[3]);
+
+                    //Target all creatures of a type
+                    foreach (Card card in PlayerOne.Field)
+                    {
+                        if (card.Meta.IsType(Types.Creature) && card.Meta.IsSubType(creatureType))
+                            targets.Add(new Target(card));
+                    }
+                    foreach (Card card in PlayerTwo.Field)
+                    {
+                        if (card.Meta.IsType(Types.Creature) && card.Meta.IsSubType(creatureType))
+                            targets.Add(new Target(card));
+                    }
+                }
             }
 
-            return false;
+            return targets;
         }
 
         public delegate void InvalidTargetEvent(object sender, EventArgs e);

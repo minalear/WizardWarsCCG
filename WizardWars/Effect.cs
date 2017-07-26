@@ -7,10 +7,13 @@ namespace WizardWars
         public Triggers Trigger;
         public string Prompt;
 
+        public bool Targeted;
+
         public Targets[] ValidTargets;
         public Actions[] Actions;
 
         public object[] Vars;
+        public object[] Affects;
 
         public bool HasTarget(Targets target)
         {

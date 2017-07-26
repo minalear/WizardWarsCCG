@@ -89,25 +89,25 @@ namespace Prototyping
             for (int i = 0; i < gameState.PlayerOne.Hand.Count; i++)
             {
                 Card card = gameState.PlayerOne.Hand[i];
-                float width = card.Art.Width * 0.35f;
-                float height = card.Art.Height * 0.35f;
+                float width = card.Meta.Art.Width * 0.35f;
+                float height = card.Meta.Art.Height * 0.35f;
 
                 float start = (game.Window.Width / 2.0f) - (gameState.PlayerOne.Hand.Count * width) / 2.0f;
                 Vector2 pos = new Vector2(start + i * width, game.Window.Height - height);
 
-                hand.Add(new CardImage(card, pos, new Vector2(width, height), new Vector2(0.35f)));
+                hand.Add(new CardImage(card.Meta, pos, new Vector2(width, height), new Vector2(0.35f)));
             }
 
             //Field
             for (int i = 0; i < gameState.PlayerOne.Field.Count; i++)
             {
                 Card card = gameState.PlayerOne.Field[i];
-                float width = card.Art.Width * 0.25f;
-                float height = card.Art.Height * 0.25f;
+                float width = card.Meta.Art.Width * 0.25f;
+                float height = card.Meta.Art.Height * 0.25f;
 
                 Vector2 pos = new Vector2(i * width + 10, game.Window.Height - height * 3);
 
-                field.Add(new CardImage(card, pos, new Vector2(width, height), new Vector2(0.25f)));
+                field.Add(new CardImage(card.Meta, pos, new Vector2(width, height), new Vector2(0.25f)));
             }
         }
 
@@ -197,11 +197,11 @@ namespace Prototyping
         public Vector2 Position;
         public Vector2 Size;
         public Vector2 Scale;
-        public Card Card;
+        public CardInfo Card;
 
         public bool Highlight = false;
 
-        public CardImage(Card card, Vector2 pos, Vector2 size, Vector2 scale)
+        public CardImage(CardInfo card, Vector2 pos, Vector2 size, Vector2 scale)
         {
             Card = card;
             Position = pos;

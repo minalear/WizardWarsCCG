@@ -10,48 +10,6 @@
 	"defense" : 1
 },
 {
-	"name" : "Pirate of the Run",
-	"imagepath" : "Content/Art/pirate_of_the_run.png",
-	"cost" : 5,
-	"types" : ["creature"],
-	"subtypes" : ["human", "pirate"],
-	"rulestext" : "When Pirate of the Run enters the battlefield, Pirate of the Run deals damage to target opponent equal to the number of Grunkan creatures they control.  Draw a card.",
-	"flavortext" : "The Pirates of Namundias prize Grunka Lunkan hide very highly.",
-	"attack" : 3,
-	"defense" : 4,
-	"effects" : 
-	[{
-		"trigger" : "enterbattlefield",
-		"prompt" : "Target opponent takes damage equal to the number of Grunka Lunkas they control.",
-		"validtargets" : ["opponent"],
-		"actions" : ["damage"],
-		"vars" : ["Opponent.Creatures.OfType.Grunkan"]
-	},
-	{
-		"trigger" : "enterbattlefield",
-		"prompt" : "Draw a card.",
-		"validtargets" : ["self"],
-		"actions" : ["draw"],
-		"vars" : [1]
-	}]
-},
-{
-	"name" : "Cantrip",
-	"imagepath" : "Content/Art/cantrip.png",
-	"cost" : 1,
-	"types" : ["spell"],
-	"rulestext" : "Draw a card.",
-	"flavortext" : "Even the most powerful wizards need more than one spell up their sleeve.",
-	"effects" : 
-	[{
-		"trigger" : "cast",
-		"prompt" : "You draw a card",
-		"actions" : ["draw"],
-		"vars" : [1],
-		"validtargets" : ["self"]
-	}]
-},
-{
 	"name" : "Heal",
 	"imagepath" : "Content/Art/heal.png",
 	"cost" : 3,
@@ -61,10 +19,10 @@
 	"effects" : 
 	[{
 		"trigger" : "cast",
-		"prompt" : "You gain health.",
+		"targeted" : false,
+		"affects" : ["self"],
 		"actions" : ["heal"],
-		"vars" : [7],
-		"validtargets" : ["self"]
+		"vars" : [7]
 	}]
 },
 {
@@ -77,6 +35,7 @@
 	"effects" : 
 	[{
 		"trigger" : "cast",
+		"targeted" : true,
 		"prompt" : "Target player takes damage.",
 		"actions" : ["damage"],
 		"vars" : [3],
@@ -84,25 +43,24 @@
 	},
 	{
 		"trigger" : "cast",
-		"prompt" : "You are healed.",
+		"targeted" : false,
+		"affects" : ["self"],
 		"actions" : ["heal"],
-		"vars" : [3],
-		"validtargets" : ["self"]
+		"vars" : [3]
 	}]
 },
 {
-	"name" : "Overwhelming Knowledge",
-	"imagepath" : "Content/Art/overwhelming_knowledge.png",
-	"cost" : 4,
+	"name" : "Wrath of God",
+	"imagepath" : "Content/Art/wrath_of_god.png",
+	"cost" : 7,
 	"types" : ["spell"],
-	"rulestext" : "Deal X damage to target player where X is the number of cards in his or her hand.",
-	"flavortext" : "The feeble cannot wield true power.",
-	"effects" : 
+	"rulestext" : "Destroy all creatures.",
+	"flavortext" : "When the Material God descended from above, the beings below wept.",
+	"effects" :
 	[{
 		"trigger" : "cast",
-		"prompt" : "Target player receives damage equal to the cards in their hand.",
-		"validtargets" : ["player"],
-		"actions" : ["damage"],
-		"vars" : ["Player.Hand.Count"]
+		"targeted" : false,
+		"affects" : ["creatures.all"],
+		"actions" : ["destroy"]
 	}]
 }]

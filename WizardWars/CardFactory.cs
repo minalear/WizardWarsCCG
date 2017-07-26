@@ -7,9 +7,9 @@ namespace WizardWars
 {
     public static class CardFactory
     {
-        public static List<Card> LoadCards(string jsonText)
+        public static List<CardInfo> LoadCards(string jsonText)
         {
-            return JsonConvert.DeserializeObject<List<Card>>(jsonText);
+            return JsonConvert.DeserializeObject<List<CardInfo>>(jsonText);
         }
     }
 }

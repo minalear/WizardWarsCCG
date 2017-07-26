@@ -60,6 +60,16 @@ namespace WizardWars
             return RawList[index];
         }
 
+        public bool HasCardID(int id)
+        {
+            foreach (Card card in RawList)
+            {
+                if (card.ID == id)
+                    return true;
+            }
+            return false;
+        }
+
         public Card RemoveCard(Location location)
         {
             if (location == Location.Top)
@@ -76,6 +86,21 @@ namespace WizardWars
 
             return card;
         }
+        public Card RemoveCardID(int id)
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (RawList[i].ID == id)
+                {
+                    Card card = RawList[i];
+                    RawList.RemoveAt(i);
+
+                    return card;
+                }
+            }
+
+            throw new ArgumentException(string.Format("Card with ID {0} does not exist in this collection."));
+        }
         public List<Card> RemoveCards(int num, Location location)
         {
             List<Card> cards = new List<Card>();
@@ -91,8 +116,9 @@ namespace WizardWars
         public int CountTypes(Types cardType)
         {
             int num = 0;
-            foreach (Card card in this)
+            foreach (Card instance in this)
             {
+                CardInfo card = instance.Meta;
                 foreach (Types type in card.Types)
                 {
                     if (type == cardType)
@@ -105,8 +131,9 @@ namespace WizardWars
         public int CountTypes(SubTypes cardSubType)
         {
             int num = 0;
-            foreach (Card card in this)
+            foreach (Card instance in this)
             {
+                CardInfo card = instance.Meta;
                 foreach (SubTypes type in card.SubTypes)
                     num++;
             }

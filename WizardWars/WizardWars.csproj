@@ -43,8 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Card.cs" />
+    <Compile Include="CardInfo.cs" />
     <Compile Include="CardFactory.cs" />
+    <Compile Include="Card.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="Effect.cs" />
     <Compile Include="Player.cs" />
