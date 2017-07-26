@@ -9,6 +9,12 @@ namespace WizardWars
         public Player PlayerTarget;
         public Card CardTarget;
 
+        private bool hasTarget;
+        private Card stagedCard;
+        private Effect currentEffect;
+        private Triggers currentTriggerType;
+        private int currentEffectIndex;
+
         public GameState()
         {
             PlayerOne = new Player();
@@ -18,6 +24,26 @@ namespace WizardWars
             PlayerTarget = PlayerOne;
         }
 
+        public bool StageCard(Player caster, Card card)
+        {
+            stagedCard = card;
+            hasTarget = false;
+
+            //Check costs of the card
+            if (caster.Mana >= card.Cost)
+            {
+                caster.Mana -= card.Cost;
+                PlayCard(caster, card);
+
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Not enough mana!");
+
+                return false;
+            }
+        }
         public void PlayCard(Player caster, Card card)
         {
             //Trigger cast effects
@@ -37,57 +63,109 @@ namespace WizardWars
             Console.WriteLine("Player 2: {0} - {1}", PlayerTwo.Health, PlayerTwo.Mana);
             Console.WriteLine();
         }
-        public bool StageCard(Player caster, Card card)
+        public void TriggerEffects(Player caster, Card card, Triggers triggerType)
         {
-            //Check costs of the card
-            if (caster.Mana >= card.Cost)
+            for (int i = 0; i < card.Effects.Length; i++)
             {
-                caster.Mana -= card.Cost;
-                PlayCard(caster, card);
+                Effect effect = card.Effects[i];
+                if (effect.Trigger == triggerType)
+                {
+                    currentEffect = effect;
 
-                return true;
+                    if (!requiresTarget(effect) || hasTarget)
+                        triggerEffect(caster, card, effect);
+                    else
+                    {
+                        currentEffectIndex = i;
+                        currentTriggerType = triggerType;
+
+                        //Highlight Targets
+                    }
+                }
+            }
+        }
+        public void TriggerEffects(Player caster, Card card, Triggers triggerType, int index)
+        {
+            for (int i = index; i < card.Effects.Length; i++)
+            {
+                Effect effect = card.Effects[i];
+                if (effect.Trigger == triggerType)
+                {
+                    currentEffect = effect;
+
+                    if (!requiresTarget(effect) || hasTarget)
+                        triggerEffect(caster, card, effect);
+                    else
+                    {
+                        currentEffectIndex = i;
+                        currentTriggerType = triggerType;
+
+                        //Highlight Targets
+                    }
+                }
+            }
+        }
+
+        public void SubmitTarget(Player caster, Card currentTarget)
+        {
+            if (isValidTarget(currentTarget, currentEffect))
+            {
+                hasTarget = true;
+                CardTarget = currentTarget;
+
+                TriggerEffects(caster, stagedCard, currentTriggerType, currentEffectIndex);
             }
             else
             {
-                Console.WriteLine("Not enough mana!");
-
-                return false;
+                Console.WriteLine("Invalid Target!");
             }
         }
-
-        public void TriggerEffects(Player caster, Card card, Triggers triggerType)
+        public bool SubmitTarget(Player caster, Player target)
         {
-            foreach (Effect effect in card.Effects)
-            {
-                if (effect.Trigger == triggerType)
-                {
-                    triggerEffect(caster, card, effect);
-                }
-            }
-        }
+            return true;
+        }    
 
+        private bool requiresTarget(Effect effect)
+        {
+            if (effect.ValidTargets[0] == Targets.Self && effect.ValidTargets.Length == 1)
+                return false;
+
+            return true;
+        }
         private void triggerEffect(Player caster, Card card, Effect effect)
         {
-            //Determine if it has targets
-            if (/*effect.ValidTargets[0] == Targets.Self*/true)
+            //Cast self spell (caster is target)
+            if (effect.Actions[0] == Actions.Draw)
             {
-                //Affects caster
-                if (effect.Actions[0] == Actions.Draw)
-                {
-                    int num = parseNumberVariable(caster, card, effect.Vars[0]);
-                    caster.DrawCards(num);
-                }
-                else if (effect.Actions[0] == Actions.Heal)
-                {
-                    int num = parseNumberVariable(caster, card, effect.Vars[0]);
-                    caster.Health += num;
-                }
-                else if (effect.Actions[0] == Actions.Damage)
-                {
-                    int num = parseNumberVariable(caster, card, effect.Vars[0]);
-                    caster.Health -= num;
-                }
+                int num = parseNumberVariable(caster, card, effect.Vars[0]);
+                caster.DrawCards(num);
             }
+            else if (effect.Actions[0] == Actions.Heal)
+            {
+                int num = parseNumberVariable(caster, card, effect.Vars[0]);
+                caster.Health += num;
+            }
+            else if (effect.Actions[0] == Actions.Damage)
+            {
+                int num = parseNumberVariable(caster, card, effect.Vars[0]);
+                caster.Health -= num;
+            }
+
+            hasTarget = false; //Reset for future effects
+        }
+        private void triggerTargetedEffect(Player caster, Card card, Effect effect, Card target)
+        {
+            if (effect.Actions[0] == Actions.Damage)
+            {
+                int num = parseNumberVariable(caster, card, effect.Vars[0]);
+                target.Defense -= num;
+            }
+
+            hasTarget = false; //Reset for future effects
+        }
+        private void triggerTargetedEffect(Player caster, Card card, Effect effect, Player target)
+        {
+            hasTarget = false; //Reset for future effects
         }
 
         private int parseNumberVariable(Player caster, Card card, object var)
@@ -129,6 +207,16 @@ namespace WizardWars
             }
 
             throw new ArgumentException(string.Format("Invalid syntax for variable: {0}", var));
+        }
+        private bool isValidTarget(Card currentTarget, Effect effect)
+        {
+            foreach (Targets validTarget in effect.ValidTargets)
+            {
+                if (validTarget == Targets.Creature && currentTarget.IsType(Types.Creature))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

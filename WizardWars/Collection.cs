@@ -118,6 +118,16 @@ namespace WizardWars
         {
             RawList = cards;
         }
+        public void Shuffle()
+        {
+            for (int i = Count - 1; i > 0; i--)
+            {
+                int n = RNG.Next(i + 1);
+                Card temp = this[n];
+                this[n] = this[i];
+                this[i] = temp;
+            }
+        }
         
         public IEnumerator<Card> GetEnumerator()
         {

@@ -39,6 +39,27 @@ namespace WizardWars
             Art.Dispose();
         }
 
+        public bool IsType(Types type)
+        {
+            foreach (Types cardType in Types)
+            {
+                if (type == cardType)
+                    return true;
+            }
+
+            return false;
+        }
+        public bool IsSubType(SubTypes subType)
+        {
+            foreach (SubTypes cardSubType in SubTypes)
+            {
+                if (subType == cardSubType)
+                    return true;
+            }
+
+            return false;
+        }
+
         public override string ToString()
         {
             return string.Format("{0} - {1}", Name, Cost);

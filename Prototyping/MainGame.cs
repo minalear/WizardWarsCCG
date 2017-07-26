@@ -49,6 +49,8 @@ namespace Prototyping
             gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
             gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
 
+            gameState.PlayerOne.Deck.Shuffle();
+
             gameState.PlayerOne.AllCards.AddCards(gameState.PlayerOne.Deck, Location.Top);
 
             gameState.PlayerOne.DrawCards(7);
