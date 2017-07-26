@@ -12,6 +12,16 @@ namespace WizardWars
 
         public object[] Vars;
 
+        public bool HasTarget(Targets target)
+        {
+            foreach (Targets test in ValidTargets)
+            {
+                if (target == test)
+                    return true;
+            }
+
+            return false;
+        }
         public override string ToString()
         {
             return Actions[0].ToString();

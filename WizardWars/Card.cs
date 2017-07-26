@@ -69,7 +69,8 @@ namespace WizardWars
     public enum Types
     {
         Spell,
-        Creature
+        Creature,
+        Hero
     }
     public enum SubTypes
     {

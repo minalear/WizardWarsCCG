@@ -43,18 +43,19 @@ namespace Prototyping
 
             reference = cardList[0];
 
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
-            gameState.PlayerOne.Deck.AddCards(cardList, Location.Random);
+            gameState.PlayerOne.Field.AddCard(cardList[0]);
 
-            gameState.PlayerOne.Deck.Shuffle();
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
+            gameState.PlayerOne.Deck.AddCards(cardList, Location.Top);
+
+            //gameState.PlayerOne.Deck.Shuffle();
 
             gameState.PlayerOne.AllCards.AddCards(gameState.PlayerOne.Deck, Location.Top);
 
             gameState.PlayerOne.DrawCards(7);
-            gameState.PlayerOne.Field.AddCard(gameState.PlayerOne.Deck.RemoveCard(Location.Top));
 
             renderer.SetGameState(gameState);
         }

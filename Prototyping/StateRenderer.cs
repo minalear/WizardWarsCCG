@@ -20,11 +20,12 @@ namespace Prototyping
         {
             this.game = game;
             game.Window.MouseUp += Window_MouseUp;
+            game.Window.KeyUp += Window_KeyUp;
 
             hand = new List<CardImage>();
             field = new List<CardImage>();
         }
-        
+
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             foreach (CardImage card in field)
@@ -70,57 +71,15 @@ namespace Prototyping
         }
         public void SetGameState(GameState state)
         {
+            if (gameState != null)
+                gameState.InvalidTarget -= GameState_InvalidTarget;
+
             gameState = state;
+            gameState.InvalidTarget += GameState_InvalidTarget;
+
             updateImageLists();
         }
 
-        private void Window_MouseUp(object sender, OpenTK.Input.MouseButtonEventArgs e)
-        {
-            Vector2 mousePos = new Vector2(e.X, e.Y);
-
-            if (e.Button == OpenTK.Input.MouseButton.Left)
-            {
-                for (int i = 0; i < hand.Count; i++)
-                {
-                    if (hand[i].Contains(mousePos))
-                    {
-                        Card card = gameState.PlayerOne.Hand.RemoveCard(i);
-                        if (!gameState.StageCard(gameState.PlayerOne, card))
-                        {
-                            gameState.PlayerOne.Hand.AddCard(card, i);
-                        }
-
-                        updateImageLists();
-                        return;
-                    }
-                }
-                foreach (CardImage card in field)
-                {
-                    card.Highlight = (card.Contains(mousePos) && !card.Highlight);
-                }
-            }
-            else if (e.Button == OpenTK.Input.MouseButton.Middle)
-            {
-                foreach (CardImage card in hand)
-                {
-                    if (card.Contains(mousePos))
-                    {
-                        zoomedCard = card;
-                        return;
-                    }
-                }
-                foreach (CardImage card in field)
-                {
-                    if (card.Contains(mousePos))
-                    {
-                        zoomedCard = card;
-                        return;
-                    }
-                }
-
-                zoomedCard = null;
-            }
-        }
         private void updateImageLists()
         {
             hand.Clear();
@@ -150,6 +109,79 @@ namespace Prototyping
 
                 field.Add(new CardImage(card, pos, new Vector2(width, height), new Vector2(0.25f)));
             }
+        }
+
+        private void Window_MouseUp(object sender, OpenTK.Input.MouseButtonEventArgs e)
+        {
+            Vector2 mousePos = new Vector2(e.X, e.Y);
+
+            //Left mouse press
+            if (e.Button == OpenTK.Input.MouseButton.Left)
+            {
+                for (int i = 0; i < hand.Count; i++)
+                {
+                    if (hand[i].Contains(mousePos))
+                    {
+                        Card card = gameState.PlayerOne.Hand.RemoveCard(i);
+                        if (!gameState.StageCard(gameState.PlayerOne, card))
+                        {
+                            gameState.PlayerOne.Hand.AddCard(card, i);
+                        }
+
+                        updateImageLists();
+                        return;
+                    }
+                }
+
+                //Canceling the spell, add it back to hand
+                if (gameState.IsCasting)
+                {
+                    gameState.PlayerOne.Hand.AddCard(gameState.StagedCard, Location.Top);
+                    gameState.CancelCard(gameState.PlayerOne);
+
+                    updateImageLists();
+                }
+            }
+            //Middle mouse press
+            else if (e.Button == OpenTK.Input.MouseButton.Middle)
+            {
+                foreach (CardImage card in hand)
+                {
+                    if (card.Contains(mousePos))
+                    {
+                        zoomedCard = card;
+                        return;
+                    }
+                }
+                foreach (CardImage card in field)
+                {
+                    if (card.Contains(mousePos))
+                    {
+                        zoomedCard = card;
+                        return;
+                    }
+                }
+
+                zoomedCard = null;
+                
+            }
+        }
+        private void Window_KeyUp(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
+        {
+            if (e.Key == OpenTK.Input.Key.P)
+            {
+                gameState.SubmitTarget(gameState.PlayerOne, new Target(gameState.PlayerOne, true));
+            }
+            else if (e.Key == OpenTK.Input.Key.C)
+            {
+                gameState.SubmitTarget(gameState.PlayerOne, new Target(gameState.PlayerOne.Field[0]));
+            }
+        }
+        private void GameState_InvalidTarget(object sender, System.EventArgs e)
+        {
+            //Add card back to our hand incase we select an invalid target
+            gameState.PlayerOne.Hand.AddCard(gameState.StagedCard, Location.Top);
+            updateImageLists();
         }
     }
 
