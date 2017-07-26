@@ -138,8 +138,6 @@ namespace Prototyping
                 {
                     gameState.PlayerOne.Hand.AddCard(gameState.StagedCard, Location.Top);
                     gameState.CancelCard(gameState.PlayerOne);
-
-                    updateImageLists();
                 }
             }
             //Middle mouse press
@@ -165,6 +163,8 @@ namespace Prototyping
                 zoomedCard = null;
                 
             }
+
+            updateImageLists();
         }
         private void Window_KeyUp(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
         {
@@ -176,6 +176,8 @@ namespace Prototyping
             {
                 gameState.SubmitTarget(gameState.PlayerOne, new Target(gameState.PlayerOne.Field[0]));
             }
+
+            updateImageLists();
         }
         private void GameState_InvalidTarget(object sender, System.EventArgs e)
         {

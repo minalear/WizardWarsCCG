@@ -24,5 +24,18 @@ namespace WizardWars
         {
             return (ID == other.ID);
         }
+
+        public void Damage(int damage)
+        {
+            Defense -= damage;
+        }
+        public void Destroy()
+        {
+            Defense = 0;
+        }
+        public bool IsDestroyed()
+        {
+            return (Defense <= 0);
+        }
     }
 }

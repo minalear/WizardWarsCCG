@@ -106,7 +106,7 @@ namespace WizardWars
                         stagedEffect = effect;
                         stagedEffectIndex = i;
 
-                        Console.WriteLine("Target required.");
+                        Console.WriteLine(effect.Prompt);
                         return;
                     }
                     else if (effect.Targeted && hasTarget)
@@ -175,14 +175,21 @@ namespace WizardWars
                 if (effect.Actions[0] == Actions.Damage)
                 {
                     int num = parseNumberVariable(caster, card, effect.Vars[0]);
-                    target.CardTarget.Meta.Defense -= num;
+                    target.CardTarget.Damage(num);
+
+                    //Check is dead and remove from battlefield
+                    if (target.CardTarget.IsDestroyed() && caster.Field.HasCardID(target.CardTarget.ID))
+                    {
+                        caster.Graveyard.AddCard(caster.Field.RemoveCardID(target.CardTarget.ID));
+                    }
                 }
                 else if (effect.Actions[0] == Actions.Destroy)
                 {
                     TriggerEffects(caster, target.CardTarget, Triggers.Death);
+                    target.CardTarget.Destroy();
 
                     //Check is dead and remove from battlefield
-                    if (caster.Field.HasCardID(target.CardTarget.ID))
+                    if (target.CardTarget.IsDestroyed() && caster.Field.HasCardID(target.CardTarget.ID))
                     {
                         caster.Graveyard.AddCard(caster.Field.RemoveCardID(target.CardTarget.ID));
                     }

@@ -36,10 +36,10 @@
 	[{
 		"trigger" : "cast",
 		"targeted" : true,
-		"prompt" : "Target player takes damage.",
+		"prompt" : "Target creature or player takes damage.",
 		"actions" : ["damage"],
 		"vars" : [3],
-		"validtargets" : ["player"]
+		"validtargets" : ["player", "creature"]
 	},
 	{
 		"trigger" : "cast",
