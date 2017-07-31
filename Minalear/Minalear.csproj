@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Game.cs" />
     <Compile Include="GameTime.cs" />
+    <Compile Include="GeoRenderer.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="TextureRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

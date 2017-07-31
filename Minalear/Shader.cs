@@ -11,6 +11,14 @@ namespace Minalear
         {
             shaderProgram = GL.CreateProgram();
         }
+        public Shader(string vertexPath, string fragPath)
+        {
+            shaderProgram = GL.CreateProgram();
+
+            LoadSource(ShaderType.VertexShader, System.IO.File.ReadAllText(vertexPath));
+            LoadSource(ShaderType.FragmentShader, System.IO.File.ReadAllText(fragPath));
+            LinkProgram();
+        }
 
         public void LoadSource(ShaderType type, string @source)
         {
