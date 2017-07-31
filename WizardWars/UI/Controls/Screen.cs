@@ -19,12 +19,7 @@ namespace WizardWars.UI.Controls
 
         public override void Draw(GameTime gameTime)
         {
-            renderer.Begin();
-            renderer.DrawRect(new Vector2(50, 50), new Vector2(120, 75), Color4.Red);
-
-            float r = (float)Math.Sqrt(60.0 * 60.0 + 37.5 * 37.5);
-            renderer.DrawCircle(new Vector2(110, 87.5f), r, 32, Color4.Blue);
-            renderer.End();
+            base.Draw(gameTime);
         }
     }
 }

@@ -32,6 +32,8 @@ namespace WizardWars.UI.Controls
         }
         public virtual void Draw(GameTime gameTime)
         {
+            Core.MainGame.GeoRenderer.DrawRect(Position, Size, OpenTK.Graphics.Color4.Blue);
+
             foreach (Control control in children)
                 control.Draw(gameTime);
         }
