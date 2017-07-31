@@ -26,7 +26,7 @@ namespace Prototyping
             field = new List<CardImage>();
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, TextureRenderer spriteBatch)
         {
             foreach (CardImage card in field)
             {

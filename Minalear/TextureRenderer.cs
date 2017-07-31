@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Minalear
 {
-    public class SpriteBatch : IDisposable
+    public class TextureRenderer : IDisposable
     {
         private int vao;
         private Shader shader;
@@ -15,7 +15,7 @@ namespace Minalear
         private int projLoc;
         private int colorLoc;
 
-        public SpriteBatch(Shader shader, int renderWidth, int renderHeight)
+        public TextureRenderer(Shader shader, int renderWidth, int renderHeight)
         {
             this.shader = shader;
 

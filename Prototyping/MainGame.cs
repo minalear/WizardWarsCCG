@@ -9,7 +9,7 @@ namespace Prototyping
 {
     public class MainGame : Game
     {
-        private SpriteBatch spriteBatch;
+        private TextureRenderer spriteBatch;
         private GameState gameState;
 
         private StateRenderer renderer;
@@ -28,7 +28,7 @@ namespace Prototyping
             shader.LoadSource(ShaderType.FragmentShader, System.IO.File.ReadAllText("Content/Shaders/fragment.glsl"));
             shader.LinkProgram();
 
-            spriteBatch = new SpriteBatch(shader, Window.Width, Window.Height);
+            spriteBatch = new TextureRenderer(shader, Window.Width, Window.Height);
 
             var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
             foreach (CardInfo card in cardList)
