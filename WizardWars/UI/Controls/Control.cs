@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTK;
+using OpenTK.Input;
 using Minalear;
 
 namespace WizardWars.UI.Controls
@@ -30,13 +31,15 @@ namespace WizardWars.UI.Controls
             foreach (Control control in children)
                 control.Update(gameTime);
         }
-        public virtual void Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime, TextureRenderer renderer)
         {
-            Core.MainGame.GeoRenderer.DrawRect(Position, Size, OpenTK.Graphics.Color4.Blue);
-
             foreach (Control control in children)
-                control.Draw(gameTime);
+                control.Draw(gameTime, renderer);
         }
+
+        public virtual void MouseMove(MouseMoveEventArgs e) { }
+        public virtual void MouseDown(MouseButtonEventArgs e) { }
+        public virtual void MouseUp(MouseButtonEventArgs e) { }
 
         //Position/Size Info
         public Vector2 Position { get { return position; } set { position = value; } }

@@ -13,7 +13,7 @@ namespace WizardWars
         public Collection Deck;
         public Collection Graveyard;
         public Collection Exile;
-        public Collection ManaPool;
+        public Collection Elysium;
         public Collection Field;
 
         public Player()
@@ -27,7 +27,7 @@ namespace WizardWars
             Deck = new Collection(this);
             Graveyard = new Collection(this);
             Exile = new Collection(this);
-            ManaPool = new Collection(this);
+            Elysium = new Collection(this);
             Field = new Collection(this);
         }
 

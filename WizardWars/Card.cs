@@ -1,4 +1,5 @@
 ﻿using System;
+using Minalear;
 
 namespace WizardWars
 {
@@ -7,6 +8,7 @@ namespace WizardWars
         private static int _nextValidID = 0;
 
         public int ID { get; private set; }
+        public Texture2D Art { get { return Meta.Art; } }
         public CardInfo Meta { get; private set; }
 
         public int Attack, Defense;
