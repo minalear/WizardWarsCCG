@@ -15,25 +15,19 @@ namespace WizardWars.UI.Controls
         public bool StackSimilar { get; set; }
         public int MaxStackCount { get; set; }
         public float DrawScale { get; set; }
-
-        private int highlightedIndex = -1;
-        private Vector2 mousePos;
         
         public CardGroup(Collection collection)
         {
             Collection = collection;
-            DrawScale = 1f;
+            DrawScale = 0.39f;
             StackSimilar = false;
             MaxStackCount = 3;
-        }
 
-        public override void Draw(GameTime gameTime, TextureRenderer renderer)
-        {
             float xPos = 0f;
-
             for (int i = 0; i < Collection.Count; i++)
             {
-                Card card = Collection[i];
+                Card card = collection[i];
+                Single single = new Single(card);
 
                 Vector2 pos = new Vector2(X + xPos, Y);
                 Vector2 scale = new Vector2(DrawScale);
@@ -41,33 +35,11 @@ namespace WizardWars.UI.Controls
                 xPos += CardbackArt.Width * DrawScale;
                 xPos += MIN_SPACING;
 
-                Color4 color = (i == highlightedIndex) ? Color4.Green : Color4.White;
-                renderer.Draw(card.Art, pos, scale, color);
+                single.Position = pos;
+                single.Scale = scale;
+
+                Children.Add(single);
             }
-        }
-
-        public override void MouseMove(MouseMoveEventArgs e)
-        {
-            float xPos = 0f;
-
-            for (int i = 0; i < Collection.Count; i++)
-            {
-                Card card = Collection[i];
-
-                Vector2 pos = new Vector2(X + xPos, Y);
-
-                if (e.X > pos.X && e.X < pos.X + CardbackArt.Width * DrawScale &&
-                    e.Y > pos.Y && e.Y < pos.Y + CardbackArt.Width * DrawScale)
-                {
-                    highlightedIndex = i;
-                    return;
-                }
-
-                xPos += CardbackArt.Width * DrawScale;
-                xPos += MIN_SPACING;
-            }
-
-            highlightedIndex = -1;
         }
 
         private const int MAX_SPACING = 26;

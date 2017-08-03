@@ -26,6 +26,11 @@ namespace WizardWars.UI.Controls
             children = new List<Control>();
         }
 
+        public bool Contains(Vector2 point)
+        {
+            return (point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom);
+        }
+
         public virtual void Update(GameTime gameTime)
         {
             foreach (Control control in children)
@@ -37,9 +42,35 @@ namespace WizardWars.UI.Controls
                 control.Draw(gameTime, renderer);
         }
 
-        public virtual void MouseMove(MouseMoveEventArgs e) { }
+        public virtual void MouseMove(MouseMoveEventArgs e)
+        {
+            //If the mouse cursor is over the control, check for it entering/leaving children
+            if (Hovered)
+            {
+                Vector2 mousePos = new Vector2(e.X, e.Y);
+                foreach (Control control in Children)
+                {
+                    bool contains = control.Contains(mousePos);
+                    if (contains && !control.Hovered)
+                    {
+                        control.Hovered = true;
+                        control.MouseEnter(e);
+                    }
+                    else if (!contains && control.Hovered)
+                    {
+                        control.Hovered = false;
+                        control.MouseLeave(e);
+                    }
+                }
+            }
+        }
         public virtual void MouseDown(MouseButtonEventArgs e) { }
         public virtual void MouseUp(MouseButtonEventArgs e) { }
+
+        public virtual void MouseEnter(MouseMoveEventArgs e) { }
+        public virtual void MouseLeave(MouseMoveEventArgs e) { }
+
+        public bool Hovered { get; protected set; }
 
         //Position/Size Info
         public Vector2 Position { get { return position; } set { position = value; } }

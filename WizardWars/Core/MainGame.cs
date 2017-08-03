@@ -14,15 +14,16 @@ namespace WizardWars.Core
 
         private GameState gameState;
 
+        private Screen screen;
         private CardGroup playerOneDeck;
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
         {
             gameState = new GameState();
 
-            Window.MouseMove += (sender, e) => playerOneDeck.MouseMove(e);
-            Window.MouseUp += (sender, e) => playerOneDeck.MouseUp(e);
-            Window.MouseDown += (sender, e) => playerOneDeck.MouseDown(e);
+            Window.MouseMove += (sender, e) => screen.MouseMove(e);
+            Window.MouseUp += (sender, e) => screen.MouseUp(e);
+            Window.MouseDown += (sender, e) => screen.MouseDown(e);
         }
 
         public override void LoadContent()
@@ -48,16 +49,20 @@ namespace WizardWars.Core
 
             gameState.PlayerOne.DrawCards(7);
 
+            screen = new Screen(this);
+
             playerOneDeck = new CardGroup(gameState.PlayerOne.Hand);
             playerOneDeck.DrawScale = 0.39f;
             playerOneDeck.Position = new Vector2(193, 555);
             playerOneDeck.Size = new Vector2(927, 150);
+
+            screen.Children.Add(playerOneDeck);
         }
 
         public override void Draw(GameTime gameTime)
         {
             renderer.Draw(playFieldTexture, Vector2.Zero, Vector2.One, Color4.White);
-            playerOneDeck.Draw(gameTime, renderer);
+            screen.Draw(gameTime, renderer);
         }
     }
 }

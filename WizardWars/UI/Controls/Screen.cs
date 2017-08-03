@@ -2,6 +2,7 @@
 using OpenTK;
 using OpenTK.Graphics;
 using Minalear;
+using OpenTK.Input;
 
 namespace WizardWars.UI.Controls
 {
@@ -20,6 +21,12 @@ namespace WizardWars.UI.Controls
         public override void Draw(GameTime gameTime, TextureRenderer renderer)
         {
             base.Draw(gameTime, renderer);
+        }
+
+        public override void MouseMove(MouseMoveEventArgs e)
+        {
+            Hovered = true;
+            base.MouseMove(e);
         }
     }
 }

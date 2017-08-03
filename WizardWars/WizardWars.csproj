@@ -65,6 +65,7 @@
     <Compile Include="UI\Controls\CardGroup.cs" />
     <Compile Include="UI\Controls\Control.cs" />
     <Compile Include="UI\Controls\Screen.cs" />
+    <Compile Include="UI\Controls\Single.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Minalear\Minalear.csproj">
