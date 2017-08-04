@@ -15,7 +15,7 @@ namespace WizardWars.Core
         private GameState gameState;
 
         private Screen screen;
-        private CardGroup playerOneHand, playerOneField;
+        private CardGroup playerOneField, playerOneElysium, playerOneHand;
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
         {
@@ -51,21 +51,33 @@ namespace WizardWars.Core
 
             screen = new Screen(this);
 
-            playerOneHand = new CardGroup(screen, gameState.PlayerOne.Hand);
-            playerOneHand.DrawScale = 0.39f;
-            playerOneHand.Position = new Vector2(193f, 555f);
-            playerOneHand.Size = new Vector2(927f, 150f);
+            playerOneField =   new CardGroup(screen, new Vector2(204, 348), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Field);
+            playerOneElysium = new CardGroup(screen, new Vector2(204, 472), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Elysium);
+            playerOneHand =    new CardGroup(screen, new Vector2(204, 596), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Hand);
 
             playerOneHand.CardSelected += (sender, e) =>
             {
-                playerOneHand.Collection.RemoveCardID(e.SelectedCard.ID);
-                gameState.PlayerOne.Field.AddCard(e.SelectedCard, Location.Bottom);
+                if (e.Button == MouseButton.Right)
+                {
+                    playerOneHand.Collection.RemoveCardID(e.SelectedCard.ID);
+                    gameState.PlayerOne.Elysium.AddCard(e.SelectedCard, Location.Bottom);
+                }
+                else
+                {
+                    if (gameState.StageCard(gameState.PlayerOne, e.SelectedCard))
+                    {
+                        playerOneHand.Collection.RemoveCardID(e.SelectedCard.ID);
+                    }
+                }
             };
 
-            playerOneField = new CardGroup(screen, gameState.PlayerOne.Field);
-            playerOneField.DrawScale = 0.45f;
-            playerOneField.Position = new Vector2(193f, 360f);
-            playerOneField.Size = new Vector2(927f, 190f);
+            playerOneField.CardSelected += (sender, e) =>
+            {
+                if (gameState.IsCasting)
+                {
+                    gameState.SubmitTarget(gameState.PlayerOne, new Target(e.SelectedCard, Target.Zones.Field));
+                }
+            };
         }
 
         public override void Draw(GameTime gameTime)
@@ -78,5 +90,7 @@ namespace WizardWars.Core
         {
             screen.Update(gameTime);
         }
+
+        public GameState GameState { get { return gameState; } }
     }
 }

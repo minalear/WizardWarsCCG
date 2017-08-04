@@ -283,12 +283,12 @@ namespace WizardWars
                     foreach (Card card in PlayerOne.Field)
                     {
                         if (card.Meta.IsType(Types.Creature))
-                            targets.Add(new Target(card));
+                            targets.Add(new Target(card, Target.Zones.Field));
                     }
                     foreach (Card card in PlayerTwo.Field)
                     {
                         if (card.Meta.IsType(Types.Creature))
-                            targets.Add(new Target(card));
+                            targets.Add(new Target(card, Target.Zones.Field));
                     }
                 }
                 else if (split[1] == "all" && split[2] == "OfType")
@@ -299,12 +299,12 @@ namespace WizardWars
                     foreach (Card card in PlayerOne.Field)
                     {
                         if (card.Meta.IsType(Types.Creature) && card.Meta.IsSubType(creatureType))
-                            targets.Add(new Target(card));
+                            targets.Add(new Target(card, Target.Zones.Field));
                     }
                     foreach (Card card in PlayerTwo.Field)
                     {
                         if (card.Meta.IsType(Types.Creature) && card.Meta.IsSubType(creatureType))
-                            targets.Add(new Target(card));
+                            targets.Add(new Target(card, Target.Zones.Field));
                     }
                 }
             }
@@ -322,8 +322,9 @@ namespace WizardWars
         public Player PlayerTarget;
 
         public Current CurrentMode = Current.Card;
+        public Zones CurrentZone = Zones.Field;
 
-        public Target(Card target)
+        public Target(Card target, Zones zone)
         {
             CardTarget = target;
             CurrentMode = Current.Card;
@@ -337,6 +338,10 @@ namespace WizardWars
         public enum Current
         {
             Opponent, Self, Card
+        }
+        public enum Zones
+        {
+            Hand, Elysium, Field, Deck, Graveyard
         }
     }
 }

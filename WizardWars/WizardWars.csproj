@@ -74,7 +74,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Art\Cardback.png">
+    <Content Include="Content\Art\cardback.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Art\grunka_lunkan.png">
@@ -86,7 +86,7 @@
     <Content Include="Content\Art\lightning_helix.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\Playfield.png">
+    <Content Include="Content\Art\playfield.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Art\wrath_of_god.png">

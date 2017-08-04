@@ -174,7 +174,7 @@ namespace Prototyping
             }
             else if (e.Key == OpenTK.Input.Key.C)
             {
-                gameState.SubmitTarget(gameState.PlayerOne, new Target(gameState.PlayerOne.Field[0]));
+                //gameState.SubmitTarget(gameState.PlayerOne, new Target(gameState.PlayerOne.Field[0]));
             }
 
             updateImageLists();

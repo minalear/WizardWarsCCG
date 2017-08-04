@@ -16,14 +16,16 @@ namespace WizardWars.UI.Controls
         public int MaxStackCount { get; set; }
         public float DrawScale { get; set; }
         
-        public CardGroup(Control parent, Collection collection)
+        public CardGroup(Control parent, Vector2 pos, Vector2 size, float cardScale, Collection collection)
             : base(parent)
         {
-            Collection = collection;
-            DrawScale = 0.39f;
+            Position = pos;
+            Size = size;
+            DrawScale = cardScale;
             StackSimilar = false;
             MaxStackCount = 3;
 
+            Collection = collection;
             UpdateList();
 
             Collection.CollectionChanged += Collection_CollectionChanged;
@@ -39,7 +41,7 @@ namespace WizardWars.UI.Controls
                 Card card = Collection[i];
                 Single single = new Single(this, card);
 
-                Vector2 pos = new Vector2(xPos, 0f);
+                Vector2 pos = new Vector2(xPos + 6f, 6f);
                 Vector2 scale = new Vector2(DrawScale);
 
                 xPos += CardbackArt.Width * DrawScale;
@@ -70,8 +72,6 @@ namespace WizardWars.UI.Controls
                 {
                     newCard.Hovered = true;
                     selectedCard = newCard;
-
-                    Console.WriteLine(selectedCard.Card.ToString());
                 }
                 else
                 {
@@ -83,7 +83,7 @@ namespace WizardWars.UI.Controls
         {
             if (selectedCard != null)
             {
-                CardSelected?.Invoke(this, new CardSelectionArgs(selectedCard.Card));
+                CardSelected?.Invoke(this, new CardSelectionArgs(selectedCard.Card, e.Button));
             }
 
             base.MouseUp(e);
@@ -100,7 +100,7 @@ namespace WizardWars.UI.Controls
         private Single selectedCard;
 
         private const int MAX_SPACING = 26;
-        private const int MIN_SPACING = -60;
+        private const int MIN_SPACING = -25;
         private const int STACK_SPACING = -95;
 
         public static Texture2D CardbackArt;
@@ -108,11 +108,13 @@ namespace WizardWars.UI.Controls
 
     public class CardSelectionArgs : EventArgs
     {
-        public CardSelectionArgs(Card card)
+        public CardSelectionArgs(Card card, MouseButton button)
         {
             SelectedCard = card;
+            Button = button;
         }
 
         public Card SelectedCard { get; private set; }
+        public MouseButton Button { get; private set; }
     }
 }

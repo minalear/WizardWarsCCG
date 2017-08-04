@@ -13,6 +13,7 @@ namespace WizardWars.UI.Controls
         public Screen(Game game)
             : base(Vector2.Zero, new Vector2(game.Window.Width, game.Window.Height))
         {
+            Game = game;
             renderer = new GeoRenderer(
                 new Shader("Content/Shaders/geo.vert", "Content/Shaders/geo.frag"),
                 game.Window.Width, game.Window.Height);
@@ -33,5 +34,7 @@ namespace WizardWars.UI.Controls
         {
             return this.relativePosition;
         }
+
+        public Game Game { get; private set; }
     }
 }

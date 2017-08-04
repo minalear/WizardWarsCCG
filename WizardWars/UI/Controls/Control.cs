@@ -18,6 +18,9 @@ namespace WizardWars.UI.Controls
             this.relativePosition = position;
             this.size = size;
 
+            Enabled = true;
+            Visible = true;
+
             children = new List<Control>();
         }
 
@@ -29,8 +32,13 @@ namespace WizardWars.UI.Controls
 
             children = new List<Control>();
 
+            Enabled = true;
+            Visible = true;
+
             this.parent = parent;
             this.parent.Children.Add(this);
+
+            Screen = getParentScreen();
         }
 
         public bool Contains(Vector2 point)
@@ -41,12 +49,18 @@ namespace WizardWars.UI.Controls
         public virtual void Update(GameTime gameTime)
         {
             foreach (Control control in children)
-                control.Update(gameTime);
+            {
+                if (control.Enabled)
+                    control.Update(gameTime);
+            }
         }
         public virtual void Draw(GameTime gameTime, TextureRenderer renderer)
         {
             foreach (Control control in children)
-                control.Draw(gameTime, renderer);
+            {
+                if (control.Visible)
+                    control.Draw(gameTime, renderer);
+            }
         }
 
         public virtual void MouseMove(MouseMoveEventArgs e)
@@ -56,30 +70,39 @@ namespace WizardWars.UI.Controls
             {
                 Control control = Children[i];
 
-                bool contains = control.Contains(mousePos);
-                if (contains && !control.Hovered)
+                if (control.Enabled)
                 {
-                    control.Hovered = true;
-                    control.MouseEnter(e);
-                }
-                else if (!contains && control.Hovered)
-                {
-                    control.Hovered = false;
-                    control.MouseLeave(e);
-                }
+                    bool contains = control.Contains(mousePos);
+                    if (contains && !control.Hovered)
+                    {
+                        control.Hovered = true;
+                        control.MouseEnter(e);
+                    }
+                    else if (!contains && control.Hovered)
+                    {
+                        control.Hovered = false;
+                        control.MouseLeave(e);
+                    }
 
-                control.MouseMove(e);
+                    control.MouseMove(e);
+                }
             }
         }
         public virtual void MouseDown(MouseButtonEventArgs e)
         {
             foreach (Control control in Children)
-                control.MouseDown(e);
+            {
+                if (control.Hovered && control.Enabled)
+                    control.MouseDown(e);
+            }
         }
         public virtual void MouseUp(MouseButtonEventArgs e)
         {
             foreach (Control control in Children)
-                control.MouseUp(e);
+            {
+                if (control.Hovered && control.Enabled)
+                    control.MouseUp(e);
+            }
         }
 
         public virtual void MouseEnter(MouseMoveEventArgs e) { }
@@ -89,9 +112,18 @@ namespace WizardWars.UI.Controls
         {
             return relativePosition + parent.Position;
         }
+        
+        private Screen getParentScreen()
+        {
+            if (this.GetType() == typeof(Screen)) return (Screen)this;
+            return Parent.getParentScreen();
+        }
 
+        public Screen Screen { get; private set; }
         public Control Parent { get { return parent; } protected set { parent = value; } }
         public bool Hovered { get; set; }
+        public bool Enabled { get; set; }
+        public bool Visible { get; set; }
 
         //Position/Size Info
         public Vector2 Position { get { return getAbsolutePosition(); } set { relativePosition = value; } }
