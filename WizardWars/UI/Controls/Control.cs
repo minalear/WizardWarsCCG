@@ -8,22 +8,29 @@ namespace WizardWars.UI.Controls
 {
     public class Control
     {
-        private Vector2 position, size;
-        private List<Control> children;
+        protected Vector2 relativePosition, size;
+        protected Control parent;
+        protected List<Control> children;
 
-        public Control()
-        {
-            position = Vector2.Zero;
-            size = Vector2.Zero;
-
-            children = new List<Control>();
-        }
+        public Control() : this(Vector2.Zero, Vector2.Zero) { }
         public Control(Vector2 position, Vector2 size)
         {
-            this.position = position;
+            this.relativePosition = position;
             this.size = size;
 
             children = new List<Control>();
+        }
+
+        public Control(Control parent) : this(parent, Vector2.Zero, Vector2.Zero) { }
+        public Control(Control parent, Vector2 position, Vector2 size)
+        {
+            this.relativePosition = position;
+            this.size = size;
+
+            children = new List<Control>();
+
+            this.parent = parent;
+            this.parent.Children.Add(this);
         }
 
         public bool Contains(Vector2 point)
@@ -44,46 +51,60 @@ namespace WizardWars.UI.Controls
 
         public virtual void MouseMove(MouseMoveEventArgs e)
         {
-            //If the mouse cursor is over the control, check for it entering/leaving children
-            if (Hovered)
+            Vector2 mousePos = new Vector2(e.X, e.Y);
+            for (int i = Children.Count - 1; i >= 0; i--)
             {
-                Vector2 mousePos = new Vector2(e.X, e.Y);
-                foreach (Control control in Children)
+                Control control = Children[i];
+
+                bool contains = control.Contains(mousePos);
+                if (contains && !control.Hovered)
                 {
-                    bool contains = control.Contains(mousePos);
-                    if (contains && !control.Hovered)
-                    {
-                        control.Hovered = true;
-                        control.MouseEnter(e);
-                    }
-                    else if (!contains && control.Hovered)
-                    {
-                        control.Hovered = false;
-                        control.MouseLeave(e);
-                    }
+                    control.Hovered = true;
+                    control.MouseEnter(e);
                 }
+                else if (!contains && control.Hovered)
+                {
+                    control.Hovered = false;
+                    control.MouseLeave(e);
+                }
+
+                control.MouseMove(e);
             }
         }
-        public virtual void MouseDown(MouseButtonEventArgs e) { }
-        public virtual void MouseUp(MouseButtonEventArgs e) { }
+        public virtual void MouseDown(MouseButtonEventArgs e)
+        {
+            foreach (Control control in Children)
+                control.MouseDown(e);
+        }
+        public virtual void MouseUp(MouseButtonEventArgs e)
+        {
+            foreach (Control control in Children)
+                control.MouseUp(e);
+        }
 
         public virtual void MouseEnter(MouseMoveEventArgs e) { }
         public virtual void MouseLeave(MouseMoveEventArgs e) { }
 
-        public bool Hovered { get; protected set; }
+        protected virtual Vector2 getAbsolutePosition()
+        {
+            return relativePosition + parent.Position;
+        }
+
+        public Control Parent { get { return parent; } protected set { parent = value; } }
+        public bool Hovered { get; set; }
 
         //Position/Size Info
-        public Vector2 Position { get { return position; } set { position = value; } }
+        public Vector2 Position { get { return getAbsolutePosition(); } set { relativePosition = value; } }
         public Vector2 Size { get { return size; } set { size = value; } }
-        public float X { get { return position.X; } set { position.X = value; } }
-        public float Y { get { return position.Y; } set { position.Y = value; } }
+        public float X { get { return getAbsolutePosition().X; } set { relativePosition.X = value; } }
+        public float Y { get { return getAbsolutePosition().Y; } set { relativePosition.Y = value; } }
         public float Width { get { return size.X; } set { size.X = value; } }
         public float Height { get { return size.Y; } set { size.Y = value; } }
 
-        public float Left { get { return position.X; } }
-        public float Top { get { return position.Y; } }
-        public float Right { get { return position.X + size.X; } }
-        public float Bottom { get { return position.Y + size.Y; } }
+        public float Left { get { return getAbsolutePosition().X; } }
+        public float Top { get { return getAbsolutePosition().Y; } }
+        public float Right { get { return getAbsolutePosition().X + size.X; } }
+        public float Bottom { get { return getAbsolutePosition().Y + size.Y; } }
 
         public List<Control> Children { get { return children; } }
     }

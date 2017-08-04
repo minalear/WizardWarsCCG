@@ -38,6 +38,7 @@ namespace WizardWars
         public void AddCard(Card card, int index)
         {
             RawList.Insert(index, card);
+            collectionChanged();
         }
         public void AddCards(IEnumerable<Card> cards, Location location)
         {
@@ -95,6 +96,8 @@ namespace WizardWars
                     Card card = RawList[i];
                     RawList.RemoveAt(i);
 
+                    collectionChanged();
+
                     return card;
                 }
             }
@@ -144,6 +147,7 @@ namespace WizardWars
         public void SetList(List<Card> cards)
         {
             RawList = cards;
+            collectionChanged();
         }
         public void Shuffle()
         {
@@ -154,6 +158,13 @@ namespace WizardWars
                 this[n] = this[i];
                 this[i] = temp;
             }
+
+            collectionChanged();
+        }
+
+        private void collectionChanged()
+        {
+            CollectionChanged?.Invoke(this, EventArgs.Empty);
         }
         
         public IEnumerator<Card> GetEnumerator()
@@ -164,6 +175,9 @@ namespace WizardWars
         {
             return ((IEnumerable<Card>)this.RawList).GetEnumerator();
         }
+
+        public delegate void CollectionChangeEvent(object sender, EventArgs e);
+        public event CollectionChangeEvent CollectionChanged;
 
         public Card this[int i]
         {

@@ -28,5 +28,10 @@ namespace WizardWars.UI.Controls
             Hovered = true;
             base.MouseMove(e);
         }
+
+        protected override Vector2 getAbsolutePosition()
+        {
+            return this.relativePosition;
+        }
     }
 }

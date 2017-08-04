@@ -39,5 +39,10 @@ namespace WizardWars
         {
             return (Defense <= 0);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", Meta.Name, ID);
+        }
     }
 }

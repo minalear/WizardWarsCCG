@@ -15,7 +15,7 @@ namespace WizardWars.Core
         private GameState gameState;
 
         private Screen screen;
-        private CardGroup playerOneDeck;
+        private CardGroup playerOneHand, playerOneField;
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
         {
@@ -51,18 +51,32 @@ namespace WizardWars.Core
 
             screen = new Screen(this);
 
-            playerOneDeck = new CardGroup(gameState.PlayerOne.Hand);
-            playerOneDeck.DrawScale = 0.39f;
-            playerOneDeck.Position = new Vector2(193, 555);
-            playerOneDeck.Size = new Vector2(927, 150);
+            playerOneHand = new CardGroup(screen, gameState.PlayerOne.Hand);
+            playerOneHand.DrawScale = 0.39f;
+            playerOneHand.Position = new Vector2(193f, 555f);
+            playerOneHand.Size = new Vector2(927f, 150f);
 
-            screen.Children.Add(playerOneDeck);
+            playerOneHand.CardSelected += (sender, e) =>
+            {
+                playerOneHand.Collection.RemoveCardID(e.SelectedCard.ID);
+                gameState.PlayerOne.Field.AddCard(e.SelectedCard, Location.Bottom);
+            };
+
+            playerOneField = new CardGroup(screen, gameState.PlayerOne.Field);
+            playerOneField.DrawScale = 0.45f;
+            playerOneField.Position = new Vector2(193f, 360f);
+            playerOneField.Size = new Vector2(927f, 190f);
         }
 
         public override void Draw(GameTime gameTime)
         {
             renderer.Draw(playFieldTexture, Vector2.Zero, Vector2.One, Color4.White);
             screen.Draw(gameTime, renderer);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            screen.Update(gameTime);
         }
     }
 }

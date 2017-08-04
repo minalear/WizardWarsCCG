@@ -16,6 +16,12 @@ namespace WizardWars.UI.Controls
             Card = card;
             Scale = Vector2.One;
         }
+        public Single(Control parent, Card card)
+            : base(parent)
+        {
+            Card = card;
+            Scale = Vector2.One;
+        }
 
         public override void Draw(GameTime gameTime, TextureRenderer renderer)
         {
