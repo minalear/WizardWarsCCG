@@ -16,6 +16,8 @@ namespace WizardWars
         public Collection Elysium;
         public Collection Field;
 
+        public bool CanDrawCards = true;
+
         public Player()
         {
             Health = 20;
@@ -33,7 +35,10 @@ namespace WizardWars
 
         public void DrawCards(int num)
         {
-            Hand.AddCards(Deck.RemoveCards(num, Location.Top), Location.Bottom);
+            if (CanDrawCards)
+            {
+                Hand.AddCards(Deck.RemoveCards(num, Location.Top), Location.Bottom);
+            }
         }
     }
 }
