@@ -46,6 +46,17 @@ namespace WizardWars.UI.Controls
             return (point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom);
         }
 
+        public virtual void LoadContent()
+        {
+            foreach (Control control in Children)
+                control.LoadContent();
+        }
+        public virtual void UnloadContent()
+        {
+            foreach (Control control in Children)
+                control.UnloadContent();
+        }
+
         public virtual void Update(GameTime gameTime)
         {
             foreach (Control control in children)

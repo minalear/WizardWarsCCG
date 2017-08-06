@@ -8,6 +8,9 @@ namespace WizardWars
         private static int _nextValidID = 0;
 
         public int ID { get; private set; }
+
+        public string Name { get { return Meta.Name; } }
+        public int Cost { get { return Meta.Cost; } }
         public Texture2D Art { get { return Meta.Art; } }
         public CardInfo Meta { get; private set; }
 

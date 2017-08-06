@@ -40,5 +40,9 @@ namespace WizardWars
                 Hand.AddCards(Deck.RemoveCards(num, Location.Top), Location.Bottom);
             }
         }
+        public virtual void PromptPlayer(string prompt) { }
+        public virtual void RequestMana(int cost) { }
+
+        public virtual void PromptResponseToCast(Card card) { }
     }
 }

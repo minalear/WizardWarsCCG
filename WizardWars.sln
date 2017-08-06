@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WizardWars", "WizardWars\WizardWars.csproj", "{BAAD02D2-B5AD-4041-8505-D60A3018C308}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prototyping", "Prototyping\Prototyping.csproj", "{1157396E-8EAB-410C-B5C7-6519A33946EE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minalear", "Minalear\Minalear.csproj", "{D3DD8EF1-10DD-4AF0-87B4-F1A2372F235B}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{BAAD02D2-B5AD-4041-8505-D60A3018C308}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAAD02D2-B5AD-4041-8505-D60A3018C308}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAAD02D2-B5AD-4041-8505-D60A3018C308}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1157396E-8EAB-410C-B5C7-6519A33946EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1157396E-8EAB-410C-B5C7-6519A33946EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1157396E-8EAB-410C-B5C7-6519A33946EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1157396E-8EAB-410C-B5C7-6519A33946EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3DD8EF1-10DD-4AF0-87B4-F1A2372F235B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3DD8EF1-10DD-4AF0-87B4-F1A2372F235B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3DD8EF1-10DD-4AF0-87B4-F1A2372F235B}.Release|Any CPU.ActiveCfg = Release|Any CPU

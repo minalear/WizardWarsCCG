@@ -10,6 +10,17 @@
 	"defense" : 1
 },
 {
+	"name" : "Spirit Grunk",
+	"imagepath" : "Content/Art/spirit_grunk.png",
+	"cost" : 1,
+	"types" : ["creature"],
+	"subtypes" : ["grunkan", "spirit"],
+	"rulestext" : "Passive (this creature cannot attack.)\nEternal - (t): Add (2) to your mana pool.",
+	"flavortext" : "The Grunka Lunkas don't worship gods.  They only revere their dead.",
+	"attack" : 1,
+	"defense" : 1
+},
+{
 	"name" : "Heal",
 	"imagepath" : "Content/Art/heal.png",
 	"cost" : 3,
@@ -18,8 +29,7 @@
 	"flavortext" : "Warriors may fall, but clerics are there to help.",
 	"effects" : 
 	[{
-		"trigger" : "cast",
-		"targeted" : false,
+		"triggers" : ["cast"],
 		"affects" : ["self"],
 		"actions" : ["heal"],
 		"vars" : [7]
@@ -34,16 +44,14 @@
 	"flavortext" : "Though less well-known than its army of soldiers, the Boros Legion's mage-priests are as repsected by the innocent as they are hated by the ghosts of the guilty.",
 	"effects" : 
 	[{
-		"trigger" : "cast",
-		"targeted" : true,
+		"triggers" : ["cast"],
 		"prompt" : "Target creature or player takes damage.",
 		"actions" : ["damage"],
 		"vars" : [3],
 		"validtargets" : ["player", "creature"]
 	},
 	{
-		"trigger" : "cast",
-		"targeted" : false,
+		"triggers" : ["cast"],
 		"affects" : ["self"],
 		"actions" : ["heal"],
 		"vars" : [3]
@@ -58,9 +66,42 @@
 	"flavortext" : "When the Material God descended from above, the beings below wept.",
 	"effects" :
 	[{
-		"trigger" : "cast",
-		"targeted" : false,
+		"triggers" : ["cast"],
 		"affects" : ["creatures.all"],
 		"actions" : ["destroy"]
+	}]
+},
+{
+	"name" : "Glorious Anthem",
+	"imagepath" : "Content/Art/glorious_anthem.png",
+	"cost" : 3,
+	"types" : ["relic"],
+	"rulestext" : "Creatures you control gain +1/+1.",
+	"flavortext" : "Once heard, the battle song of an angel becomes part of the listener forever.",
+	"effects" :
+	[{
+		"triggers" : ["static"],
+		"affects" : ["creatures.controlled"],
+		"actions" : ["buff.attack", "buff.defense"],
+		"vars" : [1, 1]
+	}]
+},
+{
+	"name" : "Orb of Confusion",
+	"imagepath" : "Content/Art/orb_of_confusion.png",
+	"cost" : 10,
+	"types" : ["relic"],
+	"rulestext" : "Players can't draw card.\n(3): Put a card from the top of your library and place it into your hand.",
+	"flavortext" : "The waves emitted from the orb could numb even the sharpest of minds.",
+	"effects" : 
+	[{
+		"triggers" : ["static"],
+		"affects" : ["players.all"],
+		"actions" : ["disable.carddraw"]
+	},
+	{
+		"trigger" : "use",
+		"actions" : ["draw.self"],
+		"cost" : 3
 	}]
 }]

@@ -57,10 +57,12 @@
     <Compile Include="Collection.cs" />
     <Compile Include="Effect.cs" />
     <Compile Include="Core\MainGame.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GameState.cs" />
+    <Compile Include="UI\Controls\TextBox.cs" />
+    <None Include="_GameState.cs" />
     <Compile Include="RNG.cs" />
     <Compile Include="UI\Controls\CardGroup.cs" />
     <Compile Include="UI\Controls\Control.cs" />
@@ -77,6 +79,9 @@
     <Content Include="Content\Art\cardback.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Art\glorious_anthem.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Art\grunka_lunkan.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -86,7 +91,13 @@
     <Content Include="Content\Art\lightning_helix.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Art\orb_of_confusion.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Art\playfield.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Art\spirit_grunk.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Art\wrath_of_god.png">

@@ -15,6 +15,7 @@ namespace WizardWars.Core
         private GameState gameState;
 
         private Screen screen;
+        private TextBox promptText;
         private CardGroup playerOneField, playerOneElysium, playerOneHand;
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
@@ -64,20 +65,31 @@ namespace WizardWars.Core
                 }
                 else
                 {
-                    if (gameState.StageCard(gameState.PlayerOne, e.SelectedCard))
+                    /*if (gameState.StageCard(gameState.PlayerOne, e.SelectedCard))
                     {
                         playerOneHand.Collection.RemoveCardID(e.SelectedCard.ID);
-                    }
+                    }*/
                 }
+
+                promptText.Text = e.SelectedCard.Name;
             };
 
             playerOneField.CardSelected += (sender, e) =>
             {
-                if (gameState.IsCasting)
+                /*if (gameState.IsCasting)
                 {
                     gameState.SubmitTarget(gameState.PlayerOne, new Target(e.SelectedCard, Target.Zones.Field));
-                }
+                }*/
             };
+
+            promptText = new TextBox(screen, "Test Text");
+            promptText.Position = new Vector2(209f, 254f);
+
+            screen.LoadContent();
+        }
+        public override void UnloadContent()
+        {
+            screen.UnloadContent();
         }
 
         public override void Draw(GameTime gameTime)

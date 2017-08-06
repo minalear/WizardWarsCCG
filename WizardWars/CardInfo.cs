@@ -68,13 +68,17 @@ namespace WizardWars
     {
         Spell,
         Creature,
-        Hero
+        Hero,
+        Relic,
+        Temple,
+        Interrupt
     }
     public enum SubTypes
     {
         //Races
         Human,
         Grunkan,
+        Spirit,
 
         //Roles
         Monk,
