@@ -17,6 +17,7 @@ namespace WizardWars
         public Collection Field;
 
         public bool CanDrawCards = true;
+        public bool HasPriority = false;
 
         public Player()
         {
@@ -41,8 +42,30 @@ namespace WizardWars
             }
         }
         public virtual void PromptPlayer(string prompt) { }
-        public virtual void RequestMana(int cost) { }
+        public virtual void RequestCastingCost(Card card, int cost)
+        {
+            PromptPayCastingCost?.Invoke(this, new CastingCostEventArgs(card, cost));
+        }
 
-        public virtual void PromptResponseToCast(Card card) { }
+        public virtual void PromptResponseToCast(Card card)
+        {
+
+        }
+
+
+        public event PromptPayCastingCostEvent PromptPayCastingCost;
+        public delegate void PromptPayCastingCostEvent(object sender, CastingCostEventArgs e);
+    }
+
+    public class CastingCostEventArgs : EventArgs
+    {
+        public CastingCostEventArgs(Card card, int cost)
+        {
+            Card = card;
+            Cost = cost;
+        }
+
+        public Card Card { get; private set; }
+        public int Cost { get; private set; }
     }
 }

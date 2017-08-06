@@ -26,7 +26,7 @@ namespace WizardWars
         public void StageCard(Card card)
         {
             StagedCard = card;
-            card.Owner.RequestMana(card.Cost);
+            card.Owner.RequestCastingCost(card, card.Cost);
         }
         public void CostPaid()
         {

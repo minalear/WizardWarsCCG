@@ -33,6 +33,7 @@ namespace WizardWars.Core
                 new Shader("Content/Shaders/tex.vert", "Content/Shaders/tex.frag"),
                 Window.Width, Window.Height);
 
+            #region Load Card Data
             playFieldTexture = Texture2D.LoadFromSource("Content/Art/Playfield.png");
             CardGroup.CardbackArt = Texture2D.LoadFromSource("Content/Art/Cardback.png");
 
@@ -47,6 +48,7 @@ namespace WizardWars.Core
                     gameState.PlayerOne.Deck.AddCard(instance, Location.Random);
                 }
             }
+            #endregion
 
             gameState.PlayerOne.DrawCards(7);
 
@@ -73,7 +75,6 @@ namespace WizardWars.Core
 
                 promptText.Text = e.SelectedCard.Name;
             };
-
             playerOneField.CardSelected += (sender, e) =>
             {
                 /*if (gameState.IsCasting)
