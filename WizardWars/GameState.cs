@@ -15,29 +15,31 @@ namespace WizardWars
 
         public GameState()
         {
-            PlayerOne = new Player();
-            PlayerTwo = new Player();
+            PlayerOne = new Player(this);
+            PlayerTwo = new Player(this);
 
             TurnOrder = new Player[]{ PlayerOne, PlayerTwo };
             turnCounter = 0;
             phaseCounter = 0;
         }
 
+        public bool CanCastCard(Player caster, Card card)
+        {
+            if (caster.HasPriority)
+            {
+                if (card.Meta.IsSubType(SubTypes.Interrupt))
+                    return true;
+                if (CurrentPhase == Phases.Main)
+                    return true;
+            }
+
+            return false;
+        }
         public void StageCard(Card card)
         {
             StagedCard = card;
             card.Owner.RequestCastingCost(card, card.Cost);
         }
-        public void CostPaid()
-        {
-
-        }
-
-        public void Continue()
-        {
-
-        }
-
         private int phaseCounter = 0;
         private int turnCounter = 0;
 

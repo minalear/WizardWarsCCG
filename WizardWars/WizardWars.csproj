@@ -61,6 +61,7 @@
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Controls\Button.cs" />
     <Compile Include="UI\Controls\TextBox.cs" />
     <None Include="_GameState.cs" />
     <Compile Include="RNG.cs" />

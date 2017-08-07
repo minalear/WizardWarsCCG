@@ -70,6 +70,19 @@ namespace Minalear
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
             GL.BindVertexArray(0);
         }
+        public void Draw(Texture2D texture, Vector2 position, Vector2 scale, float rotation, Color4 color)
+        {
+            shader.UseProgram();
+            Vector2 center = new Vector2((texture.Width * scale.X) / 2, (texture.Height * scale.Y) / 2);
+            setUniforms(position, rotation, center, new Vector2(texture.Width * scale.X, texture.Height * scale.Y), color);
+
+            GL.ActiveTexture(TextureUnit.Texture0);
+            texture.Bind();
+
+            GL.BindVertexArray(vao);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+            GL.BindVertexArray(0);
+        }
 
         private void setUniforms(Vector2 position, float rotation, Vector2 origin, Vector2 size, Color4 color)
         {
@@ -78,6 +91,7 @@ namespace Minalear
                 Matrix4.CreateScale(size.X, size.Y, 0f) *
                 Matrix4.CreateTranslation(-origin.X, -origin.Y, 0f) *
                 Matrix4.CreateRotationZ(rotation) *
+                Matrix4.CreateTranslation(origin.X, origin.Y, 0f) *
                 Matrix4.CreateTranslation(position.X, position.Y, 0f);
             GL.UniformMatrix4(modelLoc, false, ref model);
 

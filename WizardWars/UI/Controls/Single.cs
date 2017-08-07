@@ -26,7 +26,9 @@ namespace WizardWars.UI.Controls
         public override void Draw(GameTime gameTime, TextureRenderer renderer)
         {
             Color4 color = (Hovered) ? Color4.Green : Color4.White;
-            renderer.Draw(Card.Art, Position, Scale, color);
+
+            float rotation = (Card.Tapped) ? 1.571f : 0f;
+            renderer.Draw(Card.Art, Position, Scale, rotation, color);
         }
 
         public void SetScale(Vector2 value)

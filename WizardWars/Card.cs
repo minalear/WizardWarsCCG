@@ -13,6 +13,7 @@ namespace WizardWars
         public int Cost { get { return Meta.Cost; } }
         public Texture2D Art { get { return Meta.Art; } }
         public CardInfo Meta { get; private set; }
+        public bool Tapped { get; set; }
 
         public int Attack, Defense;
         public Player Owner, Controller;

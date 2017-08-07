@@ -62,18 +62,12 @@ namespace WizardWars.Core
             {
                 if (e.Button == MouseButton.Right)
                 {
-                    playerOneHand.Collection.RemoveCardID(e.SelectedCard.ID);
-                    gameState.PlayerOne.Elysium.AddCard(e.SelectedCard, Location.Bottom);
+                    gameState.PlayerOne.Elysium.AddCard(gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID));
                 }
-                else
+                else if (gameState.CanCastCard(gameState.PlayerOne, e.SelectedCard))
                 {
-                    /*if (gameState.StageCard(gameState.PlayerOne, e.SelectedCard))
-                    {
-                        playerOneHand.Collection.RemoveCardID(e.SelectedCard.ID);
-                    }*/
+                    gameState.StageCard(e.SelectedCard);
                 }
-
-                promptText.Text = e.SelectedCard.Name;
             };
             playerOneField.CardSelected += (sender, e) =>
             {
@@ -81,6 +75,15 @@ namespace WizardWars.Core
                 {
                     gameState.SubmitTarget(gameState.PlayerOne, new Target(e.SelectedCard, Target.Zones.Field));
                 }*/
+            };
+            playerOneElysium.CardSelected += (sender, e) =>
+            {
+                e.SelectedCard.Tapped = !e.SelectedCard.Tapped;
+            };
+
+            gameState.PlayerOne.PromptPayCastingCost += (sender, e) =>
+            {
+                promptText.SetText(string.Format("Pay ({0}) to cast {1}.", e.Cost, e.Card));
             };
 
             promptText = new TextBox(screen, "Test Text");

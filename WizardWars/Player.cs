@@ -4,6 +4,8 @@ namespace WizardWars
 {
     public class Player
     {
+        public GameState GameState;
+
         public int Health;
         public int Mana;
 
@@ -19,10 +21,12 @@ namespace WizardWars
         public bool CanDrawCards = true;
         public bool HasPriority = false;
 
-        public Player()
+        public Player(GameState gameState)
         {
+            GameState = gameState;
+
             Health = 20;
-            Mana = 100;
+            Mana = 0;
 
             AllCards = new Collection(this);
 
@@ -40,6 +44,11 @@ namespace WizardWars
             {
                 Hand.AddCards(Deck.RemoveCards(num, Location.Top), Location.Bottom);
             }
+        }
+
+        public virtual void GivePriority()
+        {
+            
         }
         public virtual void PromptPlayer(string prompt) { }
         public virtual void RequestCastingCost(Card card, int cost)

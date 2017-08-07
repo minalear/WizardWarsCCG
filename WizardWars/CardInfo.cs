@@ -70,11 +70,12 @@ namespace WizardWars
         Creature,
         Hero,
         Relic,
-        Temple,
-        Interrupt
+        Temple
     }
     public enum SubTypes
     {
+        Interrupt,
+
         //Races
         Human,
         Grunkan,
