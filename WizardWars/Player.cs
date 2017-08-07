@@ -52,7 +52,11 @@ namespace WizardWars
 
         public virtual void PromptPlayerStateAction(StateAction action)
         {
-
+            //PRETEND THIS IS AI PASSING
+            if (ID == 1) //PlayerTwo ID
+            {
+                GameState.PassPriority();
+            }
         }
 
         public override string ToString()

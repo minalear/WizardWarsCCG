@@ -62,6 +62,7 @@ namespace WizardWars
             if (CurrentAction != null)
             {
                 CurrentAction.Resolve(this);
+                CurrentAction = null;
             }
 
             //If there are state actions to process
@@ -96,6 +97,11 @@ namespace WizardWars
             {
                 CurrentPriority.PromptPlayerStateAction(CurrentAction);
             }
+        }
+
+        public bool HasPriority(Player player)
+        {
+            return (CurrentPriority.ID == player.ID);
         }
 
         private void swampTurns()

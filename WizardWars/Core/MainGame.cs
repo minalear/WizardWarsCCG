@@ -16,6 +16,7 @@ namespace WizardWars.Core
 
         private Screen screen;
         private TextBox promptText;
+        private Button continueButton;
         private CardGroup playerOneField, playerOneElysium, playerOneHand;
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
@@ -73,6 +74,18 @@ namespace WizardWars.Core
 
             promptText = new TextBox(screen, "Test Text");
             promptText.Position = new Vector2(209f, 254f);
+
+            continueButton = new Button(screen, "OK");
+            continueButton.Position = new Vector2(83, 550);
+
+            continueButton.Click += (sender, e) =>
+            {
+                if (gameState.HasPriority(gameState.PlayerOne))
+                {
+                    gameState.PassPriority();
+                    promptText.Text = string.Format("Phase: {0}", gameState.CurrentPhase);
+                }
+            };
 
             screen.LoadContent();
 

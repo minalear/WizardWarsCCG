@@ -47,6 +47,9 @@ namespace WizardWars.UI.Controls
             Size size = calculateTextSize();
             Bitmap bmp = new Bitmap(size.Width, size.Height);
             Graphics graphics = Graphics.FromImage(bmp);
+            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+            this.Size = new Vector2(size.Width, size.Height);
 
             graphics.Clear(Color.Transparent);
             graphics.DrawString(text, font, Brushes.Black, 0f, 0f);
