@@ -82,6 +82,7 @@ namespace WizardWars.Core
             {
                 if (gameState.HasPriority(gameState.PlayerOne))
                 {
+                    Console.WriteLine("Player #{0}: Passing on Action ({1})", gameState.PlayerOne.ID + 1, gameState.CurrentAction);
                     gameState.PassPriority();
                     promptText.Text = string.Format("Phase: {0}", gameState.CurrentPhase);
                 }

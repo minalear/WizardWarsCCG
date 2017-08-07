@@ -55,6 +55,7 @@ namespace WizardWars
             //PRETEND THIS IS AI PASSING
             if (ID == 1) //PlayerTwo ID
             {
+                Console.WriteLine("Player #{0}: Passing on Action ({1})", ID + 1, action);
                 GameState.PassPriority();
             }
         }
