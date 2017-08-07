@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Minalear;
 using OpenTK;
 using OpenTK.Input;
@@ -26,7 +26,7 @@ namespace WizardWars.Core
             Window.MouseUp += (sender, e) => screen.MouseUp(e);
             Window.MouseDown += (sender, e) => screen.MouseDown(e);
         }
-
+        
         public override void LoadContent()
         {
             renderer = new TextureRenderer(
@@ -45,12 +45,12 @@ namespace WizardWars.Core
                 for (int i = 0; i < 8; i++)
                 {
                     Card instance = new Card(card);
+                    instance.Owner = gameState.PlayerOne;
+                    instance.Controller = gameState.PlayerOne;
                     gameState.PlayerOne.Deck.AddCard(instance, Location.Random);
                 }
             }
             #endregion
-
-            gameState.PlayerOne.DrawCards(7);
 
             screen = new Screen(this);
 
@@ -60,48 +60,34 @@ namespace WizardWars.Core
 
             playerOneHand.CardSelected += (sender, e) =>
             {
-                if (e.Button == MouseButton.Right)
-                {
-                    gameState.PlayerOne.Elysium.AddCard(gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID));
-                }
-                else if (gameState.CanCastCard(gameState.PlayerOne, e.SelectedCard))
-                {
-                    gameState.StageCard(e.SelectedCard);
-                }
+
             };
             playerOneField.CardSelected += (sender, e) =>
             {
-                /*if (gameState.IsCasting)
-                {
-                    gameState.SubmitTarget(gameState.PlayerOne, new Target(e.SelectedCard, Target.Zones.Field));
-                }*/
+
             };
             playerOneElysium.CardSelected += (sender, e) =>
             {
-                e.SelectedCard.Tapped = !e.SelectedCard.Tapped;
-            };
 
-            gameState.PlayerOne.PromptPayCastingCost += (sender, e) =>
-            {
-                promptText.SetText(string.Format("Pay ({0}) to cast {1}.", e.Cost, e.Card));
             };
 
             promptText = new TextBox(screen, "Test Text");
             promptText.Position = new Vector2(209f, 254f);
 
             screen.LoadContent();
+
+            gameState.StartGame();
         }
+
         public override void UnloadContent()
         {
             screen.UnloadContent();
         }
-
         public override void Draw(GameTime gameTime)
         {
             renderer.Draw(playFieldTexture, Vector2.Zero, Vector2.One, Color4.White);
             screen.Draw(gameTime, renderer);
         }
-
         public override void Update(GameTime gameTime)
         {
             screen.Update(gameTime);
