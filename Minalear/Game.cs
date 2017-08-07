@@ -9,7 +9,9 @@ namespace Minalear
     {
         private GameTime gameTime;
 
+        public Color4 ClearColor { get; set; }
         public GameWindow Window { get; private set; }
+        public bool UpdateBackground { get; set; }
 
         public Game(int width, int height, string title)
         {
@@ -17,6 +19,9 @@ namespace Minalear
             Window.UpdateFrame += (sender, e) => updateFrame(e);
             Window.RenderFrame += (sender, e) => renderFrame(e);
             Window.Resize += (sender, e) => Resize();
+
+            ClearColor = Color4.Black;
+            UpdateBackground = true;
 
             //Enable Alpha blending
             GL.Enable(EnableCap.Blend);
@@ -34,7 +39,7 @@ namespace Minalear
         }
         public void Resize()
         {
-            GL.ClearColor(Color4.Black);
+            GL.ClearColor(ClearColor);
             GL.Viewport(0, 0, Window.Width, Window.Height);
         }
 
@@ -52,7 +57,7 @@ namespace Minalear
 
         protected virtual void updateFrame(FrameEventArgs e)
         {
-            if (Window.Focused)
+            if (Window.Focused || UpdateBackground)
             {
                 gameTime.ElapsedTime = TimeSpan.FromSeconds(e.Time);
                 gameTime.TotalTime.Add(gameTime.ElapsedTime);
@@ -62,6 +67,7 @@ namespace Minalear
         }
         protected virtual void renderFrame(FrameEventArgs e)
         {
+            GL.ClearColor(ClearColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Draw(gameTime);
