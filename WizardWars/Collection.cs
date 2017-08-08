@@ -11,6 +11,10 @@ namespace WizardWars
 
         private List<Card> RawList;
 
+        public Collection()
+        {
+            RawList = new List<Card>();
+        }
         public Collection(Player owner)
         {
             Owner = owner;

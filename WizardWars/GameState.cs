@@ -15,6 +15,8 @@ namespace WizardWars
         public int PriorityCounter;
         public int PhaseCounter;
 
+        public Collection AllCards;
+
         public Player CurrentPriority { get { return TurnOrder[PriorityCounter]; } }
         public Player CurrentTurn { get { return TurnOrder[0]; } }
         public Phases CurrentPhase { get { return PhaseSequence[PhaseCounter]; } }
@@ -25,6 +27,8 @@ namespace WizardWars
             PlayerTwo = new Player(this);
 
             GameStack = new Stack<StateAction>();
+
+            AllCards = new Collection();
 
             TurnOrder = new List<Player>() { PlayerOne, PlayerTwo };
             PhaseSequence = new List<Phases>() { Phases.Upkeep, Phases.Draw, Phases.Main, Phases.Battle, Phases.Main, Phases.Cleanup };
@@ -79,7 +83,7 @@ namespace WizardWars
                 if (PhaseCounter >= PhaseSequence.Count)
                 {
                     PhaseCounter = 0;
-                    swampTurns();
+                    swapTurns();
                 }
 
                 AddStateAction(new PhaseAction(PhaseSequence[PhaseCounter]));
@@ -120,8 +124,15 @@ namespace WizardWars
             //Check if the current Phase is Main and that it is their turn
             return (CurrentTurn.ID == caster.ID && CurrentPhase == Phases.Main);
         }
+        public void ResolveCardActions(Player caster, Card card)
+        {
+            if (card.Meta.IsType(Types.Creature))
+            {
+                caster.Field.AddCard(card);
+            }
+        }
 
-        private void swampTurns()
+        private void swapTurns()
         {
             //This shifts the whole list over one and adds the original first to the end
             //Provides multiplayer support
@@ -151,6 +162,10 @@ namespace WizardWars
             Args = args;
         }
 
+        public override void Resolve(GameState gameState)
+        {
+            gameState.ResolveCardActions(Caster, Card);
+        }
         public override string ToString()
         {
             return string.Format("Player #{0} cast card ({1})", Caster.ID + 1, Card.ToString());

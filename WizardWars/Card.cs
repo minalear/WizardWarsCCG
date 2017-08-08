@@ -14,6 +14,7 @@ namespace WizardWars
         public Texture2D Art { get { return Meta.Art; } }
         public CardInfo Meta { get; private set; }
         public bool Tapped { get; set; }
+        public bool Highlighted { get; set; }
 
         public int Attack, Defense;
         public Player Owner, Controller;

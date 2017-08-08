@@ -21,8 +21,6 @@ namespace WizardWars.Core
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
         {
-            gameState = new GameState();
-
             Window.WindowBorder = WindowBorder.Fixed;
 
             Window.MouseMove += (sender, e) => screen.MouseMove(e);
@@ -32,6 +30,8 @@ namespace WizardWars.Core
         
         public override void LoadContent()
         {
+            gameState = new GameState();
+
             renderer = new TextureRenderer(
                 new Shader("Content/Shaders/tex.vert", "Content/Shaders/tex.frag"),
                 Window.Width, Window.Height);
@@ -51,6 +51,8 @@ namespace WizardWars.Core
                     instance.Owner = gameState.PlayerOne;
                     instance.Controller = gameState.PlayerOne;
                     gameState.PlayerOne.Deck.AddCard(instance, Location.Random);
+
+                    gameState.AllCards.AddCard(instance, Location.Bottom);
                 }
             }
             #endregion
@@ -65,6 +67,7 @@ namespace WizardWars.Core
             {
                 if (gameState.CanCastCard(gameState.PlayerOne, e.SelectedCard))
                 {
+                    gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID);
                     gameState.AddStateAction(new CardCastAction(e.SelectedCard, gameState.PlayerOne));
                 }
             };
