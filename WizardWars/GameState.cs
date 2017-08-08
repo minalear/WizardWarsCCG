@@ -10,6 +10,7 @@ namespace WizardWars
         public List<Player> TurnOrder;
         public List<Phases> PhaseSequence;
         public Stack<StateAction> GameStack;
+        public Stack<EffectAction> TargetedEffects; //Used for determining targets for multiple effects
         public StateAction CurrentAction;
 
         public int PriorityCounter;
@@ -27,6 +28,7 @@ namespace WizardWars
             PlayerTwo = new Player(this);
 
             GameStack = new Stack<StateAction>();
+            TargetedEffects = new Stack<EffectAction>();
 
             AllCards = new Collection();
 
@@ -43,11 +45,13 @@ namespace WizardWars
             PlayerTwo.DrawCards(7);
 
             AddStateAction(new PhaseAction(PhaseSequence[PhaseCounter]));
+            ContinueGame();
         }
 
         public void AddStateAction(StateAction action)
         {
             PriorityCounter = 0;
+            action.Init(this);
 
             //True if a player is reacting to a state action
             if (CurrentAction != null)
@@ -58,35 +62,37 @@ namespace WizardWars
             }
 
             GameStack.Push(action);
-            ContinueGame();
         }
         public void ContinueGame()
         {
             //Resolve action since all players have passed
-            if (CurrentAction != null)
+            if (CurrentAction != null && TargetedEffects.Count == 0)
             {
                 CurrentAction.Resolve(this);
                 CurrentAction = null;
             }
 
-            //If there are state actions to process
-            if (GameStack.Count > 0)
+            if (TargetedEffects.Count == 0)
             {
-                CurrentAction = GameStack.Pop();
-                PriorityCounter = -1; //Pass Priority will set this to 0
-                PassPriority();
-            }
-            //Progress phases/turn
-            else
-            {
-                PhaseCounter++;
-                if (PhaseCounter >= PhaseSequence.Count)
+                //If there are state actions to process
+                if (GameStack.Count > 0)
                 {
-                    PhaseCounter = 0;
-                    swapTurns();
+                    CurrentAction = GameStack.Pop();
+                    SetPriority(0); //Reset priority to 0
                 }
+                //Progress phases/turn
+                else
+                {
+                    PhaseCounter++;
+                    if (PhaseCounter >= PhaseSequence.Count)
+                    {
+                        PhaseCounter = 0;
+                        swapTurns();
+                    }
 
-                AddStateAction(new PhaseAction(PhaseSequence[PhaseCounter]));
+                    AddStateAction(new PhaseAction(PhaseSequence[PhaseCounter]));
+                    ContinueGame();
+                }
             }
         }
         public void PassPriority()
@@ -98,6 +104,14 @@ namespace WizardWars
                 ContinueGame();
             }
             else if (CurrentAction != null)
+            {
+                CurrentPriority.PromptPlayerStateAction(CurrentAction);
+            }
+        }
+        public void SetPriority(int index)
+        {
+            PriorityCounter = index;
+            if (CurrentAction != null)
             {
                 CurrentPriority.PromptPlayerStateAction(CurrentAction);
             }
@@ -124,12 +138,50 @@ namespace WizardWars
             //Check if the current Phase is Main and that it is their turn
             return (CurrentTurn.ID == caster.ID && CurrentPhase == Phases.Main);
         }
-        public void ResolveCardActions(Player caster, Card card)
+        public void ResolveCardCastAction(Player caster, Card card)
         {
+            //Trigger self-cast effects
+            foreach (Effect effect in card.Meta.Effects)
+            {
+                if (effect.HasTrigger("cast"))
+                {
+                    AddStateAction(new EffectAction(card, caster, effect));
+                }
+            }
+
+            //Add creatures to the battlefield and trigger ETB effects
             if (card.Meta.IsType(Types.Creature))
             {
                 caster.Field.AddCard(card);
+                foreach (Effect effect in card.Meta.Effects)
+                {
+                    if (effect.HasTrigger("enterbattlefield"))
+                    {
+                        AddStateAction(new EffectAction(card, caster, effect));
+                    }
+                }
             }
+
+            ContinueGame();
+        }
+        public void ResolveEffectAction(Player caster, Card card, Effect effect)
+        {
+
+        }
+
+        public void HighlightValidTargets(Effect effect)
+        {
+            clearHighlights();
+
+            foreach (string targetType in effect.ValidTargets)
+            {
+                string[] tokens = targetType.Split('.');
+            }
+        }
+        public void SetTargets(params Card[] cards)
+        {
+            TargetedEffects.Pop().Targets = cards;
+            ContinueGame();
         }
 
         private void swapTurns()
@@ -140,10 +192,16 @@ namespace WizardWars
             TurnOrder.RemoveAt(0);
             TurnOrder.Add(first);
         }
+        private void clearHighlights()
+        {
+            foreach (Card card in AllCards)
+                card.Highlighted = false;
+        }
     }
 
     public class StateAction
     {
+        public virtual void Init(GameState gameState) { }
         public virtual void Resolve(GameState gameState)
         {
             Console.WriteLine("({0}) action resolves.", ToString());
@@ -164,11 +222,35 @@ namespace WizardWars
 
         public override void Resolve(GameState gameState)
         {
-            gameState.ResolveCardActions(Caster, Card);
+            gameState.ResolveCardCastAction(Caster, Card);
         }
         public override string ToString()
         {
             return string.Format("Player #{0} cast card ({1})", Caster.ID + 1, Card.ToString());
+        }
+    }
+    public class EffectAction : StateAction
+    {
+        public Card Card { get; set; }
+        public Player Caster { get; set; }
+        public Effect Effect { get; set; }
+        public Card[] Targets { get; set; }
+
+        public EffectAction(Card card, Player caster, Effect effect)
+        {
+            Card = card;
+            Caster = caster;
+            Effect = effect;
+        }
+
+        public override void Init(GameState gameState)
+        {
+            if (Effect.RequiresTarget())
+                gameState.TargetedEffects.Push(this);
+        }
+        public override string ToString()
+        {
+            return string.Format("Player #{0}'s card ({1}) effect: {2}", Caster.ID + 1, Card, Effect);
         }
     }
     public class PhaseAction : StateAction
@@ -180,6 +262,11 @@ namespace WizardWars
             Phase = phase;
         }
 
+        public override void Resolve(GameState gameState)
+        {
+            if (Phase == Phases.Draw)
+                gameState.CurrentTurn.DrawCards(1);
+        }
         public override string ToString()
         {
             return Phase.ToString();

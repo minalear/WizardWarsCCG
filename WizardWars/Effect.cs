@@ -12,5 +12,23 @@ namespace WizardWars
         public string[] Affects;
         public object Cost;
         public string[] Actions;
+
+        public bool HasTrigger(string trigger)
+        {
+            foreach (string t in Triggers)
+            {
+                if (t == trigger) return true;
+            }
+            return false;
+        }
+        public bool RequiresTarget()
+        {
+            return (ValidTargets != null);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Action: ({0})", Actions[0]);
+        }
     }
 }

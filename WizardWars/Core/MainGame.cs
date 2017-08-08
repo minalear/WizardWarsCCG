@@ -13,6 +13,7 @@ namespace WizardWars.Core
         private Texture2D playFieldTexture;
 
         private GameState gameState;
+        private AI gameAI;
 
         private Screen screen;
         private TextBox promptText;
@@ -31,6 +32,7 @@ namespace WizardWars.Core
         public override void LoadContent()
         {
             gameState = new GameState();
+            gameAI = new AI(gameState.PlayerTwo);
 
             renderer = new TextureRenderer(
                 new Shader("Content/Shaders/tex.vert", "Content/Shaders/tex.frag"),
@@ -45,7 +47,7 @@ namespace WizardWars.Core
             {
                 card.LoadCardArt();
 
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     Card instance = new Card(card);
                     instance.Owner = gameState.PlayerOne;
@@ -69,6 +71,7 @@ namespace WizardWars.Core
                 {
                     gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID);
                     gameState.AddStateAction(new CardCastAction(e.SelectedCard, gameState.PlayerOne));
+                    gameState.ContinueGame();
                 }
             };
             playerOneField.CardSelected += (sender, e) =>
@@ -113,6 +116,7 @@ namespace WizardWars.Core
         public override void Update(GameTime gameTime)
         {
             screen.Update(gameTime);
+            gameAI.Update();
         }
 
         public GameState GameState { get { return gameState; } }

@@ -55,6 +55,7 @@
     <Compile Include="CardFactory.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="Collection.cs" />
+    <Compile Include="Core\AI.cs" />
     <Compile Include="Effect.cs" />
     <Compile Include="Core\MainGame.cs" />
     <Compile Include="GameState.cs" />

@@ -53,14 +53,16 @@ namespace WizardWars
         public virtual void PromptPlayerStateAction(StateAction action)
         {
             //PRETEND THIS IS AI PASSING
-            if (ID == 1) //PlayerTwo ID
-            {
-                Console.WriteLine("Player #{0}: Passing on Action ({1})", ID + 1, action);
-                GameState.PassPriority();
-            }
-            else
+            if (ID != 1) //PlayerTwo ID
             {
                 Console.WriteLine("Current Stack: {0}", action);
+            }
+        }
+        public virtual void PromptPlayerTargetRequired(EffectAction action)
+        {
+            if (ID != 1)
+            {
+                Console.WriteLine("Select target for {0}", action);
             }
         }
 
