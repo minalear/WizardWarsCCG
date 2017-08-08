@@ -23,6 +23,8 @@ namespace WizardWars.Core
         {
             gameState = new GameState();
 
+            Window.WindowBorder = WindowBorder.Fixed;
+
             Window.MouseMove += (sender, e) => screen.MouseMove(e);
             Window.MouseUp += (sender, e) => screen.MouseUp(e);
             Window.MouseDown += (sender, e) => screen.MouseDown(e);
@@ -61,7 +63,10 @@ namespace WizardWars.Core
 
             playerOneHand.CardSelected += (sender, e) =>
             {
-
+                if (gameState.CanCastCard(gameState.PlayerOne, e.SelectedCard))
+                {
+                    gameState.AddStateAction(new CardCastAction(e.SelectedCard, gameState.PlayerOne));
+                }
             };
             playerOneField.CardSelected += (sender, e) =>
             {

@@ -58,6 +58,10 @@ namespace WizardWars
                 Console.WriteLine("Player #{0}: Passing on Action ({1})", ID + 1, action);
                 GameState.PassPriority();
             }
+            else
+            {
+                Console.WriteLine("Current Stack: {0}", action);
+            }
         }
 
         public override string ToString()

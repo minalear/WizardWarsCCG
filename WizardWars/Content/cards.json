@@ -104,4 +104,19 @@
 		"actions" : ["draw.self"],
 		"cost" : 3
 	}]
+},
+{
+	"name" : "Counter-Song",
+	"imagepath" : "Content/Art/counter_song.png",
+	"cost" : 2,
+	"types" : ["spell"],
+	"subtypes" : ["interrupt"],
+	"rulestext" : "Counter target spell.  (Creatures and Relics are not considered spells.)",
+	"flavortext" : "The bard's words echoed out, confusing the lich lord in the word's absurdity.  The spell was lost.",
+	"effects" :
+	[{
+		"triggers" : ["cast"],
+		"affects" : ["spell.last"],
+		"actions" : ["counter"]
+	}]
 }]

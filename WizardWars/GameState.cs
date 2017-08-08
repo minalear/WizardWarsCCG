@@ -103,6 +103,23 @@ namespace WizardWars
         {
             return (CurrentPriority.ID == player.ID);
         }
+        public bool CanCastCard(Player caster, Card card)
+        {
+            //Players can only cast spells if they have priority
+            if (!HasPriority(caster))
+                return false;
+
+            //Players can cast Interrupt cards anytime they have priority
+            if (card.Meta.IsSubType(SubTypes.Interrupt))
+                return true;
+
+            //If the card is not a interrupt card, they cannot cast it unless the only thing left on the stack is the PhaseAction
+            if (CurrentAction != null && CurrentAction.GetType() != typeof(PhaseAction))
+                return false;
+
+            //Check if the current Phase is Main and that it is their turn
+            return (CurrentTurn.ID == caster.ID && CurrentPhase == Phases.Main);
+        }
 
         private void swampTurns()
         {
@@ -116,7 +133,10 @@ namespace WizardWars
 
     public class StateAction
     {
-        public virtual void Resolve(GameState gameState) { }
+        public virtual void Resolve(GameState gameState)
+        {
+            Console.WriteLine("({0}) action resolves.", ToString());
+        }
     }
     public class CardCastAction : StateAction
     {
@@ -133,7 +153,7 @@ namespace WizardWars
 
         public override string ToString()
         {
-            return string.Format("Player #{0} cast Card {1}", Caster.ID + 1, Card.Name);
+            return string.Format("Player #{0} cast card ({1})", Caster.ID + 1, Card.ToString());
         }
     }
     public class PhaseAction : StateAction
