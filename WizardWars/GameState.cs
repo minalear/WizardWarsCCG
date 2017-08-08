@@ -68,44 +68,43 @@ namespace WizardWars
             //Resolve action since all players have passed
             if (CurrentAction != null && TargetedEffects.Count == 0)
             {
-                CurrentAction.Resolve(this);
+                StateAction currentAction = CurrentAction;
                 CurrentAction = null;
+
+                currentAction.Resolve(this);
             }
 
-            if (TargetedEffects.Count == 0)
+            //If there are state actions to process
+            if (GameStack.Count > 0 && TargetedEffects.Count == 0)
             {
-                //If there are state actions to process
-                if (GameStack.Count > 0)
-                {
-                    CurrentAction = GameStack.Pop();
-                    SetPriority(0); //Reset priority to 0
-                }
-                //Progress phases/turn
-                else
-                {
-                    PhaseCounter++;
-                    if (PhaseCounter >= PhaseSequence.Count)
-                    {
-                        PhaseCounter = 0;
-                        swapTurns();
-                    }
-
-                    AddStateAction(new PhaseAction(PhaseSequence[PhaseCounter]));
-                    ContinueGame();
-                }
+                CurrentAction = GameStack.Pop();
+                SetPriority(0); //Reset priority to 0
+            }
+            else if (TargetedEffects.Count > 0)
+            {
+                HighlightValidTargets(TargetedEffects.Peek().Effect);
+                TargetedEffects.Peek().Caster.PromptPlayerTargetRequired(TargetedEffects.Peek());
             }
         }
         public void PassPriority()
         {
-            PriorityCounter++;
-            if (PriorityCounter >= TurnOrder.Count)
+            if (TargetedEffects.Count > 0)
             {
-                PriorityCounter = 0;
-                ContinueGame();
+                HighlightValidTargets(TargetedEffects.Peek().Effect);
+                TargetedEffects.Peek().Caster.PromptPlayerTargetRequired(TargetedEffects.Peek());
             }
-            else if (CurrentAction != null)
+            else
             {
-                CurrentPriority.PromptPlayerStateAction(CurrentAction);
+                PriorityCounter++;
+                if (PriorityCounter >= TurnOrder.Count)
+                {
+                    PriorityCounter = 0;
+                    ContinueGame();
+                }
+                else if (CurrentAction != null)
+                {
+                    CurrentPriority.PromptPlayerStateAction(CurrentAction);
+                }
             }
         }
         public void SetPriority(int index)
@@ -161,18 +160,28 @@ namespace WizardWars
                     }
                 }
             }
-
-            ContinueGame();
         }
         public void ResolveEffectAction(Player caster, Card card, Effect effect)
         {
 
+        }
+        public void ResolvePhase(Phases phase)
+        {
+            PhaseCounter++;
+            if (PhaseCounter >= PhaseSequence.Count)
+            {
+                PhaseCounter = 0;
+                swapTurns();
+            }
+
+            AddStateAction(new PhaseAction(PhaseSequence[PhaseCounter]));
         }
 
         public void HighlightValidTargets(Effect effect)
         {
             clearHighlights();
 
+            //Assuming PlayerOne for testing
             foreach (string targetType in effect.ValidTargets)
             {
                 string[] tokens = targetType.Split('.');
@@ -262,10 +271,14 @@ namespace WizardWars
             Phase = phase;
         }
 
-        public override void Resolve(GameState gameState)
+        public override void Init(GameState gameState)
         {
             if (Phase == Phases.Draw)
                 gameState.CurrentTurn.DrawCards(1);
+        }
+        public override void Resolve(GameState gameState)
+        {
+            gameState.ResolvePhase(Phase);
         }
         public override string ToString()
         {

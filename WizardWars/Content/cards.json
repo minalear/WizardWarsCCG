@@ -30,7 +30,7 @@
 	"effects" : 
 	[{
 		"triggers" : ["cast"],
-		"affects" : ["self"],
+		"affects" : ["player.self"],
 		"actions" : ["heal"],
 		"vars" : [7]
 	}]
@@ -48,11 +48,11 @@
 		"prompt" : "Target creature or player takes damage.",
 		"actions" : ["damage"],
 		"vars" : [3],
-		"validtargets" : ["player", "creature"]
+		"validtargets" : ["player.any", "creature.any"]
 	},
 	{
 		"triggers" : ["cast"],
-		"affects" : ["self"],
+		"affects" : ["player.self"],
 		"actions" : ["heal"],
 		"vars" : [3]
 	}]
