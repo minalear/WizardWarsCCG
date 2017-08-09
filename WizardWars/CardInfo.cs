@@ -1,4 +1,5 @@
-﻿using Minalear;
+﻿using System;
+using Minalear;
 
 namespace WizardWars
 {
@@ -20,6 +21,7 @@ namespace WizardWars
         public Effect[] Effects;
 
         public Texture2D Art;
+        public bool ArtLoaded { get; private set; }
 
         public CardInfo()
         {
@@ -30,11 +32,19 @@ namespace WizardWars
 
         public void LoadCardArt()
         {
-            Art = Texture2D.LoadFromSource(ImagePath);
+            if (!ArtLoaded)
+            {
+                Art = Texture2D.LoadFromSource(ImagePath);
+                ArtLoaded = true;
+            }
         }
         public void UnloadCardArt()
         {
-            Art.Dispose();
+            if (ArtLoaded)
+            {
+                Art.Dispose();
+                ArtLoaded = false;
+            }
         }
 
         public bool IsType(Types type)
@@ -56,6 +66,15 @@ namespace WizardWars
             }
 
             return false;
+        }
+
+        public bool IsCreatureType(string literal)
+        {
+            if (!IsType(WizardWars.Types.Creature)) return false;
+            if (literal == "any") return true;
+            if (literal == "nonhero") return !IsType(WizardWars.Types.Hero);
+
+            return IsSubType((SubTypes)Enum.Parse(typeof(SubTypes), literal, true));
         }
 
         public override string ToString()

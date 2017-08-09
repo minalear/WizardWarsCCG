@@ -7,22 +7,26 @@ namespace WizardWars
 {
     public class Collection : IEnumerable<Card>
     {
+        public string Name;
         public Player Owner;
         public int Count { get { return RawList.Count; } }
 
         private List<Card> RawList;
 
-        public Collection()
+        public Collection(string name)
         {
+            Name = name;
             RawList = new List<Card>();
         }
-        public Collection(Player owner)
+        public Collection(string name, Player owner)
         {
+            Name = name;
             Owner = owner;
             RawList = new List<Card>();
         }
-        public Collection(Player owner, List<Card> cards)
+        public Collection(string name, Player owner, List<Card> cards)
         {
+            Name = name;
             Owner = owner;
             SetList(cards);
         }
@@ -42,6 +46,7 @@ namespace WizardWars
         }
         public void AddCard(Card card, int index)
         {
+            card.Zone = this;
             RawList.Insert(index, card);
             collectionChanged();
         }
@@ -192,7 +197,7 @@ namespace WizardWars
 
         public override string ToString()
         {
-            return string.Format("Count: {0}", RawList.Count);
+            return string.Format("{0} - #{1}", Name, RawList.Count);
         }
     }
 

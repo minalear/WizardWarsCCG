@@ -16,6 +16,8 @@ namespace WizardWars
         public bool Tapped { get; set; }
         public bool Highlighted { get; set; }
 
+        public Collection Zone { get; set; }
+
         public int Attack, Defense;
         public Player Owner, Controller;
 
@@ -32,9 +34,14 @@ namespace WizardWars
             return (ID == other.ID);
         }
 
-        public void Damage(int damage)
+        public void Damage(int amount)
         {
-            Defense -= damage;
+            Defense -= amount;
+        }
+        public void Heal(int amount)
+        {
+            //Can't heal more than max defense
+            Defense = OpenTK.MathHelper.Clamp(Defense + amount, Defense + amount, Meta.Defense);
         }
         public void Destroy()
         {

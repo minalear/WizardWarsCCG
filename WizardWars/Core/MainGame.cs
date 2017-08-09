@@ -37,27 +37,15 @@ namespace WizardWars.Core
             renderer = new TextureRenderer(
                 new Shader("Content/Shaders/tex.vert", "Content/Shaders/tex.frag"),
                 Window.Width, Window.Height);
-
-            #region Load Card Data
+            
             playFieldTexture = Texture2D.LoadFromSource("Content/Art/Playfield.png");
             CardGroup.CardbackArt = Texture2D.LoadFromSource("Content/Art/Cardback.png");
 
             var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
-            foreach (var card in cardList)
-            {
-                card.LoadCardArt();
+            var deckList = CardFactory.LoadDeckFile(gameState.PlayerOne, "Content/Decks/test_deck.dek", cardList);
 
-                for (int i = 0; i < 2; i++)
-                {
-                    Card instance = new Card(card);
-                    instance.Owner = gameState.PlayerOne;
-                    instance.Controller = gameState.PlayerOne;
-                    gameState.PlayerOne.Deck.AddCard(instance, Location.Random);
-
-                    gameState.AllCards.AddCard(instance, Location.Bottom);
-                }
-            }
-            #endregion
+            gameState.AllCards.AddRange(deckList);
+            gameState.PlayerOne.Deck.AddCards(deckList, Location.Random);
 
             screen = new Screen(this);
 
@@ -76,7 +64,10 @@ namespace WizardWars.Core
             };
             playerOneField.CardSelected += (sender, e) =>
             {
-
+                if (gameState.RequiresTarget && e.SelectedCard.Highlighted)
+                {
+                    gameState.SubmitTargets(e.SelectedCard);
+                }
             };
             playerOneElysium.CardSelected += (sender, e) =>
             {
@@ -107,6 +98,7 @@ namespace WizardWars.Core
         public override void UnloadContent()
         {
             screen.UnloadContent();
+            playFieldTexture.Dispose();
         }
         public override void Draw(GameTime gameTime)
         {

@@ -31,14 +31,12 @@ namespace WizardWars
             Health = 20;
             Mana = 0;
 
-            AllCards = new Collection(this);
-
-            Hand = new Collection(this);
-            Deck = new Collection(this);
-            Graveyard = new Collection(this);
-            Exile = new Collection(this);
-            Elysium = new Collection(this);
-            Field = new Collection(this);
+            Hand = new Collection("Hand", this);
+            Deck = new Collection("Deck", this);
+            Graveyard = new Collection("Graveyard", this);
+            Exile = new Collection("Exile", this);
+            Elysium = new Collection("Elysium", this);
+            Field = new Collection("Battlefield", this);
         }
 
         public void DrawCards(int num)
@@ -46,7 +44,11 @@ namespace WizardWars
             if (CanDrawCards)
             {
                 if (Deck.Count > 0)
+                {
+                    //TODO: Check for invalid number of cards
+                    num = OpenTK.MathHelper.Clamp(num, 0, Deck.Count);
                     Hand.AddCards(Deck.RemoveCards(num, Location.Top), Location.Bottom);
+                }
             }
         }
 
