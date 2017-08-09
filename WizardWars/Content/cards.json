@@ -120,7 +120,8 @@
 	},
 	{
 		"triggers" : ["activated"],
-		"actions" : ["draw.self"],
+		"affects" : ["player.self"],
+		"actions" : ["draw"],
 		"cost" : 3
 	}]
 },
@@ -137,5 +138,21 @@
 		"triggers" : ["cast"],
 		"affects" : ["spell.last"],
 		"actions" : ["counter"]
+	}]
+},
+{
+	"name" : "Cantrip",
+	"imagepath" : "Content/Art/cantrip.png",
+	"cost" : 1,
+	"types" : ["spell"],
+	"subtypes" : ["interrupt"],
+	"rulestext" : "Draw a card.",
+	"flavortext" : "Even the most powerful mages still recall their first spell.",
+	"effects" : 
+	[{
+		"triggers" : ["cast"],
+		"affects" : ["player.self"],
+		"actions" : ["draw"],
+		"vars" : [1]
 	}]
 }]

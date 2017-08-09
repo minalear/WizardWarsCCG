@@ -252,6 +252,15 @@ namespace WizardWars
                 {
 
                 }
+                else if (tokens[0] == "draw")
+                {
+                    int num = parseNumberVariable(caster, card, action, effect.Vars[i]);
+                    /*if (tokens[1] == "self" || tokens[1] == "all")
+                        PlayerOne.DrawCards(num);
+                    if (tokens[1] == "opponent" || tokens[1] == "all")
+                        PlayerTwo.DrawCards(num);*/
+                    caster.DrawCards(num);
+                }
                 #endregion
             }
         }
@@ -327,6 +336,8 @@ namespace WizardWars
             Player first = TurnOrder[0];
             TurnOrder.RemoveAt(0);
             TurnOrder.Add(first);
+
+            SetPriority(0);
         }
         private void clearHighlights()
         {
@@ -497,6 +508,11 @@ namespace WizardWars
         {
             if (Phase == Phases.Draw)
                 gameState.CurrentTurn.DrawCards(1);
+            else if (Phase == Phases.Upkeep)
+            {
+                foreach (Card card in gameState.CurrentTurn.Field)
+                    card.Tapped = false;
+            }
         }
         public override void Resolve(GameState gameState)
         {

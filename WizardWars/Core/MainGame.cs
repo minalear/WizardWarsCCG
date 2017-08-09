@@ -56,7 +56,11 @@ namespace WizardWars.Core
                 }
                 else if (gameState.CurrentPhase == Phases.DeclareAttack)
                 {
-
+                    if (e.SelectedCard.Meta.IsType(Types.Creature))
+                    {
+                        e.SelectedCard.Tapped = !e.SelectedCard.Tapped;
+                        e.SelectedCard.Attacking = e.SelectedCard.Tapped;
+                    }
                 }
             };
             playerOneElysium.CardSelected += (sender, e) =>
