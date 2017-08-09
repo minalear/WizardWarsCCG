@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WizardWars
+namespace Minalear
 {
     public static class RNG
     {

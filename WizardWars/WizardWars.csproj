@@ -65,7 +65,6 @@
     <Compile Include="UI\Controls\Button.cs" />
     <Compile Include="UI\Controls\TextBox.cs" />
     <None Include="_GameState.cs" />
-    <Compile Include="RNG.cs" />
     <Compile Include="UI\Controls\CardGroup.cs" />
     <Compile Include="UI\Controls\Control.cs" />
     <Compile Include="UI\Controls\Screen.cs" />
