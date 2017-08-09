@@ -15,6 +15,8 @@ namespace Minalear
         private int projLoc;
         private int colorLoc;
 
+        public Shader Shader { get { return shader; } }
+
         public TextureRenderer(Shader shader, int renderWidth, int renderHeight)
         {
             this.shader = shader;
