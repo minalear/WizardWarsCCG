@@ -34,7 +34,10 @@ namespace WizardWars
             AllCards = new List<Card>();
 
             TurnOrder = new List<Player>() { PlayerOne, PlayerTwo };
-            PhaseSequence = new List<Phases>() { Phases.Upkeep, Phases.Draw, Phases.Main, Phases.Battle, Phases.Main, Phases.Cleanup };
+            PhaseSequence = new List<Phases>() {
+                Phases.Upkeep, Phases.Draw, Phases.Main,
+                Phases.DeclareAttack, Phases.DeclareBlock, Phases.Combat,
+                Phases.Main, Phases.Cleanup };
         }
 
         public void StartGame()
@@ -46,6 +49,7 @@ namespace WizardWars
             PlayerTwo.DrawCards(7);
 
             AddStateAction(new PhaseAction(PhaseSequence[PhaseCounter]));
+            PhaseChange?.Invoke(this, CurrentPhase);
             ContinueGame();
         }
 
@@ -149,8 +153,8 @@ namespace WizardWars
                 }
             }
 
-            //Add creatures to the battlefield and trigger ETB effects
-            if (card.Meta.IsType(Types.Creature))
+            //Add creatures/relics to the battlefield and trigger ETB effects
+            if (card.Meta.IsType(Types.Creature) || card.Meta.IsType(Types.Relic))
             {
                 caster.Field.AddCard(card);
                 foreach (Effect effect in card.Meta.Effects)
@@ -253,6 +257,7 @@ namespace WizardWars
         }
         public void ResolvePhase(Phases phase)
         {
+            //Increment phase counter and change turns if it surpasses Cleanup
             PhaseCounter++;
             if (PhaseCounter >= PhaseSequence.Count)
             {
@@ -260,7 +265,9 @@ namespace WizardWars
                 swapTurns();
             }
 
-            AddStateAction(new PhaseAction(PhaseSequence[PhaseCounter]));
+            //Add the new phase to the stack and trigger PhaseChange
+            AddStateAction(new PhaseAction(CurrentPhase));
+            PhaseChange?.Invoke(this, CurrentPhase);
         }
 
         public void HighlightValidTargets(Effect effect)
@@ -414,6 +421,9 @@ namespace WizardWars
 
             return targets;
         }
+
+        public event PhaseChangeEvent PhaseChange;
+        public delegate void PhaseChangeEvent(object sender, Phases phase);
     }
 
     public class StateAction
@@ -498,5 +508,5 @@ namespace WizardWars
         }
     }
 
-    public enum Phases { Upkeep, Draw, Main, Battle, Cleanup }
+    public enum Phases { Upkeep, Draw, Main, DeclareAttack, DeclareBlock, Combat, Cleanup }
 }

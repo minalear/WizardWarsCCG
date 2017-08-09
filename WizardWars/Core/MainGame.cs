@@ -28,30 +28,16 @@ namespace WizardWars.Core
             Window.MouseUp += (sender, e) => screen.MouseUp(e);
             Window.MouseDown += (sender, e) => screen.MouseDown(e);
         }
-        
-        public override void LoadContent()
+
+        public override void Initialize()
         {
             gameState = new GameState();
             gameAI = new AI(gameState.PlayerTwo);
-
-            renderer = new TextureRenderer(
-                new Shader("Content/Shaders/tex.vert", "Content/Shaders/tex.frag"),
-                Window.Width, Window.Height);
-            
-            playFieldTexture = Texture2D.LoadFromSource("Content/Art/Playfield.png");
-            CardGroup.CardbackArt = Texture2D.LoadFromSource("Content/Art/Cardback.png");
-
-            var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
-            var deckList = CardFactory.LoadDeckFile(gameState.PlayerOne, "Content/Decks/test_deck.dek", cardList);
-
-            gameState.AllCards.AddRange(deckList);
-            gameState.PlayerOne.Deck.AddCards(deckList, Location.Random);
-
             screen = new Screen(this);
 
-            playerOneField =   new CardGroup(screen, new Vector2(204, 348), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Field);
+            playerOneField = new CardGroup(screen, new Vector2(204, 348), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Field);
             playerOneElysium = new CardGroup(screen, new Vector2(204, 472), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Elysium);
-            playerOneHand =    new CardGroup(screen, new Vector2(204, 596), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Hand);
+            playerOneHand = new CardGroup(screen, new Vector2(204, 596), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Hand);
 
             playerOneHand.CardSelected += (sender, e) =>
             {
@@ -68,6 +54,10 @@ namespace WizardWars.Core
                 {
                     gameState.SubmitTargets(e.SelectedCard);
                 }
+                else if (gameState.CurrentPhase == Phases.DeclareAttack)
+                {
+
+                }
             };
             playerOneElysium.CardSelected += (sender, e) =>
             {
@@ -76,6 +66,11 @@ namespace WizardWars.Core
 
             promptText = new TextBox(screen, "Test Text");
             promptText.Position = new Vector2(209f, 254f);
+
+            gameState.PhaseChange += (sender, e) =>
+            {
+                promptText.Text = string.Format("Phase: {0}", e);
+            };
 
             continueButton = new Button(screen, "OK");
             continueButton.Position = new Vector2(83, 550);
@@ -86,15 +81,29 @@ namespace WizardWars.Core
                 {
                     Console.WriteLine("Player #{0}: Passing on Action ({1})", gameState.PlayerOne.ID + 1, gameState.CurrentAction);
                     gameState.PassPriority();
-                    promptText.Text = string.Format("Phase: {0}", gameState.CurrentPhase);
                 }
             };
+        }
+        public override void LoadContent()
+        {
+            renderer = new TextureRenderer(
+                new Shader("Content/Shaders/tex.vert", "Content/Shaders/tex.frag"),
+                Window.Width, Window.Height);
+            
+            playFieldTexture = Texture2D.LoadFromSource("Content/Art/Playfield.png");
+            CardGroup.CardbackArt = Texture2D.LoadFromSource("Content/Art/Cardback.png");
+
+            var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
+            var deckList = CardFactory.LoadDeckFile(gameState.PlayerOne, "Content/Decks/test_deck.dek", cardList);
+
+            gameState.AllCards.AddRange(deckList);
+            gameState.PlayerOne.Deck.AddCards(deckList, Location.Random);
 
             screen.LoadContent();
 
             gameState.StartGame();
         }
-
+        
         public override void UnloadContent()
         {
             screen.UnloadContent();

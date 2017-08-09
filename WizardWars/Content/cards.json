@@ -4,10 +4,29 @@
 	"cost" : 0,
 	"types" : ["creature"],
 	"subtypes" : ["grunkan"],
+	"keywords" : ["passive"],
 	"rulestext" : "Passive (This creature cannot attack.)",
 	"flavortext" : "The residents of the Isle of Grunk are small, fat creatures without much redeeming factors.",
 	"attack" : 0,
 	"defense" : 1
+},
+{
+	"name" : "Oompa Looter",
+	"imagepath" : "Content/Art/grunka_lunkan.png",
+	"cost" : 1,
+	"types" : ["creature"],
+	"subtypes" : ["grunkan", "rebel"],
+	"rulestext" : "When Oompa Looter enters the battlefield, draw a card.",
+	"flavortext" : "Oompa Loompa was supposed to be a noble movement.  Many used it as a ruse to steal and pillage.",
+	"attack" : 1,
+	"defense" : 1,
+	"effects" : 
+	[{
+		"triggers" : ["enterbattlefield"],
+		"affects" : ["player.self"],
+		"actions" : ["draw"],
+		"vars" : [1]
+	}]
 },
 {
 	"name" : "Spirit Grunk",
@@ -100,7 +119,7 @@
 		"actions" : ["disable.carddraw"]
 	},
 	{
-		"trigger" : "use",
+		"triggers" : ["activated"],
 		"actions" : ["draw.self"],
 		"cost" : 3
 	}]

@@ -67,7 +67,6 @@
     <Content Include="Content\Decks\test_deck.dek">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="_GameState.cs" />
     <Compile Include="UI\Controls\CardGroup.cs" />
     <Compile Include="UI\Controls\Control.cs" />
     <Compile Include="UI\Controls\Screen.cs" />

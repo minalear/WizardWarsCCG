@@ -11,6 +11,7 @@ namespace WizardWars
 
         public string RulesText;
         public string FlavorText;
+        public string[] Keywords;
 
         public int Attack;
         public int Defense;
@@ -102,6 +103,7 @@ namespace WizardWars
 
         //Roles
         Monk,
-        Pirate
+        Pirate,
+        Rebel
     }
 }
