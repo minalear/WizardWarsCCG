@@ -57,6 +57,35 @@ namespace WizardWars
         {
             return (Defense <= 0);
         }
+        public bool IsTriggered(Card source, string trigger, out Effect effect)
+        {
+            string ownerArg = (source.Controller.ID == Controller.ID) ? "controlled" : "opponent";
+
+            foreach (Effect cardEffect in Meta.Effects)
+            {
+                foreach (string effectTrigger in cardEffect.Triggers)
+                {
+                    string[] tokens = effectTrigger.Split('.');
+                    if (tokens[0] == trigger)
+                    {
+                        //If the source is also this
+                        if ((tokens.Length == 1 || tokens[1] == "self") && ID == source.ID)
+                        {
+                            effect = cardEffect;
+                            return true;
+                        }
+                        else if (tokens[1] == ownerArg || tokens[1] == "any")
+                        {
+                            effect = cardEffect;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            effect = null;
+            return false;
+        }
 
         public override string ToString()
         {

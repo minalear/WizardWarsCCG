@@ -100,6 +100,7 @@ namespace WizardWars
         Human,
         Grunkan,
         Spirit,
+        Dragon,
 
         //Roles
         Monk,

@@ -29,6 +29,24 @@
 	}]
 },
 {
+	"name" : "Red Dragon Whelp",
+	"imagepath" : "Content/Art/red_dragon_whelp.png",
+	"cost" : 4,
+	"types" : ["creature"],
+	"subtypes" : ["dragon"],
+	"rulestext" : "Whenever a minion dies, deal 3 damage to each opponent.",
+	"flavortext" : "The whelpings swarmed the skies looking for their first meal.",
+	"attack" : 2,
+	"defense" : 2,
+	"effects" :
+	[{
+		"triggers" : ["destroy.any"],
+		"affects" : ["player.opponent"],
+		"actions" : ["damage"],
+		"vars" : [3]
+	}]
+},
+{
 	"name" : "Spirit Grunk",
 	"imagepath" : "Content/Art/spirit_grunk.png",
 	"cost" : 1,
@@ -153,6 +171,6 @@
 		"triggers" : ["cast"],
 		"affects" : ["player.self"],
 		"actions" : ["draw"],
-		"vars" : [1]
+		"vars" : [2]
 	}]
 }]

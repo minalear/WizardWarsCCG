@@ -174,29 +174,23 @@ namespace WizardWars
             //Loop through each effect action and apply it
             for (int i = 0; i < effect.Actions.Length; i++)
             {
-                #region Spell Effects
-                string[] tokens = effect.Actions[i].Split('.');
-                if (tokens[0] == "tap")
+                foreach (Card target in targets)
                 {
-                    //Tap each target
-                    foreach (Card target in targets)
+                    #region Spell Effects
+                    string[] tokens = effect.Actions[i].Split('.');
+                    if (tokens[0] == "tap")
                     {
+                        //Tap each target
                         target.Tapped = true;
                     }
-                }
-                else if (tokens[0] == "untap")
-                {
-                    //Untap each target
-                    foreach (Card target in targets)
+                    else if (tokens[0] == "untap")
                     {
+                        //Untap each target
                         target.Tapped = false;
                     }
-                }
-                else if (tokens[0] == "destroy")
-                {
-                    //Destroy all the god damn targets
-                    foreach (Card target in targets)
+                    else if (tokens[0] == "destroy")
                     {
+                        //Destroy all the god damn targets
                         target.Destroy();
 
                         //Send it to the graveyard if it is destroyed
@@ -204,30 +198,25 @@ namespace WizardWars
                         {
                             target.Zone.RemoveCardID(target.ID);
                             target.Owner.Graveyard.AddCard(target);
+
+                            OnTrigger(target, "destroy");
                         }
                     }
-                }
-                else if (tokens[0] == "exile")
-                {
-                    //Exile each target
-                    foreach (Card target in targets)
+                    else if (tokens[0] == "exile")
                     {
+                        //Exile each target
                         target.Owner.Exile.AddCard(target);
+                        OnTrigger(target, "exile");
                     }
-                }
-                else if (tokens[0] == "devote")
-                {
-                    //Add target cards to owner's elysium field
-                    foreach (Card target in targets)
+                    else if (tokens[0] == "devote")
                     {
+                        //Add target cards to owner's elysium field
                         target.Owner.Elysium.AddCard(target);
+                        OnTrigger(target, "devote");
                     }
-                }
-                else if (tokens[0] == "damage")
-                {
-                    //Damage target creature
-                    foreach (Card target in targets)
+                    else if (tokens[0] == "damage")
                     {
+                        //Damage target creature
                         int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
                         target.Damage(var);
 
@@ -236,32 +225,32 @@ namespace WizardWars
                         {
                             target.Zone.RemoveCardID(target.ID);
                             target.Owner.Graveyard.AddCard(target);
+
+                            OnTrigger(target, "destroy");
                         }
                     }
-                }
-                else if (tokens[0] == "heal")
-                {
-                    //Heal each target
-                    foreach (Card target in targets)
+                    else if (tokens[0] == "heal")
                     {
+                        //Heal each target
                         int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
                         target.Heal(var);
+                        OnTrigger(target, "heal");
                     }
-                }
-                else if (tokens[0] == "counter")
-                {
+                    else if (tokens[0] == "counter")
+                    {
 
+                    }
+                    else if (tokens[0] == "draw")
+                    {
+                        int num = parseNumberVariable(caster, card, action, effect.Vars[i]);
+                        /*if (tokens[1] == "self" || tokens[1] == "all")
+                            PlayerOne.DrawCards(num);
+                        if (tokens[1] == "opponent" || tokens[1] == "all")
+                            PlayerTwo.DrawCards(num);*/
+                        caster.DrawCards(num);
+                    }
+                    #endregion
                 }
-                else if (tokens[0] == "draw")
-                {
-                    int num = parseNumberVariable(caster, card, action, effect.Vars[i]);
-                    /*if (tokens[1] == "self" || tokens[1] == "all")
-                        PlayerOne.DrawCards(num);
-                    if (tokens[1] == "opponent" || tokens[1] == "all")
-                        PlayerTwo.DrawCards(num);*/
-                    caster.DrawCards(num);
-                }
-                #endregion
             }
         }
         public void ResolvePhase(Phases phase)
@@ -290,8 +279,6 @@ namespace WizardWars
                     attackingCreatures.Add(card);
             }
 
-            //TRIGGER each attacking creature
-
             foreach (Card card in attackingCreatures)
             {
                 if (!card.IsBlocked)
@@ -300,6 +287,28 @@ namespace WizardWars
                 {
                     card.Damage(card.BlockerRef.Attack);
                     card.BlockerRef.Damage(card.Attack);
+                }
+            }
+
+            //Check for destroyed creatures
+            foreach (Card card in attacker.Field)
+            {
+                if (card.IsDestroyed())
+                {
+                    card.Zone.RemoveCardID(card.ID);
+                    card.Owner.Graveyard.AddCard(card);
+
+                    OnTrigger(card, "destroy");
+                }
+            }
+            foreach (Card card in defender.Field)
+            {
+                if (card.IsDestroyed())
+                {
+                    card.Zone.RemoveCardID(card.ID);
+                    card.Owner.Graveyard.AddCard(card);
+
+                    OnTrigger(card, "destroy");
                 }
             }
         }
@@ -352,6 +361,33 @@ namespace WizardWars
             TargetedEffects.Pop().Targets = cards;
             clearHighlights();
             ContinueGame();
+        }
+
+        public void OnTrigger(Card source, string trigger)
+        {
+            //Apply triggers to self
+            Effect effect = null;
+            if (source.IsTriggered(source, trigger, out effect))
+            {
+                AddStateAction(new EffectAction(source, source.Controller, effect));
+            }
+
+
+            //Apply triggers to other permanents 
+            foreach (Card card in PlayerOne.Field)
+            {
+                if (card.IsTriggered(source, trigger, out effect))
+                {
+                    AddStateAction(new EffectAction(card, card.Controller, effect));
+                }
+            }
+            foreach (Card card in PlayerTwo.Field)
+            {
+                if (card.IsTriggered(source, trigger, out effect))
+                {
+                    AddStateAction(new EffectAction(card, card.Controller, effect));
+                }
+            }
         }
 
         private void swapTurns()
@@ -467,7 +503,7 @@ namespace WizardWars
 
             throw new InvalidProgramException("Couldn't find opponent.  Either players have matching IDs or there's only one player in the game.");
         }
-
+        
         public event PhaseChangeEvent PhaseChange;
         public delegate void PhaseChangeEvent(object sender, Phases phase);
     }
@@ -547,6 +583,14 @@ namespace WizardWars
             {
                 foreach (Card card in gameState.CurrentTurn.Field)
                     card.Tapped = false;
+            }
+            else if (Phase == Phases.DeclareBlock)
+            {
+                foreach (Card card in gameState.CurrentTurn.Field)
+                {
+                    if (card.Attacking)
+                        gameState.OnTrigger(card, "attack");
+                }
             }
             else if (Phase == Phases.Combat)
             {
