@@ -8,9 +8,10 @@ namespace WizardWars
 
         public int ID { get; private set; }
         public GameState GameState;
-
-        public int Health;
+        
         public int Mana;
+
+        public Card PlayerCard;
 
         public Collection AllCards;
 
@@ -27,8 +28,7 @@ namespace WizardWars
         {
             ID = _nextValidID++;
             GameState = gameState;
-
-            Health = 20;
+            
             Mana = 0;
 
             Hand = new Collection("Hand", this);
@@ -53,7 +53,11 @@ namespace WizardWars
         }
         public void Damage(Card source, int num)
         {
-            Health -= num;
+            PlayerCard.Damage(num);
+            if (PlayerCard.IsDestroyed())
+            {
+                Console.WriteLine("{0} has died!", this);
+            }
         }
 
         public virtual void PromptPlayerStateAction(StateAction action)

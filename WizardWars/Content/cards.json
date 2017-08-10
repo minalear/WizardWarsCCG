@@ -1,4 +1,12 @@
 ﻿[{
+	"name" : "Wizard",
+	"imagepath" : "Content/Art/grunka_lunkan.png",
+	"cost" : 0,
+	"types" : ["player"],
+	"attack" : 0,
+	"defense" : 20
+},
+{
 	"name" : "Grunka Lunkan",
 	"imagepath" : "Content/Art/grunka_lunkan.png",
 	"cost" : 0,
@@ -171,6 +179,6 @@
 		"triggers" : ["cast"],
 		"affects" : ["player.self"],
 		"actions" : ["draw"],
-		"vars" : [2]
+		"vars" : ["player.self.health"]
 	}]
 }]

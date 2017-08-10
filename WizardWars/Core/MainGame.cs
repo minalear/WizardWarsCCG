@@ -1,5 +1,4 @@
-﻿using System;
-using Minalear;
+﻿using Minalear;
 using OpenTK;
 using OpenTK.Input;
 using OpenTK.Graphics;
@@ -17,8 +16,10 @@ namespace WizardWars.Core
 
         private Screen screen;
         private TextBox promptText;
-        private Button continueButton;
+        private Button continueButton, cancelButton;
         private CardGroup playerOneField, playerOneElysium, playerOneHand;
+
+        private Single castingCard;
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
         {
@@ -38,6 +39,10 @@ namespace WizardWars.Core
             playerOneField = new CardGroup(screen, new Vector2(204, 348), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Field);
             playerOneElysium = new CardGroup(screen, new Vector2(204, 472), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Elysium);
             playerOneHand = new CardGroup(screen, new Vector2(204, 596), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Hand);
+
+            castingCard = new Single(screen, null);
+            castingCard.Position = new Vector2(10, 10);
+            castingCard.Scale = new Vector2(0.6f, 0.6f);
 
             playerOneHand.CardSelected += (sender, e) =>
             {
@@ -83,7 +88,7 @@ namespace WizardWars.Core
             {
                 if (gameState.HasPriority(gameState.PlayerOne))
                 {
-                    Console.WriteLine("Player #{0}: Passing on Action ({1})", gameState.PlayerOne.ID + 1, gameState.CurrentAction);
+                    System.Console.WriteLine("Player #{0}: Passing on Action ({1})", gameState.PlayerOne.ID + 1, gameState.CurrentAction);
                     gameState.PassPriority();
                 }
             };
@@ -105,7 +110,11 @@ namespace WizardWars.Core
             gameState.PlayerOne.Deck.AddCards(deckList, Location.Random);
             gameState.PlayerTwo.Deck.AddCards(oppoList, Location.Random);
 
+            gameState.PlayerOne.PlayerCard = cardList[0].CreateInstance(gameState.PlayerOne);
+            gameState.PlayerTwo.PlayerCard = cardList[0].CreateInstance(gameState.PlayerTwo);
+
             screen.LoadContent();
+            castingCard.Card = gameState.PlayerOne.Deck[0];
 
             gameState.StartGame();
         }
@@ -124,6 +133,11 @@ namespace WizardWars.Core
         {
             screen.Update(gameTime);
             gameAI.Update();
+
+            if (GameState.PlayerOne.Deck.Count == 0)
+                castingCard.Visible = false;
+            else if (castingCard.Card.ID != gameState.PlayerOne.Deck[0].ID)
+                castingCard.Card = gameState.PlayerOne.Deck[0];
         }
 
         public GameState GameState { get { return gameState; } }

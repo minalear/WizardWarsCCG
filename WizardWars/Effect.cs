@@ -12,6 +12,7 @@ namespace WizardWars
         public string[] Affects;
         public object Cost;
         public string[] Actions;
+        public object NumTargets = 1;
 
         public bool HasTrigger(string trigger)
         {

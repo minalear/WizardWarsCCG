@@ -42,11 +42,7 @@ namespace WizardWars
 
                     for (int i = 0; i < num; i++)
                     {
-                        Card instance = new Card(info);
-                        instance.Owner = player;
-                        instance.Controller = player;
-
-                        deck.Add(instance);
+                        deck.Add(info.CreateInstance(player));
                     }
                 }
             }

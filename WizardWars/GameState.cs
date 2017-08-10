@@ -182,11 +182,13 @@ namespace WizardWars
                     {
                         //Tap each target
                         target.Tapped = true;
+                        OnTrigger(target, "tap");
                     }
                     else if (tokens[0] == "untap")
                     {
                         //Untap each target
                         target.Tapped = false;
+                        OnTrigger(target, "untap");
                     }
                     else if (tokens[0] == "destroy")
                     {
@@ -220,6 +222,8 @@ namespace WizardWars
                         int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
                         target.Damage(var);
 
+                        OnTrigger(target, "damage");
+
                         //Send it to the graveyard if it is destroyed
                         if (target.IsDestroyed())
                         {
@@ -242,12 +246,13 @@ namespace WizardWars
                     }
                     else if (tokens[0] == "draw")
                     {
-                        int num = parseNumberVariable(caster, card, action, effect.Vars[i]);
-                        /*if (tokens[1] == "self" || tokens[1] == "all")
-                            PlayerOne.DrawCards(num);
-                        if (tokens[1] == "opponent" || tokens[1] == "all")
-                            PlayerTwo.DrawCards(num);*/
-                        caster.DrawCards(num);
+                        if (target.Meta.IsType(Types.Player))
+                        {
+                            int num = parseNumberVariable(caster, card, action, effect.Vars[i]);
+                            target.Controller.DrawCards(num);
+
+                            OnTrigger(target, "draw");
+                        }
                     }
                     #endregion
                 }
@@ -270,7 +275,7 @@ namespace WizardWars
         public void CalculateCombat()
         {
             Player attacker = CurrentTurn;
-            Player defender = getOpponent();
+            Player defender = getOpponent(attacker);
 
             List<Card> attackingCreatures = new List<Card>();
             foreach (Card card in attacker.Field)
@@ -413,33 +418,37 @@ namespace WizardWars
             else if (varType == typeof(string))
             {
                 string syntax = (string)var;
-                string[] argSegments = syntax.Split('.');
+                string[] tokens = syntax.Split('.');
 
-                //If the target is a player
-                if (argSegments[0] == "self" || argSegments[0] == "player" || argSegments[0] == "opponent")
+                Player target = PlayerOne;
+                if (tokens[0] == "player")
                 {
-                    //Player target = (argSegments[0] == "Self") ? caster : effectTarget.PlayerTarget;
-                    Player target = PlayerTwo; //This is invalid, but until we convert Players into cards
+                    if (tokens[1] == "target")
+                        target = action.Targets[0].Controller;
+                    else if (tokens[1] == "self")
+                        target = card.Controller;
+                    else if (tokens[1] == "opponent")
+                        target = getOpponent(card.Controller);
+                }
 
-                    //Variable calculated off of Hand information
-                    if (argSegments[1] == "hand")
+                if (tokens[2] == "hand" && tokens[3] == "count")
+                {
+                    return target.Hand.Count;
+                }
+                else if (tokens[2] == "health")
+                {
+                    return target.PlayerCard.Defense;
+                }
+                else if (tokens[2] == "creatures")
+                {
+                    if (tokens[3] == "oftype")
                     {
-                        if (argSegments[2] == "count")
-                        {
-                            return target.Hand.Count;
-                        }
+                        //X = number of creatures of the type
+                        return target.Field.CountTypes((SubTypes)Enum.Parse(typeof(SubTypes), tokens[4], true));
                     }
-                    else if (argSegments[1] == "health")
+                    else if (tokens[3] == "count")
                     {
-                        return target.Health;
-                    }
-                    else if (argSegments[1] == "creatures")
-                    {
-                        if (argSegments[2] == "oftype")
-                        {
-                            //X = number of creatures of the type
-                            return target.Field.CountTypes((SubTypes)Enum.Parse(typeof(SubTypes), argSegments[3]));
-                        }
+                        return target.Field.CountTypes(Types.Creature);
                     }
                 }
             }
@@ -463,9 +472,12 @@ namespace WizardWars
                     string[] tokens = group.Split('.');
 
                     //PLAYERS
-                    if (tokens[0] == "players")
+                    if (tokens[0] == "player")
                     {
-
+                        if (tokens[1] == "self" || tokens[1] == "all")
+                            targets.Add(caster.PlayerCard);
+                        if (tokens[1] == "opponent" || tokens[1] == "all")
+                            targets.Add(getOpponent(caster).PlayerCard);
                     }
                     else if (tokens[0] == "creatures")
                     {
@@ -493,11 +505,11 @@ namespace WizardWars
 
             return targets;
         }
-        private Player getOpponent()
+        private Player getOpponent(Player self)
         {
             foreach (Player player in TurnOrder)
             {
-                if (player.ID != CurrentTurn.ID)
+                if (player.ID != self.ID)
                     return player;
             }
 

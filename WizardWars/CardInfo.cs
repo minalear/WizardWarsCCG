@@ -78,6 +78,11 @@ namespace WizardWars
             return IsSubType((SubTypes)Enum.Parse(typeof(SubTypes), literal, true));
         }
 
+        public Card CreateInstance(Player owner)
+        {
+            return new Card(this) { Owner = owner, Controller = owner };
+        }
+
         public override string ToString()
         {
             return string.Format("{0} - {1}", Name, Cost);
@@ -86,6 +91,7 @@ namespace WizardWars
 
     public enum Types
     {
+        Player,
         Spell,
         Creature,
         Hero,
