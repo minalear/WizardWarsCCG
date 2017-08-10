@@ -38,7 +38,9 @@ namespace WizardWars.UI.Controls
         public void SetScale(Vector2 value)
         {
             scale = value;
-            Size = new Vector2(Card.Art.Width, Card.Art.Height) * scale;
+
+            if (Card != null)
+                Size = new Vector2(Card.Art.Width, Card.Art.Height) * scale;
         }
 
         private Vector2 scale;

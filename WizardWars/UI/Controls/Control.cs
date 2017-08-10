@@ -106,6 +106,8 @@ namespace WizardWars.UI.Controls
                 if (control.Hovered && control.Enabled)
                     control.MouseDown(e);
             }
+
+            MouseMove(new MouseMoveEventArgs(e.X, e.Y, 0, 0));
         }
         public virtual void MouseUp(MouseButtonEventArgs e)
         {
@@ -114,6 +116,8 @@ namespace WizardWars.UI.Controls
                 if (control.Hovered && control.Enabled)
                     control.MouseUp(e);
             }
+
+            MouseMove(new MouseMoveEventArgs(e.X, e.Y, 0, 0));
         }
 
         public virtual void MouseEnter(MouseMoveEventArgs e) { }
