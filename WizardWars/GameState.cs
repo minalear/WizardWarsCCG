@@ -278,6 +278,31 @@ namespace WizardWars
             AddStateAction(new PhaseAction(CurrentPhase));
             PhaseChange?.Invoke(this, CurrentPhase);
         }
+        public void CalculateCombat()
+        {
+            Player attacker = CurrentTurn;
+            Player defender = getOpponent();
+
+            List<Card> attackingCreatures = new List<Card>();
+            foreach (Card card in attacker.Field)
+            {
+                if (card.Attacking)
+                    attackingCreatures.Add(card);
+            }
+
+            //TRIGGER each attacking creature
+
+            foreach (Card card in attackingCreatures)
+            {
+                if (!card.IsBlocked)
+                    defender.Damage(card, card.Attack);
+                else
+                {
+                    card.Damage(card.BlockerRef.Attack);
+                    card.BlockerRef.Damage(card.Attack);
+                }
+            }
+        }
 
         public void HighlightValidTargets(Effect effect)
         {
@@ -432,6 +457,16 @@ namespace WizardWars
 
             return targets;
         }
+        private Player getOpponent()
+        {
+            foreach (Player player in TurnOrder)
+            {
+                if (player.ID != CurrentTurn.ID)
+                    return player;
+            }
+
+            throw new InvalidProgramException("Couldn't find opponent.  Either players have matching IDs or there's only one player in the game.");
+        }
 
         public event PhaseChangeEvent PhaseChange;
         public delegate void PhaseChangeEvent(object sender, Phases phase);
@@ -512,6 +547,10 @@ namespace WizardWars
             {
                 foreach (Card card in gameState.CurrentTurn.Field)
                     card.Tapped = false;
+            }
+            else if (Phase == Phases.Combat)
+            {
+                gameState.CalculateCombat();
             }
         }
         public override void Resolve(GameState gameState)

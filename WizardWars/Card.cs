@@ -13,9 +13,14 @@ namespace WizardWars
         public int Cost { get { return Meta.Cost; } }
         public Texture2D Art { get { return Meta.Art; } }
         public CardInfo Meta { get; private set; }
+        public bool Highlighted { get; set; }
+
         public bool Tapped { get; set; }
         public bool Attacking { get; set; }
-        public bool Highlighted { get; set; }
+        public bool IsBlocked { get; set; }
+        public Card BlockerRef { get; set; }
+
+        public bool Blocking { get; set; }
 
         public Collection Zone { get; set; }
 

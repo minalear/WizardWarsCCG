@@ -15,8 +15,6 @@ namespace WizardWars.UI.Controls
         public bool StackSimilar { get; set; }
         public int MaxStackCount { get; set; }
         public float DrawScale { get; set; }
-
-        private bool markForUpdate = false;
         
         public CardGroup(Control parent, Vector2 pos, Vector2 size, float cardScale, Collection collection)
             : base(parent)
@@ -86,26 +84,15 @@ namespace WizardWars.UI.Controls
             if (selectedCard != null)
             {
                 CardSelected?.Invoke(this, new CardSelectionArgs(selectedCard.Card, e.Button));
+                selectedCard = null;
             }
 
             base.MouseUp(e);
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            if (markForUpdate)
-            {
-                UpdateList();
-                markForUpdate = false;
-            }
-
-            base.Update(gameTime);
-        }
-
         private void Collection_CollectionChanged(object sender, EventArgs e)
         {
-            //Thread-safe way to update singles
-            markForUpdate = true;
+            UpdateList();
         }
 
         public delegate void CardSelectedEvent(object sender, CardSelectionArgs e);

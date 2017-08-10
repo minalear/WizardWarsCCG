@@ -99,9 +99,11 @@ namespace WizardWars.Core
 
             var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
             var deckList = CardFactory.LoadDeckFile(gameState.PlayerOne, "Content/Decks/test_deck.dek", cardList);
+            var oppoList = CardFactory.LoadDeckFile(gameState.PlayerTwo, "Content/Decks/opponent_deck.dek", cardList);
 
             gameState.AllCards.AddRange(deckList);
             gameState.PlayerOne.Deck.AddCards(deckList, Location.Random);
+            gameState.PlayerTwo.Deck.AddCards(oppoList, Location.Random);
 
             screen.LoadContent();
 

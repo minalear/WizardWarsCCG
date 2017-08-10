@@ -12,7 +12,7 @@
 },
 {
 	"name" : "Oompa Looter",
-	"imagepath" : "Content/Art/grunka_lunkan.png",
+	"imagepath" : "Content/Art/oompa_looter.png",
 	"cost" : 1,
 	"types" : ["creature"],
 	"subtypes" : ["grunkan", "rebel"],

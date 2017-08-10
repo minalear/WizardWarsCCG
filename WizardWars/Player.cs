@@ -51,6 +51,10 @@ namespace WizardWars
                 }
             }
         }
+        public void Damage(Card source, int num)
+        {
+            Health -= num;
+        }
 
         public virtual void PromptPlayerStateAction(StateAction action)
         {
