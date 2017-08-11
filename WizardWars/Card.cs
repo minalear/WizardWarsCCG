@@ -74,7 +74,7 @@ namespace WizardWars
                             effect = cardEffect;
                             return true;
                         }
-                        else if (tokens[1] == ownerArg || tokens[1] == "any")
+                        else if (tokens.Length != 1 && (tokens[1] == ownerArg || tokens[1] == "any"))
                         {
                             effect = cardEffect;
                             return true;

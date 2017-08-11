@@ -366,12 +366,15 @@ namespace WizardWars
         {
             foreach (Player player in TurnOrder)
             {
-                foreach (Card card in player.Field)
+                for (int i = 0; i < player.Field.Count; i++)
                 {
+                    Card card = player.Field[i];
                     if (card.IsDestroyed())
                     {
                         card.Zone.RemoveCardID(card.ID);
                         card.Owner.Graveyard.AddCard(card);
+
+                        i--;
                     }
                 }
             }
