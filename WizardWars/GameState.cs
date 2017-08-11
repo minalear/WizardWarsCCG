@@ -145,25 +145,13 @@ namespace WizardWars
         public void ResolveCardCastAction(Player caster, Card card)
         {
             //Trigger self-cast effects
-            foreach (Effect effect in card.Meta.Effects)
-            {
-                if (effect.HasTrigger("cast"))
-                {
-                    AddStateAction(new EffectAction(card, caster, effect));
-                }
-            }
+            OnTrigger(card, "cast");
 
             //Add creatures/relics to the battlefield and trigger ETB effects
             if (card.Meta.IsType(Types.Creature) || card.Meta.IsType(Types.Relic))
             {
                 caster.Field.AddCard(card);
-                foreach (Effect effect in card.Meta.Effects)
-                {
-                    if (effect.HasTrigger("enterbattlefield"))
-                    {
-                        AddStateAction(new EffectAction(card, caster, effect));
-                    }
-                }
+                OnTrigger(card, "enterbattlefield");
             }
         }
         public void ResolveEffectAction(Player caster, Card card, EffectAction action)
@@ -197,12 +185,7 @@ namespace WizardWars
 
                         //Send it to the graveyard if it is destroyed
                         if (target.IsDestroyed())
-                        {
-                            target.Zone.RemoveCardID(target.ID);
-                            target.Owner.Graveyard.AddCard(target);
-
                             OnTrigger(target, "destroy");
-                        }
                     }
                     else if (tokens[0] == "exile")
                     {
@@ -226,12 +209,7 @@ namespace WizardWars
 
                         //Send it to the graveyard if it is destroyed
                         if (target.IsDestroyed())
-                        {
-                            target.Zone.RemoveCardID(target.ID);
-                            target.Owner.Graveyard.AddCard(target);
-
                             OnTrigger(target, "destroy");
-                        }
                     }
                     else if (tokens[0] == "heal")
                     {
@@ -257,6 +235,8 @@ namespace WizardWars
                     #endregion
                 }
             }
+
+            UpdateGameState();
         }
         public void ResolvePhase(Phases phase)
         {
@@ -299,23 +279,15 @@ namespace WizardWars
             foreach (Card card in attacker.Field)
             {
                 if (card.IsDestroyed())
-                {
-                    card.Zone.RemoveCardID(card.ID);
-                    card.Owner.Graveyard.AddCard(card);
-
                     OnTrigger(card, "destroy");
-                }
             }
             foreach (Card card in defender.Field)
             {
                 if (card.IsDestroyed())
-                {
-                    card.Zone.RemoveCardID(card.ID);
-                    card.Owner.Graveyard.AddCard(card);
-
                     OnTrigger(card, "destroy");
-                }
             }
+
+            UpdateGameState();
         }
 
         public void HighlightValidTargets(Effect effect)
@@ -379,18 +351,28 @@ namespace WizardWars
 
 
             //Apply triggers to other permanents 
-            foreach (Card card in PlayerOne.Field)
+            foreach (Player player in TurnOrder)
             {
-                if (card.IsTriggered(source, trigger, out effect))
+                foreach (Card card in player.Field)
                 {
-                    AddStateAction(new EffectAction(card, card.Controller, effect));
+                    if (card.ID != source.ID && card.IsTriggered(source, trigger, out effect))
+                    {
+                        AddStateAction(new EffectAction(card, card.Controller, effect));
+                    }
                 }
             }
-            foreach (Card card in PlayerTwo.Field)
+        }
+        public void UpdateGameState()
+        {
+            foreach (Player player in TurnOrder)
             {
-                if (card.IsTriggered(source, trigger, out effect))
+                foreach (Card card in player.Field)
                 {
-                    AddStateAction(new EffectAction(card, card.Controller, effect));
+                    if (card.IsDestroyed())
+                    {
+                        card.Zone.RemoveCardID(card.ID);
+                        card.Owner.Graveyard.AddCard(card);
+                    }
                 }
             }
         }

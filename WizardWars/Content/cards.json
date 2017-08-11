@@ -179,6 +179,6 @@
 		"triggers" : ["cast"],
 		"affects" : ["player.self"],
 		"actions" : ["draw"],
-		"vars" : ["player.self.health"]
+		"vars" : [1]
 	}]
 }]
