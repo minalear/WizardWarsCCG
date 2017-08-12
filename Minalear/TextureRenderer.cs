@@ -14,8 +14,11 @@ namespace Minalear
         private int modelLoc;
         private int projLoc;
         private int colorLoc;
+        private int stepLoc;
+        private int outlineLoc;
 
         public Shader Shader { get { return shader; } }
+        public bool DrawOutline { get; set; }
 
         public TextureRenderer(Shader shader, int renderWidth, int renderHeight)
         {
@@ -54,6 +57,8 @@ namespace Minalear
             modelLoc = GL.GetUniformLocation(shader.ID, "model");
             projLoc = GL.GetUniformLocation(shader.ID, "proj");
             colorLoc = GL.GetUniformLocation(shader.ID, "drawColor");
+            stepLoc = GL.GetUniformLocation(shader.ID, "stepSize");
+            outlineLoc = GL.GetUniformLocation(shader.ID, "drawOutline");
 
             //Projection Matrix
             Matrix4 projMat4 = Matrix4.CreateOrthographicOffCenter(0f, renderWidth, renderHeight, 0f, -1f, 1f);
@@ -108,8 +113,19 @@ namespace Minalear
                 Matrix4.CreateTranslation(origin.X, origin.Y, 0f) *
                 Matrix4.CreateTranslation(position.X, position.Y, 0f);
             GL.UniformMatrix4(modelLoc, false, ref model);
-
+            
             GL.Uniform4(colorLoc, color);
+
+            if (DrawOutline)
+            {
+                Vector2 stepSize = new Vector2(1f / size.X, 1f / size.Y);
+                GL.Uniform2(stepLoc, ref stepSize);
+                GL.Uniform1(outlineLoc, 1);
+            }
+            else
+            {
+                GL.Uniform1(outlineLoc, 0);
+            }
         }
 
         public void Dispose()

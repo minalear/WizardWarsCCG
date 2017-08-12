@@ -121,6 +121,27 @@ namespace WizardWars
             }
         }
 
+        public void ResolveStateAction(StateAction action)
+        {
+            if (action is CardCastAction)
+            {
+                CardCastAction castAction = (CardCastAction)action;
+                ResolveCardCastAction(castAction.Caster, castAction.Card);
+            }
+            else if (action is EffectAction)
+            {
+                EffectAction effectAction = (EffectAction)action;
+                ResolveEffectAction(effectAction.Caster, effectAction.Card, effectAction);
+            }
+            else if (action is PhaseAction)
+            {
+                PhaseAction phaseAction = (PhaseAction)action;
+                ResolvePhaseAction(phaseAction.Phase);
+            }
+
+            ActionResolved?.Invoke(this, action);
+        }
+
         public bool HasPriority(Player player)
         {
             return (CurrentPriority.ID == player.ID);
@@ -238,7 +259,7 @@ namespace WizardWars
 
             UpdateGameState();
         }
-        public void ResolvePhase(Phases phase)
+        public void ResolvePhaseAction(Phases phase)
         {
             //Increment phase counter and change turns if it surpasses Cleanup
             PhaseCounter++;
@@ -502,7 +523,10 @@ namespace WizardWars
         }
         
         public event PhaseChangeEvent PhaseChange;
+        public event StateActionResolved ActionResolved;
+
         public delegate void PhaseChangeEvent(object sender, Phases phase);
+        public delegate void StateActionResolved(object sender, StateAction action);
     }
 
     public class StateAction
@@ -511,25 +535,20 @@ namespace WizardWars
         public virtual void Resolve(GameState gameState)
         {
             Console.WriteLine("({0}) action resolves.", ToString());
+            gameState.ResolveStateAction(this);
         }
     }
     public class CardCastAction : StateAction
     {
         public Card Card;
         public Player Caster;
-        public object[] Args;
 
-        public CardCastAction(Card card, Player caster, params object[] args)
+        public CardCastAction(Card card, Player caster)
         {
             Card = card;
             Caster = caster;
-            Args = args;
         }
-
-        public override void Resolve(GameState gameState)
-        {
-            gameState.ResolveCardCastAction(Caster, Card);
-        }
+        
         public override string ToString()
         {
             return string.Format("Player #{0} cast card ({1})", Caster.ID + 1, Card.ToString());
@@ -554,10 +573,6 @@ namespace WizardWars
             if (Effect.RequiresTarget())
                 gameState.TargetedEffects.Push(this);
         }
-        public override void Resolve(GameState gameState)
-        {
-            gameState.ResolveEffectAction(Caster, Card, this);
-        }
         public override string ToString()
         {
             return string.Format("Player #{0}'s card ({1}) effect: {2}", Caster.ID + 1, Card, Effect);
@@ -565,7 +580,7 @@ namespace WizardWars
     }
     public class PhaseAction : StateAction
     {
-        public Phases Phase;
+        public Phases Phase { get; set; }
 
         public PhaseAction(Phases phase)
         {
@@ -593,10 +608,6 @@ namespace WizardWars
             {
                 gameState.CalculateCombat();
             }
-        }
-        public override void Resolve(GameState gameState)
-        {
-            gameState.ResolvePhase(Phase);
         }
         public override string ToString()
         {

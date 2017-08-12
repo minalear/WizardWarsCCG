@@ -12,6 +12,7 @@ namespace WizardWars.Core
         private TextureRenderer renderer;
 
         private GameState gameState;
+        private AI gameAI;
 
         private Screen screen;
         private TextBox promptText;
@@ -32,19 +33,11 @@ namespace WizardWars.Core
         public override void Initialize()
         {
             gameState = new GameState();
+            gameAI = new AI(gameState.PlayerTwo);
             duelScreen = new Duel(this, gameState);
 
             return;
 
-            playerOneHand.CardSelected += (sender, e) =>
-            {
-                if (gameState.CanCastCard(gameState.PlayerOne, e.SelectedCard))
-                {
-                    gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID);
-                    gameState.AddStateAction(new CardCastAction(e.SelectedCard, gameState.PlayerOne));
-                    gameState.ContinueGame();
-                }
-            };
             playerOneField.CardSelected += (sender, e) =>
             {
                 if (gameState.RequiresTarget && e.SelectedCard.Highlighted)
@@ -58,30 +51,6 @@ namespace WizardWars.Core
                         e.SelectedCard.Tapped = !e.SelectedCard.Tapped;
                         e.SelectedCard.Attacking = e.SelectedCard.Tapped;
                     }
-                }
-            };
-            playerOneElysium.CardSelected += (sender, e) =>
-            {
-
-            };
-
-            promptText = new TextBox(screen, "Test Text");
-            promptText.Position = new Vector2(209f, 254f);
-
-            gameState.PhaseChange += (sender, e) =>
-            {
-                promptText.Text = string.Format("Phase: {0}", e);
-            };
-
-            continueButton = new Button(screen, "OK");
-            continueButton.Position = new Vector2(83, 550);
-
-            continueButton.Click += (sender, e) =>
-            {
-                if (gameState.HasPriority(gameState.PlayerOne))
-                {
-                    System.Console.WriteLine("Player #{0}: Passing on Action ({1})", gameState.PlayerOne.ID + 1, gameState.CurrentAction);
-                    gameState.PassPriority();
                 }
             };
         }
@@ -117,6 +86,7 @@ namespace WizardWars.Core
         public override void Update(GameTime gameTime)
         {
             duelScreen.Update(gameTime);
+            gameAI.Update(gameTime);
         }
 
         public GameState GameState { get { return gameState; } }

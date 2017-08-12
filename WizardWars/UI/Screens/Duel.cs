@@ -32,9 +32,13 @@ namespace WizardWars.UI.Screens
         private Button continueButton;
         private Button endTurnButton;
 
+        //Mechanics
+        private Card castedCard;
+
         public Duel(Game game, GameState gameState) : base(game)
         {
-            this.gameState = gameState; 
+            this.gameState = gameState;
+            this.gameState.ActionResolved += GameState_ActionResolved;
             Vector2 cardSize = new Vector2(100, 126);
             Vector2 zoneSize = new Vector2(854, 126);
 
@@ -51,6 +55,8 @@ namespace WizardWars.UI.Screens
             playerOneElysium = new CardGroup(this, new Vector2(306, 448), zoneSize, gameState.PlayerOne.Elysium);
             playerOneBattlefield = new CardGroup(this, new Vector2(306, 312), zoneSize, gameState.PlayerOne.Field);
 
+            playerOneHand.CardSelected += PlayerOneHand_CardSelected;
+
             /* PLAYER TWO */
             playerTwoHero = new Controls.Single(this, gameState.PlayerTwo.PlayerCard);
             playerTwoHero.Position = new Vector2(196, 10);
@@ -66,9 +72,40 @@ namespace WizardWars.UI.Screens
             /* CONTINUE */
             continueButton = new Button(this, "Continue");
             continueButton.Position = new Vector2(1170, 388);
+            continueButton.Click += (sender, e) =>
+            {
+                if (gameState.HasPriority(gameState.PlayerOne))
+                {
+                    Console.WriteLine("Player #{0}: Passing on Action ({1})", gameState.PlayerOne.ID + 1, gameState.CurrentAction);
+                    gameState.PassPriority();
+                }
+            };
 
             endTurnButton = new Button(this, "End Turn");
             endTurnButton.Position = new Vector2(1170, 418);
+        }
+
+        private void GameState_ActionResolved(object sender, StateAction action)
+        {
+            if (action is CardCastAction)
+            {
+                //Card resolved, so send it to the graveyard
+                CardCastAction castAction = (CardCastAction)action;
+                if (castedCard != null && castAction.Card.ID == castedCard.ID)
+                {
+                    castedCard.Owner.Graveyard.AddCard(castedCard);
+                    castedCard = null;
+                }
+            }
+        }
+        private void PlayerOneHand_CardSelected(object sender, CardSelectionArgs e)
+        {
+            if (gameState.CanCastCard(gameState.PlayerOne, e.SelectedCard))
+            {
+                castedCard = gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID);
+                gameState.AddStateAction(new CardCastAction(e.SelectedCard, gameState.PlayerOne));
+                gameState.ContinueGame();
+            }
         }
 
         public override void LoadContent()

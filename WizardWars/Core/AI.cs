@@ -1,4 +1,5 @@
 ﻿using System;
+using Minalear;
 
 namespace WizardWars.Core
 {
@@ -11,7 +12,7 @@ namespace WizardWars.Core
             Player = player;
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             //Passes priority if it has priority
             if (Player.GameState.HasPriority(Player))
