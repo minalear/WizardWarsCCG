@@ -33,23 +33,43 @@ namespace WizardWars.UI.Controls
         {
             Children.Clear();
 
+            if (!ContentLoaded)
+            {
+                markedForUpdate = true;
+                return;
+            }
+
+            float scale = Height / CardInfo.CardBack.Height;
+            float cardWidth = CardInfo.CardBack.Width * scale;
+
+            //Auto-scale group based on the number of cards in the collection
+            float collectionWidth = Collection.Count * cardWidth;
+            float overlap = (Collection.Count > 1) ? (collectionWidth - Width) / (Collection.Count - 1) : 0f;
+            float spacing = (cardWidth - overlap > MAX_SPACING) ? MAX_SPACING : cardWidth - overlap;
+
             float xPos = 0f;
             for (int i = 0; i < Collection.Count; i++)
             {
                 Card card = Collection[i];
                 Single single = new Single(this, card);
 
-                Vector2 pos = new Vector2(xPos, 0f);
-                Vector2 scale = new Vector2(Height / card.Art.Height);
-
-                xPos += card.Art.Width * scale.X;
-                xPos += MIN_SPACING;
-
-                single.Position = pos;
+                single.Position = new Vector2(xPos, 0f);
                 single.Size = card.Art.Size * scale;
+
+                xPos += spacing;
             }
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (markedForUpdate)
+            {
+                markedForUpdate = false;
+                UpdateList();
+            }
+
+            base.Update(gameTime);
+        }
         public override void MouseMove(MouseMoveEventArgs e)
         {
             base.MouseMove(e);
@@ -97,10 +117,9 @@ namespace WizardWars.UI.Controls
         public event CardSelectedEvent CardSelected;
 
         private Single selectedCard;
+        private bool markedForUpdate = false;
 
-        private const int MAX_SPACING = 26;
-        private const int MIN_SPACING = -25;
-        private const int STACK_SPACING = -95;
+        private const float MAX_SPACING = 120f;
     }
 
     public class CardSelectionArgs : EventArgs

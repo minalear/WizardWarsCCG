@@ -15,12 +15,16 @@ namespace WizardWars.UI.Screens
         private CardStack playerOneDeck;
         private CardStack playerOneGraveyard;
         private CardGroup playerOneHand;
+        private CardGroup playerOneElysium;
+        private CardGroup playerOneBattlefield;
 
         private Controls.Single playerOneHero;
 
         //Player Two
         private CardStack playerTwoDeck;
         private CardStack playerTwoGraveyard;
+        private CardGroup playerTwoElysium;
+        private CardGroup playerTwoBattlefield;
 
         private Controls.Single playerTwoHero;
 
@@ -28,6 +32,7 @@ namespace WizardWars.UI.Screens
         {
             this.gameState = gameState; 
             Vector2 cardSize = new Vector2(100, 126);
+            Vector2 zoneSize = new Vector2(854, 126);
 
             /* PLAYER ONE */
             playerOneHero = new Controls.Single(this, gameState.PlayerOne.PlayerCard);
@@ -37,7 +42,10 @@ namespace WizardWars.UI.Screens
             playerOneDeck = new CardStack(this, gameState.PlayerOne.Deck, new Vector2(1170, 584), cardSize);
             playerOneGraveyard = new CardStack(this, gameState.PlayerOne.Graveyard, new Vector2(1170, 448), cardSize);
             playerOneGraveyard.IsFaceUp = true;
-            playerOneHand = new CardGroup(this, new Vector2(306, 584), new Vector2(854, 126), gameState.PlayerOne.Hand);
+
+            playerOneHand = new CardGroup(this, new Vector2(306, 584), zoneSize, gameState.PlayerOne.Hand);
+            playerOneElysium = new CardGroup(this, new Vector2(306, 448), zoneSize, gameState.PlayerOne.Elysium);
+            playerOneBattlefield = new CardGroup(this, new Vector2(306, 312), zoneSize, gameState.PlayerOne.Field);
 
             /* PLAYER TWO */
             playerTwoHero = new Controls.Single(this, gameState.PlayerTwo.PlayerCard);
@@ -47,6 +55,9 @@ namespace WizardWars.UI.Screens
             playerTwoDeck = new CardStack(this, gameState.PlayerTwo.Deck, new Vector2(1170, 10), cardSize);
             playerTwoGraveyard = new CardStack(this, gameState.PlayerTwo.Graveyard, new Vector2(1170, 146), cardSize);
             playerTwoGraveyard.IsFaceUp = true;
+
+            playerTwoElysium = new CardGroup(this, new Vector2(306, 10), zoneSize, gameState.PlayerTwo.Elysium);
+            playerTwoBattlefield = new CardGroup(this, new Vector2(306, 146), zoneSize, gameState.PlayerTwo.Field);
         }
 
         public override void LoadContent()
