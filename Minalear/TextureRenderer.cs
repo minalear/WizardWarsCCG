@@ -60,10 +60,10 @@ namespace Minalear
             GL.UniformMatrix4(projLoc, false, ref projMat4);
         }
 
-        public void Draw(Texture2D texture, Vector2 position, Vector2 scale, Color4 color)
+        public void Draw(Texture2D texture, Vector2 position, Vector2 size, Color4 color)
         {
             shader.UseProgram();
-            setUniforms(position, 0f, Vector2.Zero, new Vector2(texture.Width * scale.X, texture.Height * scale.Y), color);
+            setUniforms(position, 0f, Vector2.Zero, size, color);
 
             GL.ActiveTexture(TextureUnit.Texture0);
             texture.Bind();
@@ -72,11 +72,23 @@ namespace Minalear
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
             GL.BindVertexArray(0);
         }
-        public void Draw(Texture2D texture, Vector2 position, Vector2 scale, float rotation, Color4 color)
+        public void Draw(Texture2D texture, Vector2 position, float scale, Color4 color)
         {
             shader.UseProgram();
-            Vector2 center = new Vector2((texture.Width * scale.X) / 2, (texture.Height * scale.Y) / 2);
-            setUniforms(position, rotation, center, new Vector2(texture.Width * scale.X, texture.Height * scale.Y), color);
+            setUniforms(position, 0f, Vector2.Zero, new Vector2(texture.Width * scale, texture.Height * scale), color);
+
+            GL.ActiveTexture(TextureUnit.Texture0);
+            texture.Bind();
+
+            GL.BindVertexArray(vao);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+            GL.BindVertexArray(0);
+        }
+        public void Draw(Texture2D texture, Vector2 position, Vector2 size, float rotation, Color4 color)
+        {
+            shader.UseProgram();
+            Vector2 center = size / 2f;
+            setUniforms(position, rotation, center, size, color);
 
             GL.ActiveTexture(TextureUnit.Texture0);
             texture.Bind();

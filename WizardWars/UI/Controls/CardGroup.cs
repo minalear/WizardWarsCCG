@@ -14,14 +14,12 @@ namespace WizardWars.UI.Controls
 
         public bool StackSimilar { get; set; }
         public int MaxStackCount { get; set; }
-        public float DrawScale { get; set; }
         
-        public CardGroup(Control parent, Vector2 pos, Vector2 size, float cardScale, Collection collection)
+        public CardGroup(Control parent, Vector2 pos, Vector2 size, Collection collection)
             : base(parent)
         {
             Position = pos;
             Size = size;
-            DrawScale = cardScale;
             StackSimilar = false;
             MaxStackCount = 3;
 
@@ -41,14 +39,14 @@ namespace WizardWars.UI.Controls
                 Card card = Collection[i];
                 Single single = new Single(this, card);
 
-                Vector2 pos = new Vector2(xPos + 6f, 6f);
-                Vector2 scale = new Vector2(DrawScale);
+                Vector2 pos = new Vector2(xPos, 0f);
+                Vector2 scale = new Vector2(Height / card.Art.Height);
 
-                xPos += CardbackArt.Width * DrawScale;
+                xPos += card.Art.Width * scale.X;
                 xPos += MIN_SPACING;
 
                 single.Position = pos;
-                single.Scale = scale;
+                single.Size = card.Art.Size * scale;
             }
         }
 
@@ -103,8 +101,6 @@ namespace WizardWars.UI.Controls
         private const int MAX_SPACING = 26;
         private const int MIN_SPACING = -25;
         private const int STACK_SPACING = -95;
-
-        public static Texture2D CardbackArt;
     }
 
     public class CardSelectionArgs : EventArgs

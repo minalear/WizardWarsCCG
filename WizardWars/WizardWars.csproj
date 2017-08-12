@@ -63,11 +63,18 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Controls\Button.cs" />
+    <Compile Include="UI\Controls\CardDisplay.cs" />
+    <Compile Include="UI\Controls\CardStack.cs" />
+    <Compile Include="UI\Controls\Display.cs" />
     <Compile Include="UI\Controls\TextBox.cs" />
+    <Compile Include="UI\Screens\Duel.cs" />
     <Content Include="Content\Art\cantrip.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Art\oompa_looter.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Art\player_flannin.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Decks\test_deck.dek">
@@ -116,6 +123,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Art\red_dragon_whelp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Art\player_flinnan.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Shaders\geo.frag">

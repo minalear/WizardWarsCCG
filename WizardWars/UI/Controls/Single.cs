@@ -9,18 +9,29 @@ namespace WizardWars.UI.Controls
     public class Single : Control
     {
         public Card Card { get; set; }
-        public Vector2 Scale { get { return scale; } set { SetScale(value); } }
 
         public Single(Card card)
         {
             Card = card;
-            Scale = Vector2.One;
+
+            if (card != null && card.Meta.IsType(Types.Creature))
+            {
+                CardDisplay display = new CardDisplay(this);
+                display.LoadContent();
+                Children.Add(display);
+            }
         }
         public Single(Control parent, Card card)
             : base(parent)
         {
             Card = card;
-            Scale = Vector2.One;
+
+            if (card != null && card.Meta.IsType(Types.Creature))
+            {
+                CardDisplay display = new CardDisplay(this);
+                display.LoadContent();
+                Children.Add(display);
+            }
         }
 
         public override void Draw(GameTime gameTime, TextureRenderer renderer)
@@ -32,17 +43,9 @@ namespace WizardWars.UI.Controls
                 color = Color4.Red;
 
             float rotation = (Card.Tapped) ? 1.571f : 0f;
-            renderer.Draw(Card.Art, Position, Scale, rotation, color);
+            renderer.Draw(Card.Art, Position, Size, rotation, color);
+
+            base.Draw(gameTime, renderer);
         }
-
-        public void SetScale(Vector2 value)
-        {
-            scale = value;
-
-            if (Card != null)
-                Size = new Vector2(Card.Art.Width, Card.Art.Height) * scale;
-        }
-
-        private Vector2 scale;
     }
 }

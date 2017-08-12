@@ -1,6 +1,14 @@
 ﻿[{
-	"name" : "Wizard",
-	"imagepath" : "Content/Art/grunka_lunkan.png",
+	"name" : "Flinnan, the Blue Mage",
+	"imagepath" : "Content/Art/player_flinnan.png",
+	"cost" : 0,
+	"types" : ["player"],
+	"attack" : 0,
+	"defense" : 20
+},
+{
+	"name" : "Flannin, the Black Mage",
+	"imagepath" : "Content/Art/player_flannin.png",
 	"cost" : 0,
 	"types" : ["player"],
 	"attack" : 0,

@@ -50,11 +50,13 @@ namespace WizardWars.UI.Controls
         {
             foreach (Control control in Children)
                 control.LoadContent();
+            ContentLoaded = true;
         }
         public virtual void UnloadContent()
         {
             foreach (Control control in Children)
                 control.UnloadContent();
+            ContentLoaded = false;
         }
 
         public virtual void Update(GameTime gameTime)
@@ -130,7 +132,7 @@ namespace WizardWars.UI.Controls
         
         private Screen getParentScreen()
         {
-            if (this.GetType() == typeof(Screen)) return (Screen)this;
+            if (this is Screen) return (Screen)this;
             return Parent.getParentScreen();
         }
 
@@ -139,6 +141,7 @@ namespace WizardWars.UI.Controls
         public bool Hovered { get; set; }
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
+        public bool ContentLoaded { get; protected set; }
 
         //Position/Size Info
         public Vector2 Position { get { return getAbsolutePosition(); } set { relativePosition = value; } }

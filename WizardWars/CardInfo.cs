@@ -5,6 +5,8 @@ namespace WizardWars
 {
     public class CardInfo
     {
+        public static Texture2D CardBack;
+
         public string Name;
         public string ImagePath;
         public int Cost;

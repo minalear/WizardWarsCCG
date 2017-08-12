@@ -120,5 +120,6 @@ namespace Minalear
         public int ID { get { return this.textureID; } }
         public int Width { get { return this.width; } }
         public int Height { get { return this.height; } }
+        public OpenTK.Vector2 Size { get { return new OpenTK.Vector2(Width, Height); } }
     }
 }

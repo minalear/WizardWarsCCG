@@ -3,23 +3,22 @@ using OpenTK;
 using OpenTK.Input;
 using OpenTK.Graphics;
 using WizardWars.UI.Controls;
+using WizardWars.UI.Screens;
 
 namespace WizardWars.Core
 {
     public class MainGame : Game
     {
         private TextureRenderer renderer;
-        private Texture2D playFieldTexture;
 
         private GameState gameState;
-        private AI gameAI;
 
         private Screen screen;
         private TextBox promptText;
-        private Button continueButton, cancelButton;
+        private Button continueButton;
         private CardGroup playerOneField, playerOneElysium, playerOneHand;
-
-        private Single castingCard;
+        
+        private Duel duelScreen;
 
         public MainGame() : base(1280, 720, "Wizard Wars CCG")
         {
@@ -33,16 +32,13 @@ namespace WizardWars.Core
         public override void Initialize()
         {
             gameState = new GameState();
-            gameAI = new AI(gameState.PlayerTwo);
             screen = new Screen(this);
 
-            playerOneField = new CardGroup(screen, new Vector2(204, 348), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Field);
-            playerOneElysium = new CardGroup(screen, new Vector2(204, 472), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Elysium);
-            playerOneHand = new CardGroup(screen, new Vector2(204, 596), new Vector2(945, 114), 0.282f, gameState.PlayerOne.Hand);
+            duelScreen = new Duel(this, gameState);
 
-            castingCard = new Single(screen, null);
-            castingCard.Position = new Vector2(10, 10);
-            castingCard.Scale = new Vector2(0.6f, 0.6f);
+            playerOneField = new CardGroup(screen, new Vector2(204, 348), new Vector2(945, 114), gameState.PlayerOne.Field);
+            playerOneElysium = new CardGroup(screen, new Vector2(204, 472), new Vector2(945, 114), gameState.PlayerOne.Elysium);
+            playerOneHand = new CardGroup(screen, new Vector2(204, 596), new Vector2(945, 114), gameState.PlayerOne.Hand);
 
             playerOneHand.CardSelected += (sender, e) =>
             {
@@ -98,9 +94,8 @@ namespace WizardWars.Core
             renderer = new TextureRenderer(
                 new Shader("Content/Shaders/tex.vert", "Content/Shaders/tex.frag"),
                 Window.Width, Window.Height);
-            
-            playFieldTexture = Texture2D.LoadFromSource("Content/Art/Playfield.png");
-            CardGroup.CardbackArt = Texture2D.LoadFromSource("Content/Art/Cardback.png");
+
+            CardInfo.CardBack = Texture2D.LoadFromSource("Content/Art/cardback.png");
 
             var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
             var deckList = CardFactory.LoadDeckFile(gameState.PlayerOne, "Content/Decks/test_deck.dek", cardList);
@@ -110,34 +105,23 @@ namespace WizardWars.Core
             gameState.PlayerOne.Deck.AddCards(deckList, Location.Random);
             gameState.PlayerTwo.Deck.AddCards(oppoList, Location.Random);
 
-            gameState.PlayerOne.PlayerCard = cardList[0].CreateInstance(gameState.PlayerOne);
-            gameState.PlayerTwo.PlayerCard = cardList[0].CreateInstance(gameState.PlayerTwo);
-
             screen.LoadContent();
-            castingCard.Card = gameState.PlayerOne.Deck[0];
+            duelScreen.LoadContent();
 
             gameState.StartGame();
         }
         
         public override void UnloadContent()
         {
-            screen.UnloadContent();
-            playFieldTexture.Dispose();
+            duelScreen.UnloadContent();
         }
         public override void Draw(GameTime gameTime)
         {
-            renderer.Draw(playFieldTexture, Vector2.Zero, Vector2.One, Color4.White);
-            screen.Draw(gameTime, renderer);
+            duelScreen.Draw(gameTime, renderer);
         }
         public override void Update(GameTime gameTime)
         {
-            screen.Update(gameTime);
-            gameAI.Update();
-
-            if (GameState.PlayerOne.Deck.Count == 0)
-                castingCard.Visible = false;
-            else if (castingCard.Card.ID != gameState.PlayerOne.Deck[0].ID)
-                castingCard.Card = gameState.PlayerOne.Deck[0];
+            duelScreen.Update(gameTime);
         }
 
         public GameState GameState { get { return gameState; } }
