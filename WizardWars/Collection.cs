@@ -70,12 +70,35 @@ namespace WizardWars
                 throw new ArgumentOutOfRangeException(string.Format("{0} is out of range of this card collection.", index));
             return RawList[index];
         }
+        public bool GetCard(string name, out Card requestedCard)
+        {
+            foreach (Card card in RawList)
+            {
+                if (card.Name == name)
+                {
+                    requestedCard = card;
+                    return true;
+                }
+            }
 
-        public bool HasCardID(int id)
+            requestedCard = null;
+            return false;
+        }
+
+        public bool HasCard(int id)
         {
             foreach (Card card in RawList)
             {
                 if (card.ID == id)
+                    return true;
+            }
+            return false;
+        }
+        public bool HasCard(string name)
+        {
+            foreach (Card card in RawList)
+            {
+                if (card.Name == name)
                     return true;
             }
             return false;

@@ -32,9 +32,6 @@ namespace WizardWars.UI.Screens
         private Button continueButton;
         private Button endTurnButton;
 
-        //Mechanics
-        private Card castedCard;
-
         public Duel(Game game, GameState gameState) : base(game)
         {
             this.gameState = gameState;
@@ -87,22 +84,13 @@ namespace WizardWars.UI.Screens
 
         private void GameState_ActionResolved(object sender, StateAction action)
         {
-            if (action is CardCastAction)
-            {
-                //Card resolved, so send it to the graveyard
-                CardCastAction castAction = (CardCastAction)action;
-                if (castedCard != null && castAction.Card.ID == castedCard.ID)
-                {
-                    castedCard.Owner.Graveyard.AddCard(castedCard);
-                    castedCard = null;
-                }
-            }
+            
         }
         private void PlayerOneHand_CardSelected(object sender, CardSelectionArgs e)
         {
             if (gameState.CanCastCard(gameState.PlayerOne, e.SelectedCard))
             {
-                castedCard = gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID);
+                gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID);
                 gameState.AddStateAction(new CardCastAction(e.SelectedCard, gameState.PlayerOne));
                 gameState.ContinueGame();
             }

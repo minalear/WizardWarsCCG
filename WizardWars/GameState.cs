@@ -174,6 +174,11 @@ namespace WizardWars
                 caster.Field.AddCard(card);
                 OnTrigger(card, "enterbattlefield");
             }
+            else
+            {
+                caster.Graveyard.AddCard(card);
+                OnTrigger(card, "entergraveyard");
+            }
         }
         public void ResolveEffectAction(Player caster, Card card, EffectAction action)
         {
@@ -276,7 +281,7 @@ namespace WizardWars
         public void CalculateCombat()
         {
             Player attacker = CurrentTurn;
-            Player defender = getOpponent(attacker);
+            Player defender = GetOpponent(attacker);
 
             List<Card> attackingCreatures = new List<Card>();
             foreach (Card card in attacker.Field)
@@ -309,6 +314,16 @@ namespace WizardWars
             }
 
             UpdateGameState();
+        }
+        public Player GetOpponent(Player self)
+        {
+            foreach (Player player in TurnOrder)
+            {
+                if (player.ID != self.ID)
+                    return player;
+            }
+
+            throw new InvalidProgramException("Couldn't find opponent.  Either players have matching IDs or there's only one player in the game.");
         }
 
         public void HighlightValidTargets(Effect effect)
@@ -434,7 +449,7 @@ namespace WizardWars
                     else if (tokens[1] == "self")
                         target = card.Controller;
                     else if (tokens[1] == "opponent")
-                        target = getOpponent(card.Controller);
+                        target = GetOpponent(card.Controller);
                 }
 
                 if (tokens[2] == "hand" && tokens[3] == "count")
@@ -483,7 +498,7 @@ namespace WizardWars
                         if (tokens[1] == "self" || tokens[1] == "all")
                             targets.Add(caster.PlayerCard);
                         if (tokens[1] == "opponent" || tokens[1] == "all")
-                            targets.Add(getOpponent(caster).PlayerCard);
+                            targets.Add(GetOpponent(caster).PlayerCard);
                     }
                     else if (tokens[0] == "creatures")
                     {
@@ -510,16 +525,6 @@ namespace WizardWars
             }
 
             return targets;
-        }
-        private Player getOpponent(Player self)
-        {
-            foreach (Player player in TurnOrder)
-            {
-                if (player.ID != self.ID)
-                    return player;
-            }
-
-            throw new InvalidProgramException("Couldn't find opponent.  Either players have matching IDs or there's only one player in the game.");
         }
         
         public event PhaseChangeEvent PhaseChange;
