@@ -13,6 +13,8 @@ namespace WizardWars.UI.Controls
         protected Font font;
         protected Color4 textColor;
 
+        public Color4 TextColor { get { return textColor; } set { textColor = value; } }
+
         public TextBox(Control parent, string text)
             : base(parent)
         {

@@ -10,6 +10,8 @@ namespace WizardWars.UI.Screens
     {
         private GameState gameState;
         private Texture2D playfieldTexture;
+        private Texture2D playerTwoHandSymbol;
+        private TextBox playerHandCount;
 
         //Player One
         private CardStack playerOneDeck;
@@ -66,6 +68,14 @@ namespace WizardWars.UI.Screens
             playerTwoElysium = new CardGroup(this, new Vector2(306, 10), zoneSize, gameState.PlayerTwo.Elysium);
             playerTwoBattlefield = new CardGroup(this, new Vector2(306, 146), zoneSize, gameState.PlayerTwo.Field);
 
+            playerHandCount = new TextBox(this, "7");
+            playerHandCount.Position = new Vector2(170, 10);
+            playerHandCount.TextColor = Color4.White;
+            gameState.PlayerTwo.Hand.CollectionChanged += (sender, e) =>
+            {
+                playerHandCount.Text = gameState.PlayerTwo.Hand.Count.ToString();
+            };
+
             /* CONTINUE */
             continueButton = new Button(this, "Continue");
             continueButton.Position = new Vector2(1170, 388);
@@ -99,6 +109,7 @@ namespace WizardWars.UI.Screens
         public override void LoadContent()
         {
             playfieldTexture = Texture2D.LoadFromSource("Content/Art/playfield.png");
+            playerTwoHandSymbol = Texture2D.LoadFromSource("Content/Art/hand_count_symbol.png");
 
             playerOneHero.Card = gameState.PlayerOne.PlayerCard;
             playerTwoHero.Card = gameState.PlayerTwo.PlayerCard;
@@ -109,6 +120,7 @@ namespace WizardWars.UI.Screens
         public override void Draw(GameTime gameTime, TextureRenderer renderer)
         {
             renderer.Draw(playfieldTexture, Vector2.Zero, 1f, Color4.White);
+            renderer.Draw(playerTwoHandSymbol, new Vector2(162, 10), 1f, Color4.White);
 
             base.Draw(gameTime, renderer);
         }
