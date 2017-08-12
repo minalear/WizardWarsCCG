@@ -28,6 +28,10 @@ namespace WizardWars.UI.Screens
 
         private Controls.Single playerTwoHero;
 
+        //Other
+        private Button continueButton;
+        private Button endTurnButton;
+
         public Duel(Game game, GameState gameState) : base(game)
         {
             this.gameState = gameState; 
@@ -58,6 +62,13 @@ namespace WizardWars.UI.Screens
 
             playerTwoElysium = new CardGroup(this, new Vector2(306, 10), zoneSize, gameState.PlayerTwo.Elysium);
             playerTwoBattlefield = new CardGroup(this, new Vector2(306, 146), zoneSize, gameState.PlayerTwo.Field);
+
+            /* CONTINUE */
+            continueButton = new Button(this, "Continue");
+            continueButton.Position = new Vector2(1170, 388);
+
+            endTurnButton = new Button(this, "End Turn");
+            endTurnButton.Position = new Vector2(1170, 418);
         }
 
         public override void LoadContent()

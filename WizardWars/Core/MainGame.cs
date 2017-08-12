@@ -24,21 +24,17 @@ namespace WizardWars.Core
         {
             Window.WindowBorder = WindowBorder.Fixed;
 
-            Window.MouseMove += (sender, e) => screen.MouseMove(e);
-            Window.MouseUp += (sender, e) => screen.MouseUp(e);
-            Window.MouseDown += (sender, e) => screen.MouseDown(e);
+            Window.MouseMove += (sender, e) => duelScreen.MouseMove(e);
+            Window.MouseUp += (sender, e) => duelScreen.MouseUp(e);
+            Window.MouseDown += (sender, e) => duelScreen.MouseDown(e);
         }
 
         public override void Initialize()
         {
             gameState = new GameState();
-            screen = new Screen(this);
-
             duelScreen = new Duel(this, gameState);
 
-            playerOneField = new CardGroup(screen, new Vector2(204, 348), new Vector2(945, 114), gameState.PlayerOne.Field);
-            playerOneElysium = new CardGroup(screen, new Vector2(204, 472), new Vector2(945, 114), gameState.PlayerOne.Elysium);
-            playerOneHand = new CardGroup(screen, new Vector2(204, 596), new Vector2(945, 114), gameState.PlayerOne.Hand);
+            return;
 
             playerOneHand.CardSelected += (sender, e) =>
             {
@@ -104,8 +100,7 @@ namespace WizardWars.Core
             gameState.AllCards.AddRange(deckList);
             gameState.PlayerOne.Deck.AddCards(deckList, Location.Random);
             gameState.PlayerTwo.Deck.AddCards(oppoList, Location.Random);
-
-            screen.LoadContent();
+            
             duelScreen.LoadContent();
 
             gameState.StartGame();

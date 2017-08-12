@@ -66,7 +66,7 @@ namespace WizardWars.UI.Controls
             this.Size = new Vector2(size.Width, size.Height);
 
             graphics.Clear(Color.FromArgb(125, 25, 25, 25));
-            graphics.DrawString(text, font, Brushes.Yellow, 0f, 0f);
+            graphics.DrawString(text, font, Brushes.WhiteSmoke, 0f, 0f);
 
             System.Drawing.Imaging.BitmapData data = bmp.LockBits(
                 new Rectangle(0, 0, bmp.Width, bmp.Height),

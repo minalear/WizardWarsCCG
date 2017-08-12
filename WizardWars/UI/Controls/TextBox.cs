@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Drawing;
+﻿using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics;
 using Minalear;
@@ -11,18 +9,20 @@ namespace WizardWars.UI.Controls
     {
         private string text;
         
-        private Texture2D texture;
-        private Font font;
+        protected Texture2D texture;
+        protected Font font;
+        protected Color4 textColor;
 
         public TextBox(Control parent, string text)
             : base(parent)
         {
             this.text = text;
+            textColor = Color4.Black;
         }
 
         public override void Draw(GameTime gameTime, TextureRenderer renderer)
         {
-            renderer.Draw(texture, Position, Vector2.One, Color4.Black);
+            renderer.Draw(texture, Position, Size, textColor);
         }
 
         public override void LoadContent()
@@ -42,7 +42,7 @@ namespace WizardWars.UI.Controls
             initGLTexture();
         }
 
-        private void initGLTexture()
+        protected void initGLTexture()
         {
             Size size = calculateTextSize();
             Bitmap bmp = new Bitmap(size.Width, size.Height);
@@ -52,17 +52,26 @@ namespace WizardWars.UI.Controls
             this.Size = new Vector2(size.Width, size.Height);
 
             graphics.Clear(Color.Transparent);
-            graphics.DrawString(text, font, Brushes.Black, 0f, 0f);
+            graphics.DrawString(text, font, Brushes.White, 0f, 0f);
 
             System.Drawing.Imaging.BitmapData data = bmp.LockBits(
                 new Rectangle(0, 0, bmp.Width, bmp.Height),
                 System.Drawing.Imaging.ImageLockMode.ReadOnly,
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            if (texture != null)
+            if (texture == null)
+            {
+                texture = new Texture2D(bmp.Width, bmp.Height, data.Scan0);
+            }
+            else if (texture.Width != bmp.Width || texture.Height != bmp.Height)
+            {
                 texture.Dispose();
-
-            texture = new Texture2D(bmp.Width, bmp.Height, data.Scan0);
+                texture = new Texture2D(bmp.Width, bmp.Height, data.Scan0);
+            }
+            else
+            {
+                texture.UpdateTexture(data.Scan0);
+            }
 
             bmp.UnlockBits(data);
 

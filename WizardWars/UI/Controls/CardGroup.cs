@@ -119,7 +119,7 @@ namespace WizardWars.UI.Controls
         private Single selectedCard;
         private bool markedForUpdate = false;
 
-        private const float MAX_SPACING = 120f;
+        private const float MAX_SPACING = 105f;
     }
 
     public class CardSelectionArgs : EventArgs
