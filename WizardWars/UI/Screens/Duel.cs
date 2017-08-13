@@ -117,10 +117,10 @@ namespace WizardWars.UI.Screens
             base.LoadContent();
         }
 
-        public override void Draw(GameTime gameTime, TextureRenderer renderer)
+        public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
-            renderer.Draw(playfieldTexture, Vector2.Zero, 1f, Color4.White);
-            renderer.Draw(playerTwoHandSymbol, new Vector2(162, 10), 1f, Color4.White);
+            renderer.AddRenderTask(playfieldTexture, Vector2.Zero, Color4.White);
+            renderer.AddRenderTask(playerTwoHandSymbol, new Vector2(162, 10), Color4.White);
 
             base.Draw(gameTime, renderer);
         }

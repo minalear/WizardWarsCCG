@@ -67,7 +67,7 @@ namespace WizardWars.UI.Controls
                     control.Update(gameTime);
             }
         }
-        public virtual void Draw(GameTime gameTime, TextureRenderer renderer)
+        public virtual void Draw(GameTime gameTime, RenderEngine renderer)
         {
             foreach (Control control in children)
             {

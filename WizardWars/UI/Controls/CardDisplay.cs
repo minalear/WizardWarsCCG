@@ -24,7 +24,7 @@ namespace WizardWars.UI.Controls
             font.Dispose();
             texture.Dispose();
         }
-        public override void Draw(GameTime gameTime, TextureRenderer renderer)
+        public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
             if (texture != null)
             {
@@ -32,7 +32,7 @@ namespace WizardWars.UI.Controls
                 position.X += Parent.Width - Width;
                 position.Y += Parent.Height - Height;
 
-                renderer.Draw(texture, position, Vector2.One, Color4.White);
+                renderer.AddRenderTask(texture, position, Color4.White);
             }
         }
 

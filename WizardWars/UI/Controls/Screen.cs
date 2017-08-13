@@ -19,7 +19,7 @@ namespace WizardWars.UI.Controls
                 game.Window.Width, game.Window.Height);
         }
 
-        public override void Draw(GameTime gameTime, TextureRenderer renderer)
+        public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
             base.Draw(gameTime, renderer);
         }

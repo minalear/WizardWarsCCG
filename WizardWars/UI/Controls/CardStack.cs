@@ -25,12 +25,12 @@ namespace WizardWars.UI.Controls
             display.SetText(string.Format("{0} ({1})", Collection.Name, Collection.Count));
         }
 
-        public override void Draw(GameTime gameTime, TextureRenderer renderer)
+        public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
             if (IsFaceUp && Collection.Count > 0)
-                renderer.Draw(Collection[0].Art, Position, Size, Color4.White);
+                renderer.AddRenderTask(Collection[0].Art, Position, Size, Color4.White);
             else if (!IsFaceUp)
-                renderer.Draw(CardInfo.CardBack, Position, Size, Color4.White);
+                renderer.AddRenderTask(CardInfo.CardBack, Position, Size, Color4.White);
 
             base.Draw(gameTime, renderer);
         }

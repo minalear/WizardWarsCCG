@@ -1,8 +1,6 @@
 ﻿using System;
-using OpenTK;
 using OpenTK.Graphics;
 using Minalear;
-using OpenTK.Input;
 
 namespace WizardWars.UI.Controls
 {
@@ -33,22 +31,24 @@ namespace WizardWars.UI.Controls
             OutlineHovered = Color4.Green;
         }
 
-        public override void Draw(GameTime gameTime, TextureRenderer renderer)
+        public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
             Color4 color = (Hovered) ? HoveredColor : Color4.White;
             if (Card.Highlighted) color = HighlightedColor;
 
             float rotation = (Card.Tapped) ? 1.571f : 0f;
-            renderer.Draw(Card.Art, Position, Size, rotation, color);
+            //renderer.Draw(Card.Art, Position, Size, new RectangleF(0, 0, Card.Art.Width, Card.Art.Height));
+            //renderer.Draw(Card.Art, Position, Size, rotation, color);
+            renderer.AddRenderTask(Card.Art, Position, Size, rotation, OpenTK.Vector2.Zero, color);
 
             //Draw outline
             if (Hovered)
             {
-                Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
+                /*Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
 
                 renderer.DrawOutline = true;
                 renderer.Draw(Card.Art, Position, Size, rotation, outlineColor);
-                renderer.DrawOutline = false;
+                renderer.DrawOutline = false;*/
             }
 
             base.Draw(gameTime, renderer);

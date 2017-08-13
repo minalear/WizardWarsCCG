@@ -20,9 +20,9 @@ namespace WizardWars.UI.Controls
             TextColorHovered = Color4.White;
         }
 
-        public override void Draw(GameTime gameTime, TextureRenderer renderer)
+        public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
-            renderer.Draw(texture, Position, 1f, textColor);
+            renderer.AddRenderTask(texture, Position, Size, textColor);
         }
         public override void MouseUp(MouseButtonEventArgs e)
         {

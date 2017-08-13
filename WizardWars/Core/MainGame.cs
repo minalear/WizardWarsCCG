@@ -9,7 +9,7 @@ namespace WizardWars.Core
 {
     public class MainGame : Game
     {
-        private TextureRenderer renderer;
+        private RenderEngine renderEngine;
 
         private GameState gameState;
         private AI gameAI;
@@ -56,9 +56,7 @@ namespace WizardWars.Core
         }
         public override void LoadContent()
         {
-            renderer = new TextureRenderer(
-                new Shader("Content/Shaders/tex.vert", "Content/Shaders/tex.frag"),
-                Window.Width, Window.Height);
+            renderEngine = new RenderEngine(this, 2);
 
             CardInfo.CardBack = Texture2D.LoadFromSource("Content/Art/cardback.png");
 
@@ -81,7 +79,9 @@ namespace WizardWars.Core
         }
         public override void Draw(GameTime gameTime)
         {
-            duelScreen.Draw(gameTime, renderer);
+            duelScreen.Draw(gameTime, renderEngine);
+
+            renderEngine.ProcessRenderCalls();
         }
         public override void Update(GameTime gameTime)
         {
