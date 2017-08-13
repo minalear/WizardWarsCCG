@@ -84,6 +84,29 @@ namespace Minalear
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
         }
+        public void SaveToBMP(string path)
+        {
+            Bind();
+
+            float[] imageDataF = new float[sizeof(float) * width * height];
+            GL.GetTexImage(TextureTarget.Texture2D, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.Float, imageDataF);
+
+            byte[] imageData = new byte[imageDataF.Length];
+            for (int i = 0; i < imageDataF.Length; i++)
+            {
+                imageData[i] = (byte)(255 * imageDataF[i]);
+            }
+            imageDataF = null;
+
+            IntPtr ptr = Marshal.AllocHGlobal(sizeof(byte) * imageData.Length);
+            Marshal.Copy(imageData, 0, ptr, imageData.Length);
+
+            Bitmap bmp = new Bitmap(width, height, sizeof(float) * width, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ptr);
+            bmp.Save(path);
+
+            bmp.Dispose();
+            Marshal.FreeHGlobal(ptr);
+        }
 
         public void Bind()
         {

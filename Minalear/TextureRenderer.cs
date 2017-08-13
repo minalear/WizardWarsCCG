@@ -71,7 +71,7 @@ namespace Minalear
         public void Draw(Texture2D texture, Vector2 position, Vector2 size, Color4 color)
         {
             shader.UseProgram();
-            setUniforms(texture, position, size, Vector2.Zero, 0f, Vector2.Zero, size, color);
+            setUniforms(texture, position, size, Vector2.Zero, 0f, Vector2.Zero, texture.Size, color);
 
             drawArrays(texture);
         }
@@ -79,7 +79,7 @@ namespace Minalear
         {
             shader.UseProgram();
             Vector2 size = texture.Size * scale;
-            setUniforms(texture, position, size, Vector2.Zero, 0f, Vector2.Zero, size, color);
+            setUniforms(texture, position, size, Vector2.Zero, 0f, Vector2.Zero, texture.Size, color);
 
             drawArrays(texture);
         }
@@ -87,7 +87,7 @@ namespace Minalear
         {
             shader.UseProgram();
             Vector2 center = size / 2f;
-            setUniforms(texture, position, size, center, rotation, Vector2.Zero, size, color);
+            setUniforms(texture, position, size, center, rotation, Vector2.Zero, texture.Size, color);
 
             drawArrays(texture);
         }
@@ -126,9 +126,9 @@ namespace Minalear
             GL.UniformMatrix4(modelLoc, false, ref model);
 
             Vector2 textureSize = tex.Size;
-            Matrix4 source = Matrix4.Identity;
-                //Matrix4.CreateScale(sourceSize.X / textureSize.X, sourceSize.Y / textureSize.Y, 0f) *
-                //Matrix4.CreateTranslation(sourcePos.X / textureSize.X, sourcePos.Y / textureSize.Y, 0f);
+            Matrix4 source =
+                Matrix4.CreateScale(sourceSize.X / textureSize.X, sourceSize.Y / textureSize.Y, 0f) *
+                Matrix4.CreateTranslation(sourcePos.X / textureSize.X, sourcePos.Y / textureSize.Y, 0f);
             GL.UniformMatrix4(texMatLoc, false, ref source);
 
             //Color
@@ -137,9 +137,9 @@ namespace Minalear
             //Outline
             if (DrawOutline)
             {
-                /*Vector2 stepSize = new Vector2(1f / textureSize.X, 1f / textureSize.Y);
+                Vector2 stepSize = new Vector2(1f / textureSize.X, 1f / textureSize.Y);
                 GL.Uniform2(stepLoc, ref stepSize);
-                GL.Uniform1(outlineLoc, 1);*/
+                GL.Uniform1(outlineLoc, 1);
             }
             else
             {

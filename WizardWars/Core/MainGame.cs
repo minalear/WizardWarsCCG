@@ -13,11 +13,8 @@ namespace WizardWars.Core
 
         private GameState gameState;
         private AI gameAI;
-
-        private Screen screen;
-        private TextBox promptText;
-        private Button continueButton;
-        private CardGroup playerOneField, playerOneElysium, playerOneHand;
+        
+        private CardGroup playerOneField;
         
         private Duel duelScreen;
 

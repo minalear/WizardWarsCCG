@@ -27,6 +27,12 @@ namespace Minalear
         {
             return (x > Left && x < Right && y > Top && y < Bottom); 
         }
+
+        public void Abs()
+        {
+            Width = Math.Abs(Width);
+            Height = Math.Abs(Height);
+        }
         
         public Vector2 Position { get { return position; } set { position = value; } }
         public Vector2 Size { get { return size; } set { size = value; } }

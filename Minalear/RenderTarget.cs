@@ -26,6 +26,15 @@ namespace Minalear
             GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
+
+        public void Bind()
+        {
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo);
+        }
+        public void Unbind()
+        {
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        }
         
         public void Dispose()
         {
