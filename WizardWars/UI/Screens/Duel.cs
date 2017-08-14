@@ -34,6 +34,7 @@ namespace WizardWars.UI.Screens
         private Display playerTwoHealthDisplay;
 
         //Other
+        private Controls.Single bigCardDisplay;
         private TextBox promptBox;
         private Button continueButton;
         private Button endTurnButton;
@@ -68,7 +69,11 @@ namespace WizardWars.UI.Screens
             playerOneBattlefield = new CardGroup(this, new Vector2(306, 312), zoneSize, gameState.PlayerOne.Field);
 
             playerOneHand.CardSelected += PlayerOneHand_CardSelected;
+            playerOneHand.CardHovered += CardHovered;
             playerOneElysium.CardSelected += PlayerOneElysium_CardSelected;
+            playerOneElysium.CardHovered += CardHovered;
+            playerOneBattlefield.CardSelected += PlayerOneBattlefield_CardSelected;
+            playerOneBattlefield.CardHovered += CardHovered;
 
             /* PLAYER TWO */
             playerTwoHero = new Controls.Single(this, gameState.PlayerTwo.PlayerCard);
@@ -95,6 +100,10 @@ namespace WizardWars.UI.Screens
             };
 
             /* OTHER */
+            bigCardDisplay = new Controls.Single(this, null);
+            bigCardDisplay.Position = new Vector2(10f, 490f);
+            bigCardDisplay.Size = new Vector2(175f, 220f);
+
             promptBox = new TextBox(this, string.Empty, 12f);
             promptBox.Position = new Vector2(1175f, 287f);
 
@@ -128,7 +137,9 @@ namespace WizardWars.UI.Screens
             base.Draw(gameTime, renderer);
         }
 
+        /* EVENTS */
         private void GameState_ActionResolved(object sender, StateAction action) { }
+
         private void PlayerOneHand_CardSelected(object sender, CardSelectionArgs e)
         {
             //Normal action
@@ -174,6 +185,15 @@ namespace WizardWars.UI.Screens
                     gameState.PlayerOne.Mana += e.SelectedCard.Meta.ManaValue * mod;
                 }
             }
+        }
+        private void PlayerOneBattlefield_CardSelected(object sender, CardSelectionArgs e)
+        {
+
+        }
+
+        private void CardHovered(object sender, CardHoveredArgs e)
+        {
+            bigCardDisplay.Card = e.Card;
         }
 
         private void ContinueButton_Click(object sender, MouseButtonEventArgs e)

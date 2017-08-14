@@ -31,6 +31,11 @@ namespace WizardWars.UI.Controls
         
         public void UpdateList()
         {
+            //Clear hovered event registration
+            foreach (Single single in Children)
+            {
+                single.ControlHovered -= Single_ControlHovered;
+            }
             Children.Clear();
 
             if (!ContentLoaded)
@@ -57,9 +62,11 @@ namespace WizardWars.UI.Controls
                 single.Size = card.Art.Size * scale;
 
                 xPos += spacing;
+
+                single.ControlHovered += Single_ControlHovered;
             }
         }
-
+        
         public override void Update(GameTime gameTime)
         {
             if (markedForUpdate)
@@ -70,39 +77,22 @@ namespace WizardWars.UI.Controls
 
             base.Update(gameTime);
         }
-        public override void MouseMove(MouseMoveEventArgs e)
+        public override void MouseUp(MouseButtonEventArgs e)
         {
-            base.MouseMove(e);
-
-            Single newCard = null;
+            //This is to avoid modifying the list while Invoking CardSelected
+            Card selectedCard = null; 
             foreach (Single card in Children)
             {
                 if (card.Hovered)
                 {
-                    newCard = card;
-                    card.Hovered = false;
+                    selectedCard = card.Card;
+                    break;
                 }
             }
 
-            if (newCard != null)
-            {
-                if (selectedCard == null || newCard.Card.ID != selectedCard.Card.ID)
-                {
-                    newCard.Hovered = true;
-                    selectedCard = newCard;
-                }
-                else
-                {
-                    newCard.Hovered = true;
-                }
-            }
-        }
-        public override void MouseUp(MouseButtonEventArgs e)
-        {
             if (selectedCard != null)
             {
-                CardSelected?.Invoke(this, new CardSelectionArgs(selectedCard.Card, e.Button));
-                selectedCard = null;
+                CardSelected?.Invoke(this, new CardSelectionArgs(selectedCard, e.Button));
             }
 
             base.MouseUp(e);
@@ -112,11 +102,17 @@ namespace WizardWars.UI.Controls
         {
             UpdateList();
         }
+        private void Single_ControlHovered(object sender, MouseMoveEventArgs e)
+        {
+            CardHovered?.Invoke(this, new CardHoveredArgs(((Single)sender).Card, new Vector2(e.X, e.Y)));
+        }
 
         public delegate void CardSelectedEvent(object sender, CardSelectionArgs e);
-        public event CardSelectedEvent CardSelected;
+        public delegate void CardHoveredEvent(object sender, CardHoveredArgs e);
 
-        private Single selectedCard;
+        public event CardSelectedEvent CardSelected;
+        public event CardHoveredEvent CardHovered;
+        
         private bool markedForUpdate = false;
 
         private const float MAX_SPACING = 105f;
@@ -132,5 +128,16 @@ namespace WizardWars.UI.Controls
 
         public Card SelectedCard { get; private set; }
         public MouseButton Button { get; private set; }
+    }
+    public class CardHoveredArgs : EventArgs
+    {
+        public CardHoveredArgs(Card card, Vector2 position)
+        {
+            Card = card;
+            MousePosition = position;
+        }
+
+        public Card Card { get; private set; }
+        public Vector2 MousePosition { get; private set; }
     }
 }

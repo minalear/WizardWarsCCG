@@ -122,7 +122,10 @@ namespace WizardWars.UI.Controls
             MouseMove(new MouseMoveEventArgs(e.X, e.Y, 0, 0));
         }
 
-        public virtual void MouseEnter(MouseMoveEventArgs e) { }
+        public virtual void MouseEnter(MouseMoveEventArgs e)
+        {
+            ControlHovered?.Invoke(this, e);
+        }
         public virtual void MouseLeave(MouseMoveEventArgs e) { }
 
         protected virtual Vector2 getAbsolutePosition()
@@ -157,5 +160,8 @@ namespace WizardWars.UI.Controls
         public float Bottom { get { return getAbsolutePosition().Y + size.Y; } }
 
         public List<Control> Children { get { return children; } }
+
+        public delegate void ControlHoveredEvent(object sender, MouseMoveEventArgs e);
+        public event ControlHoveredEvent ControlHovered;
     }
 }
