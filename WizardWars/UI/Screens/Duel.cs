@@ -40,6 +40,7 @@ namespace WizardWars.UI.Screens
         private Button endTurnButton;
 
         //Mechanics
+        private PhaseTracker phaseTracker;
         private Card castedCard;
         private bool isCasting = false;
         private int costPaid = 0;
@@ -100,6 +101,8 @@ namespace WizardWars.UI.Screens
             };
 
             /* OTHER */
+            phaseTracker = new PhaseTracker(this, new Vector2(304f, 280f), gameState);
+
             bigCardDisplay = new Controls.Single(this, null);
             bigCardDisplay.Position = new Vector2(10f, 490f);
             bigCardDisplay.Size = new Vector2(175f, 220f);

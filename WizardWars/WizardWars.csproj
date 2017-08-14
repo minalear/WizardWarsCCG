@@ -65,8 +65,12 @@
     <Compile Include="UI\Controls\Button.cs" />
     <Compile Include="UI\Controls\CardStack.cs" />
     <Compile Include="UI\Controls\Display.cs" />
+    <Compile Include="UI\Controls\PhaseTracker.cs" />
     <Compile Include="UI\Controls\TextBox.cs" />
     <Compile Include="UI\Screens\Duel.cs" />
+    <Content Include="Content\Art\Assets\phase_tracker.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Art\Cards\cantrip.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
