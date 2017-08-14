@@ -67,16 +67,16 @@
     <Compile Include="UI\Controls\Display.cs" />
     <Compile Include="UI\Controls\TextBox.cs" />
     <Compile Include="UI\Screens\Duel.cs" />
-    <Content Include="Content\Art\cantrip.png">
+    <Content Include="Content\Art\Cards\cantrip.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\hand_count_symbol.png">
+    <Content Include="Content\Art\Assets\hand_count_symbol.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\oompa_looter.png">
+    <Content Include="Content\Art\Cards\oompa_looter.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\player_flannin.png">
+    <Content Include="Content\Art\Cards\player_flannin.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Decks\test_deck.dek">
@@ -94,40 +94,40 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Art\cardback.png">
+    <Content Include="Content\Art\Assets\cardback.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\glorious_anthem.png">
+    <Content Include="Content\Art\Cards\glorious_anthem.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\grunka_lunkan.png">
+    <Content Include="Content\Art\Cards\grunka_lunkan.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\heal.png">
+    <Content Include="Content\Art\Cards\heal.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\lightning_helix.png">
+    <Content Include="Content\Art\Cards\lightning_helix.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\orb_of_confusion.png">
+    <Content Include="Content\Art\Cards\orb_of_confusion.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\playfield.png">
+    <Content Include="Content\Art\Assets\playfield.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\spirit_grunk.png">
+    <Content Include="Content\Art\Cards\spirit_grunk.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\wrath_of_god.png">
+    <Content Include="Content\Art\Cards\wrath_of_god.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\counter_song.png">
+    <Content Include="Content\Art\Cards\counter_song.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\red_dragon_whelp.png">
+    <Content Include="Content\Art\Cards\red_dragon_whelp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Art\player_flinnan.png">
+    <Content Include="Content\Art\Cards\player_flinnan.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Shaders\geo.frag">

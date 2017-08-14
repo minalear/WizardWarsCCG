@@ -9,6 +9,7 @@ namespace WizardWars
         public int ID { get; private set; }
         public GameState GameState;
         
+        public int Heatlh { get { return PlayerCard.Defense; } }
         public int Mana;
 
         public Card PlayerCard;
@@ -23,6 +24,8 @@ namespace WizardWars
         public Collection Field;
 
         public bool CanDrawCards = true;
+        public int NumberOfTimesDevoted = 0;
+        public const int MAX_DEVOTION_PER_TURN = 1;
 
         public Player(GameState gameState)
         {
@@ -60,6 +63,19 @@ namespace WizardWars
             }
         }
 
+        public bool TryDevoteCard(Card card)
+        {
+            if (GameState.CurrentTurn.ID == ID && NumberOfTimesDevoted < MAX_DEVOTION_PER_TURN && GameState.CurrentPhase == Phases.Main)
+            {
+                Elysium.AddCard(card);
+                NumberOfTimesDevoted++;
+
+                return true;
+            }
+
+            return false;
+        }
+
         public virtual void PromptPlayerStateAction(StateAction action)
         {
             //PRETEND THIS IS AI PASSING
@@ -75,6 +91,7 @@ namespace WizardWars
                 Console.WriteLine("Select target for {0}", action);
             }
         }
+        public virtual void PromptPlayerPayCastingCost(Card card, int manaCost) { }
 
         public override string ToString()
         {

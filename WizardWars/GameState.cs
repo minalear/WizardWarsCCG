@@ -600,6 +600,11 @@ namespace WizardWars
             {
                 foreach (Card card in gameState.CurrentTurn.Field)
                     card.Tapped = false;
+                foreach (Card card in gameState.CurrentTurn.Elysium)
+                {
+                    card.Tapped = false;
+                    card.IsManaDrained = false;
+                }
             }
             else if (Phase == Phases.DeclareBlock)
             {
@@ -613,6 +618,20 @@ namespace WizardWars
             {
                 gameState.CalculateCombat();
             }
+            else if (Phase == Phases.Cleanup)
+            {
+                gameState.CurrentTurn.NumberOfTimesDevoted = 0;
+            }
+        }
+        public override void Resolve(GameState gameState)
+        {
+            //Clear mana from both player's mana base
+            foreach (Player player in gameState.TurnOrder)
+            {
+                player.Mana = 0;
+            }
+
+            base.Resolve(gameState);
         }
         public override string ToString()
         {

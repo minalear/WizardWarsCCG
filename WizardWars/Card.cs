@@ -21,6 +21,7 @@ namespace WizardWars
         public Card BlockerRef { get; set; }
 
         public bool Blocking { get; set; }
+        public bool IsManaDrained { get; set; }
 
         public Collection Zone { get; set; }
 

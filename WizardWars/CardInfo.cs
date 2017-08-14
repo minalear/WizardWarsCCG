@@ -10,6 +10,7 @@ namespace WizardWars
         public string Name;
         public string ImagePath;
         public int Cost;
+        public int ManaValue = 1;
 
         public string RulesText;
         public string FlavorText;

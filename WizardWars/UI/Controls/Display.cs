@@ -46,6 +46,10 @@ namespace WizardWars.UI.Controls
         {
             if (markedForUpdate)
             {
+                if (!ContentLoaded)
+                {
+                    LoadContent();
+                }
                 initGLTexture();
                 markedForUpdate = false;
             }
@@ -106,6 +110,7 @@ namespace WizardWars.UI.Controls
         private void setAlignmentPosition(ContentAlignment alignment)
         {
             //Hacky way to determine alignment via string parsing, rather than a ton of if/elseif
+            this.alignment = alignment;
             string alignmentStr = alignment.ToString();
 
             Vector2 position = relativePosition;

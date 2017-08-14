@@ -13,17 +13,13 @@ namespace WizardWars.UI.Controls
         public Color4 TextColorNormal { get; set; }
         public Color4 TextColorHovered { get; set; }
 
-        public Button(Control parent, string text)
-            : base(parent, text)
+        public Button(Control parent, string text, float fontSize)
+            : base(parent, text, fontSize)
         {
             TextColorNormal = Color4.Black;
             TextColorHovered = Color4.White;
         }
 
-        public override void Draw(GameTime gameTime, RenderEngine renderer)
-        {
-            renderer.AddRenderTask(texture, Position, Size, textColor);
-        }
         public override void MouseUp(MouseButtonEventArgs e)
         {
             Click?.Invoke(this, e);

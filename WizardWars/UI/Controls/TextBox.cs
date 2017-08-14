@@ -12,30 +12,38 @@ namespace WizardWars.UI.Controls
         protected Texture2D texture;
         protected Font font;
         protected Color4 textColor;
+        protected float fontSize;
 
         public Color4 TextColor { get { return textColor; } set { textColor = value; } }
 
-        public TextBox(Control parent, string text)
+        public TextBox(Control parent, string text, float fontSize)
             : base(parent)
         {
             this.text = text;
-            textColor = Color4.Black;
+            this.textColor = Color4.Black;
+            this.fontSize = fontSize;
         }
 
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
             renderer.AddRenderTask(texture, Position, Size, textColor);
+
+            base.Draw(gameTime, renderer);
         }
 
         public override void LoadContent()
         {
-            font = new Font("Tahoma", 12f, FontStyle.Regular);
+            font = new Font("Tahoma", fontSize, FontStyle.Regular);
             initGLTexture();
+
+            base.LoadContent();
         }
         public override void UnloadContent()
         {
             font.Dispose();
             texture.Dispose();
+
+            base.UnloadContent();
         }
 
         public void SetText(string text)
@@ -90,7 +98,10 @@ namespace WizardWars.UI.Controls
             gfx.Dispose();
             test.Dispose();
 
-            return new Size((int)sizeF.Width, (int)sizeF.Height);
+            int width = (int)MathHelper.Clamp(sizeF.Width, 1, sizeF.Width + 1);
+            int height = (int)MathHelper.Clamp(sizeF.Height, 1, sizeF.Height + 1);
+
+            return new Size(width, height);
         }
 
         public string Text { get { return text; } set { SetText(value); } }
