@@ -18,13 +18,6 @@ namespace WizardWars.UI.Controls
         {
             Card = card;
 
-            if (card != null && card.Meta.IsType(Types.Creature))
-            {
-                CardDisplay display = new CardDisplay(this);
-                display.LoadContent();
-                Children.Add(display);
-            }
-
             HighlightedColor = new Color4(1f, 0.65f, 0.65f, 1f);
             HoveredColor = new Color4(0.65f, 1f, 0.65f, 1f);
             OutlineHighlighted = Color4.Red;

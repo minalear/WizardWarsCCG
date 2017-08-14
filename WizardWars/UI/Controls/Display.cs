@@ -11,13 +11,18 @@ namespace WizardWars.UI.Controls
         private Texture2D texture;
         private Font font;
         private string text = "TEST";
+        private ContentAlignment alignment;
 
         private bool markedForUpdate = false;
 
         public string Text { get { return text; } set { SetText(value); } }
+        public ContentAlignment Alignment { get { return alignment; } set { setAlignmentPosition(value); } }
 
         public Display(Control parent)
-            : base(parent) { }
+            : base(parent)
+        {
+            alignment = ContentAlignment.TopLeft;
+        }
 
         public override void LoadContent()
         {
@@ -82,6 +87,9 @@ namespace WizardWars.UI.Controls
 
             graphics.Dispose();
             bmp.Dispose();
+
+            //Update alignment
+            setAlignmentPosition(alignment);
         }
         private Size calculateTextSize(string text)
         {
@@ -95,6 +103,30 @@ namespace WizardWars.UI.Controls
 
             return new Size((int)sizeF.Width, (int)sizeF.Height);
         }
+        private void setAlignmentPosition(ContentAlignment alignment)
+        {
+            //Hacky way to determine alignment via string parsing, rather than a ton of if/elseif
+            string alignmentStr = alignment.ToString();
+
+            Vector2 position = relativePosition;
+
+            //Vertical Alignment
+            if (alignmentStr.Contains("Top"))
+                position.Y = 0f;
+            else if (alignmentStr.Contains("Middle"))
+                position.Y = (float)Math.Round((Parent.Height / 2f) - (Height / 2f));
+            else if (alignmentStr.Contains("Bottom"))
+                position.Y = Parent.Height - Height;
+
+            //Horizontal Alignment
+            if (alignmentStr.Contains("Left"))
+                position.X = 0f;
+            else if (alignmentStr.Contains("Center"))
+                position.X = (float)Math.Round((Parent.Width / 2f) - (Width / 2f));
+            else if (alignmentStr.Contains("Right"))
+                position.X = Parent.Width - Width;
+
+            Position = position;
+        }
     }
-    
 }
