@@ -192,6 +192,7 @@ namespace WizardWars.UI.Screens
                     //Drain the mana required from the mana pool to cover the cost
                     int manaDrain = castedCard.Cost - costPaid;
                     gameState.PlayerOne.Mana -= manaDrain;
+                    costPaid = 0;
 
                     //set IsManaDrained true to every card tapped in Elysium (redundant)
                     foreach (Card card in gameState.PlayerOne.Elysium)

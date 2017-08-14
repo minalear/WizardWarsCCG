@@ -37,13 +37,13 @@ namespace WizardWars.UI.Controls
             if (Card.Highlighted) color = HighlightedColor;
 
             float rotation = (Card.Tapped) ? 1.571f : 0f;
-            renderer.AddRenderTask(Card.Art, Position, Size, rotation, OpenTK.Vector2.Zero, color);
+            renderer.AddRenderTask(Card.Art, Position, Size, rotation, new OpenTK.Vector2(0.5f, 0.5f), color);
 
             //Draw outline
             if (Hovered)
             {
                 Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
-                renderer.AddOutlineTask(Card.Art, Position, Size, rotation, OpenTK.Vector2.Zero, outlineColor);
+                renderer.AddOutlineTask(Card.Art, Position, Size, rotation, new OpenTK.Vector2(0.5f, 0.5f), outlineColor);
             }
 
             base.Draw(gameTime, renderer);
