@@ -144,6 +144,7 @@ namespace WizardWars
             for (int i = 0; i < num; i++)
             {
                 cards.Add(RemoveCard(location));
+                collectionChanged();
             }
 
             return cards;
