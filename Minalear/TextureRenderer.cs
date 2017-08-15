@@ -66,6 +66,11 @@ namespace Minalear
             //Projection Matrix
             Matrix4 projMat4 = Matrix4.CreateOrthographicOffCenter(0f, renderWidth, renderHeight, 0f, -1f, 1f);
             GL.UniformMatrix4(projLoc, false, ref projMat4);
+            
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindVertexArray(0);
+
+            GL.DeleteBuffer(vbo);
         }
 
         public void Draw(Texture2D texture, Vector2 position, Vector2 size, Color4 color)

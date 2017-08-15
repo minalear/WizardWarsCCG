@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Text;
+using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics;
 using Minalear;
@@ -14,7 +15,7 @@ namespace WizardWars.UI.Controls
         protected Color4 textColor;
         protected float fontSize;
 
-        public Color4 TextColor { get { return textColor; } set { textColor = value; } }
+        
 
         public TextBox(Control parent, string text, float fontSize)
             : base(parent)
@@ -93,7 +94,13 @@ namespace WizardWars.UI.Controls
             Bitmap test = new Bitmap(1, 1);
             Graphics gfx = Graphics.FromImage(test);
 
-            SizeF sizeF = gfx.MeasureString(text, font);
+            SizeF sizeF = new SizeF(0f, 0f);
+
+            if (WordWrap)
+            {
+                text = wrapText(gfx, text);
+            }
+            sizeF = gfx.MeasureString(text, font);
 
             gfx.Dispose();
             test.Dispose();
@@ -104,6 +111,48 @@ namespace WizardWars.UI.Controls
             return new Size(width, height);
         }
 
+        private string wrapText(Graphics graphics, string text)
+        {
+            /* WORD WRAP CODE BORROWED FROM VISUAL NOVEL (also written by me) */
+            StringBuilder stringBuffer = new StringBuilder(text.Length);
+            string[] lines = text.Split('\n');
+
+            foreach (string line in lines)
+            {
+                if (graphics.MeasureString(line, font).Width > BufferWidth)
+                {
+                    string[] words = line.Split(' ');
+                    float bufferWidth = 0f;
+
+                    foreach (string word in words)
+                    {
+                        SizeF size = graphics.MeasureString(word + " ", font, BufferWidth,
+                            new StringFormat(StringFormat.GenericTypographic) { FormatFlags = StringFormatFlags.MeasureTrailingSpaces });
+                        if (size.Width + bufferWidth < BufferWidth)
+                        {
+                            bufferWidth += size.Width;
+                            stringBuffer.Append(word + " ");
+                        }
+                        else
+                        {
+                            bufferWidth = size.Width;
+                            stringBuffer.Append("\n" + word + " ");
+                        }
+                    }
+                    stringBuffer.Append("\n");
+                }
+                else
+                {
+                    stringBuffer.Append(line + "\n");
+                }
+            }
+
+            return stringBuffer.ToString();
+        }
+
+        public Color4 TextColor { get { return textColor; } set { textColor = value; } }
         public string Text { get { return text; } set { SetText(value); } }
+        public bool WordWrap { get; set; }
+        public int BufferWidth { get; set; }
     }
 }

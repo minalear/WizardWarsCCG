@@ -8,7 +8,7 @@ namespace WizardWars
 
         public int ID { get; private set; }
         public GameState GameState;
-        
+
         public int Heatlh { get { return PlayerCard.Defense; } }
         public int Mana;
 
@@ -31,7 +31,7 @@ namespace WizardWars
         {
             ID = _nextValidID++;
             GameState = gameState;
-            
+
             Mana = 0;
 
             Hand = new Collection("Hand", this);
@@ -57,10 +57,9 @@ namespace WizardWars
         public void Damage(Card source, int num)
         {
             PlayerCard.Damage(num);
-            if (PlayerCard.IsDestroyed())
-            {
-                Console.WriteLine("{0} has died!", this);
-            }
+
+            //Eventually implement a fail state
+            if (PlayerCard.IsDestroyed()) { }
         }
 
         public bool TryDevoteCard(Card card)
@@ -77,21 +76,8 @@ namespace WizardWars
             return false;
         }
 
-        public virtual void PromptPlayerStateAction(StateAction action)
-        {
-            //PRETEND THIS IS AI PASSING
-            if (ID != 1) //PlayerTwo ID
-            {
-                Console.WriteLine("Current Stack: {0}", action);
-            }
-        }
-        public virtual void PromptPlayerTargetRequired(EffectAction action)
-        {
-            if (ID != 1)
-            {
-                Console.WriteLine("Select target for {0}", action);
-            }
-        }
+        public virtual void PromptPlayerStateAction(StateAction action) { }
+        public virtual void PromptPlayerTargetRequired(EffectAction action) { }
         public virtual void PromptPlayerPayCastingCost(Card card, int manaCost) { }
 
         public override string ToString()

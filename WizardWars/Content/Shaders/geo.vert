@@ -1,5 +1,5 @@
 ﻿#version 400 core
-in vec2 pos;
+layout(location = 0) in vec2 pos;
 
 uniform mat4 proj;
 uniform mat4 model;

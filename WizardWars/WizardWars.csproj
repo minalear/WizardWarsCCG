@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BAAD02D2-B5AD-4041-8505-D60A3018C308}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WizardWars</RootNamespace>
     <AssemblyName>WizardWars</AssemblyName>
@@ -65,6 +65,8 @@
     <Compile Include="UI\Controls\Button.cs" />
     <Compile Include="UI\Controls\CardStack.cs" />
     <Compile Include="UI\Controls\Display.cs" />
+    <Compile Include="UI\Controls\GameStack.cs" />
+    <Compile Include="UI\Controls\HandCounter.cs" />
     <Compile Include="UI\Controls\PhaseTracker.cs" />
     <Compile Include="UI\Controls\TextBox.cs" />
     <Compile Include="UI\Screens\Duel.cs" />

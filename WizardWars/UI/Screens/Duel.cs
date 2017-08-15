@@ -11,8 +11,6 @@ namespace WizardWars.UI.Screens
     {
         private GameState gameState;
         private Texture2D playfieldTexture;
-        private Texture2D playerTwoHandSymbol;
-        private TextBox playerHandCount;
 
         //Player One
         private CardStack playerOneDeck;
@@ -32,15 +30,17 @@ namespace WizardWars.UI.Screens
 
         private Controls.Single playerTwoHero;
         private Display playerTwoHealthDisplay;
+        private HandCounter playerTwoHandCounter;
 
         //Other
+        private GameStack gameStackControl;
+        private PhaseTracker phaseTracker;
         private Controls.Single previewCard;
         private TextBox promptBox;
         private Button continueButton;
         private Button endTurnButton;
 
         //Mechanics
-        private PhaseTracker phaseTracker;
         private Card castedCard;
         private bool isCasting = false;
         private int costPaid = 0;
@@ -92,15 +92,16 @@ namespace WizardWars.UI.Screens
             playerTwoElysium = new CardGroup(this, new Vector2(306, 10), zoneSize, gameState.PlayerTwo.Elysium);
             playerTwoBattlefield = new CardGroup(this, new Vector2(306, 146), zoneSize, gameState.PlayerTwo.Field);
 
-            playerHandCount = new TextBox(this, "7", 12f);
-            playerHandCount.Position = new Vector2(170, 10);
-            playerHandCount.TextColor = Color4.White;
+            playerTwoHandCounter = new HandCounter(this, "Content/Art/Assets/hand_count_symbol.png", new Vector2(206f, 12f));
             gameState.PlayerTwo.Hand.CollectionChanged += (sender, e) =>
             {
-                playerHandCount.Text = gameState.PlayerTwo.Hand.Count.ToString();
+                playerTwoHandCounter.Text = gameState.PlayerTwo.Hand.Count.ToString();
             };
 
             /* OTHER */
+            gameStackControl = new GameStack(this, new Vector2(10f, 10f), new Vector2(175f, 470f));
+            gameState.NewStateAction += (sender, e) => gameStackControl.AddGameStack(e);
+
             phaseTracker = new PhaseTracker(this, new Vector2(304f, 280f), gameState);
 
             previewCard = new Controls.Single(this, null);
@@ -123,7 +124,6 @@ namespace WizardWars.UI.Screens
         public override void LoadContent()
         {
             playfieldTexture = Texture2D.LoadFromSource("Content/Art/Assets/playfield.png");
-            playerTwoHandSymbol = Texture2D.LoadFromSource("Content/Art/Assets/hand_count_symbol.png");
 
             playerOneHero.Card = gameState.PlayerOne.PlayerCard;
             playerTwoHero.Card = gameState.PlayerTwo.PlayerCard;
@@ -133,16 +133,24 @@ namespace WizardWars.UI.Screens
 
             base.LoadContent();
         }
+        public override void UnloadContent()
+        {
+            playfieldTexture.Dispose();
+
+            base.UnloadContent();
+        }
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
             renderer.AddRenderTask(playfieldTexture, Vector2.Zero, Color4.White);
-            renderer.AddRenderTask(playerTwoHandSymbol, new Vector2(162, 10), Color4.White);
 
             base.Draw(gameTime, renderer);
         }
 
         /* EVENTS */
-        private void GameState_ActionResolved(object sender, StateAction action) { }
+        private void GameState_ActionResolved(object sender, StateAction action)
+        {
+            gameStackControl.RemoveGameStack(action);
+        }
 
         private void PlayerOneHand_CardSelected(object sender, CardSelectionArgs e)
         {
@@ -205,7 +213,6 @@ namespace WizardWars.UI.Screens
             //Continue state
             if (!isCasting && gameState.HasPriority(gameState.PlayerOne))
             {
-                Console.WriteLine("Player #{0}: Passing on Action ({1})", gameState.PlayerOne.ID + 1, gameState.CurrentAction);
                 gameState.PassPriority();
             }
             else if (isCasting)

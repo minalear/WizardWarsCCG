@@ -22,13 +22,15 @@ namespace WizardWars.Core
             //Passes priority if it has priority
             if (gameState.HasPriority(Player))
             {
-                Console.WriteLine("Player #{0}: Passing on Action ({1})", Player.ID + 1, Player.GameState.CurrentAction);
                 gameState.PassPriority();
             }
         }
 
         private void GameState_ActionResolved(object sender, StateAction action)
         {
+            //Disable actions for now
+            return;
+
             if (!(action is PhaseAction)) return;
             if (gameState.CurrentTurn.ID == Player.ID && gameState.CurrentPhase == Phases.Main)
             {

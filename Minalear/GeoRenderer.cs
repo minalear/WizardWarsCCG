@@ -25,9 +25,8 @@ namespace Minalear
 
             //Attributes
             shader.UseProgram();
-            int posAttrib = GL.GetAttribLocation(shader.ID, "pos");
-            GL.EnableVertexAttribArray(posAttrib);
-            GL.VertexAttribPointer(posAttrib, 2, VertexAttribPointerType.Float, false, 2 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0); //pos attribute
+            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 2 * sizeof(float), 0);
 
             //Uniforms
             int model = GL.GetUniformLocation(shader.ID, "model");

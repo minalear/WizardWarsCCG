@@ -56,6 +56,7 @@ namespace WizardWars
         public void AddStateAction(StateAction action)
         {
             PriorityCounter = 0;
+            NewStateAction?.Invoke(this, action);
             action.Init(this);
 
             //True if a player is reacting to a state action
@@ -63,7 +64,6 @@ namespace WizardWars
             {
                 //Push both actions onto the stack and set the current action to null
                 GameStack.Push(CurrentAction);
-                NewStateAction?.Invoke(this, action);
                 CurrentAction = null;
             }
 
@@ -124,6 +124,8 @@ namespace WizardWars
 
         public void ResolveStateAction(StateAction action)
         {
+            ActionResolved?.Invoke(this, action);
+
             if (action is CardCastAction)
             {
                 CardCastAction castAction = (CardCastAction)action;
@@ -139,8 +141,6 @@ namespace WizardWars
                 PhaseAction phaseAction = (PhaseAction)action;
                 ResolvePhaseAction(phaseAction.Phase);
             }
-
-            ActionResolved?.Invoke(this, action);
         }
 
         public bool HasPriority(Player player)
@@ -542,7 +542,6 @@ namespace WizardWars
         public virtual void Init(GameState gameState) { }
         public virtual void Resolve(GameState gameState)
         {
-            Console.WriteLine("({0}) action resolves.", ToString());
             gameState.ResolveStateAction(this);
         }
     }
