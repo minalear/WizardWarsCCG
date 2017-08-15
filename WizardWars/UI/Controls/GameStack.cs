@@ -13,9 +13,6 @@ namespace WizardWars.UI.Controls
         public void AddGameStack(StateAction action)
         {
             var element = new GameStackElement(this, action, 10f);
-            element.WordWrap = true;
-            element.BufferWidth = (int)this.Width;
-
             element.LoadContent();
         }
         public void RemoveGameStack(StateAction action)
@@ -29,7 +26,7 @@ namespace WizardWars.UI.Controls
         {
             //Draw only the first X-children that fit vertically
             float bufferHeight = 0f;
-            float elementBuffer = 5f;
+            float elementBuffer = 0f;
             for (int i = Children.Count - 1; i >= 0; i--)
             {
                 if (!(Children[i] is GameStackElement)) continue;
@@ -44,20 +41,68 @@ namespace WizardWars.UI.Controls
                 }
             }
         }
+
+        public override void LoadContent()
+        {
+            GameStackElement.PhaseSymbol = Texture2D.LoadFromSource("Content/Art/Assets/phase_symbol.png");
+            GameStackElement.TurnSymbol = Texture2D.LoadFromSource("Content/Art/Assets/turn_symbol.png");
+
+            base.LoadContent();
+        }
+        public override void UnloadContent()
+        {
+            GameStackElement.PhaseSymbol.Dispose();
+            GameStackElement.TurnSymbol.Dispose();
+
+            base.UnloadContent();
+        }
     }
 
-    public class GameStackElement : TextBox
+    public class GameStackElement : Control
     {
         public StateAction Action;
 
+        private TextBox textBox;
+
         public GameStackElement(Control parent, StateAction action, float fontSize)
-            : base(parent, action.ToString(), fontSize)
+            : base(parent)
         {
             Action = action;
+            textBox = new TextBox(this, action.ToString(), fontSize);
+            textBox.WordWrap = true;
+            textBox.BufferWidth = (int)(parent.Width - 50f);
         }
-        public override string ToString()
+
+        public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
-            return string.Format("GameStackElement: ({0})", Action.ToString());
+            if (Action is PhaseAction)
+            {
+                Texture2D texture = (((PhaseAction)Action).Phase == Phases.Cleanup) ? TurnSymbol : PhaseSymbol;
+                renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), Color4.White);
+            }
+            else if (Action is CardCastAction)
+            {
+                Texture2D texture = ((CardCastAction)Action).Card.Art;
+                renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), Color4.White);
+            }
+            else if (Action is EffectAction)
+            {
+                Texture2D texture = ((EffectAction)Action).Card.Art;
+                renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), Color4.White);
+            }
+
+            textBox.X = 50f;
+            textBox.Y = (int)(Height / 2f - textBox.Height / 2f);
+
+            base.Draw(gameTime, renderer);
         }
+        public override void LoadContent()
+        {
+            base.LoadContent();
+
+            this.Height = Math.Max(textBox.Height, 50f);
+        }
+
+        public static Texture2D PhaseSymbol, TurnSymbol;
     }
 }

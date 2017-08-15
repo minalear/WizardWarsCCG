@@ -70,7 +70,13 @@
     <Compile Include="UI\Controls\PhaseTracker.cs" />
     <Compile Include="UI\Controls\TextBox.cs" />
     <Compile Include="UI\Screens\Duel.cs" />
+    <Content Include="Content\Art\Assets\phase_symbol.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Art\Assets\phase_tracker.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Art\Assets\turn_symbol.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Art\Cards\cantrip.png">

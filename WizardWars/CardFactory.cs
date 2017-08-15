@@ -32,6 +32,9 @@ namespace WizardWars
                     {
                         //Hero card
                         CardInfo info = getCardFromList(allCards, lines[i + 1]);
+                        foreach (Effect effect in info.Effects)
+                            effect.Card = info;
+
                         info.LoadCardArt();
 
                         player.PlayerCard = info.CreateInstance(player);

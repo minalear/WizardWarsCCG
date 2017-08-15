@@ -14,6 +14,9 @@ namespace WizardWars
         public string[] Actions;
         public object NumTargets = 1;
 
+        [JsonIgnore()]
+        public CardInfo Card;
+
         public bool HasTrigger(string trigger)
         {
             foreach (string t in Triggers)

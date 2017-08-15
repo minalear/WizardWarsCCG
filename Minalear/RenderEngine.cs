@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using Minalear;
 
 namespace Minalear
 {
@@ -56,6 +55,23 @@ namespace Minalear
                 Origin = Vector2.Zero,
 
                 SourceRect = new RectangleF(Vector2.Zero, texture.Size),
+                DrawColor = color
+            };
+
+            renderTasks.Add(task);
+        }
+        public void AddRenderTask(Texture2D texture, Vector2 position, Vector2 size, RectangleF source, Color4 color)
+        {
+            RenderTask task = new RenderTask()
+            {
+                Texture = texture,
+                Position = position,
+                Size = size,
+
+                Rotation = 0f,
+                Origin = Vector2.Zero,
+
+                SourceRect = source,
                 DrawColor = color
             };
 
