@@ -632,8 +632,15 @@ namespace WizardWars
             foreach (Player player in gameState.TurnOrder)
             {
                 player.Mana = 0;
-            }
 
+                //Ensure all tapped lands are considered drained between phases
+                foreach (Card card in player.Elysium)
+                {
+                    if (card.IsTapped)
+                        card.IsManaDrained = true;
+                }
+            }
+            
             base.Resolve(gameState);
         }
         public override string ToString()

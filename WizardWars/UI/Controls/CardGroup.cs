@@ -97,6 +97,26 @@ namespace WizardWars.UI.Controls
 
             base.MouseUp(e);
         }
+        public override void MouseMove(MouseMoveEventArgs e)
+        {
+            Vector2 mousePos = new Vector2(e.X, e.Y);
+
+            //Only consider the last card hovered to be hovered, to prevent stacking issues
+            foreach (Single single in Children)
+            {
+                single.Hovered = false;
+            }
+
+            //Loop backwards and break after finding the first hovered control
+            for (int i = Children.Count - 1; i >= 0; i--)
+            {
+                if (Children[i].Contains(mousePos))
+                {
+                    Children[i].Hovered = true;
+                    break;
+                }
+            }
+        }
 
         private void Collection_CollectionChanged(object sender, EventArgs e)
         {
