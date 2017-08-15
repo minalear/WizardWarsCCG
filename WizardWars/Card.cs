@@ -15,7 +15,7 @@ namespace WizardWars
         public CardInfo Meta { get; private set; }
         public bool Highlighted { get; set; }
 
-        public bool Tapped { get; set; }
+        public bool IsTapped { get; set; }
         public bool Attacking { get; set; }
         public bool IsBlocked { get; set; }
         public Card BlockerRef { get; set; }

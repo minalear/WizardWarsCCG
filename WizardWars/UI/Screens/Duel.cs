@@ -34,7 +34,7 @@ namespace WizardWars.UI.Screens
         private Display playerTwoHealthDisplay;
 
         //Other
-        private Controls.Single bigCardDisplay;
+        private Controls.Single previewCard;
         private TextBox promptBox;
         private Button continueButton;
         private Button endTurnButton;
@@ -103,9 +103,10 @@ namespace WizardWars.UI.Screens
             /* OTHER */
             phaseTracker = new PhaseTracker(this, new Vector2(304f, 280f), gameState);
 
-            bigCardDisplay = new Controls.Single(this, null);
-            bigCardDisplay.Position = new Vector2(10f, 490f);
-            bigCardDisplay.Size = new Vector2(175f, 220f);
+            previewCard = new Controls.Single(this, null);
+            previewCard.Position = new Vector2(10f, 490f);
+            previewCard.Size = new Vector2(175f, 220f);
+            previewCard.IgnoreTappedState = true;
 
             promptBox = new TextBox(this, string.Empty, 12f);
             promptBox.Position = new Vector2(1175f, 287f);
@@ -174,8 +175,8 @@ namespace WizardWars.UI.Screens
             if (!e.SelectedCard.IsManaDrained)
             {
                 //You may untap cards if they're not drained
-                e.SelectedCard.Tapped = !e.SelectedCard.Tapped;
-                int mod = (e.SelectedCard.Tapped) ? 1 : -1;
+                e.SelectedCard.IsTapped = !e.SelectedCard.IsTapped;
+                int mod = (e.SelectedCard.IsTapped) ? 1 : -1;
 
                 //If the player is casting a spell, add the mana directly to the cost paid, otherwise add it to their mana pool
                 if (isCasting)
@@ -196,7 +197,7 @@ namespace WizardWars.UI.Screens
 
         private void CardHovered(object sender, CardHoveredArgs e)
         {
-            bigCardDisplay.Card = e.Card;
+            previewCard.Card = e.Card;
         }
 
         private void ContinueButton_Click(object sender, MouseButtonEventArgs e)
@@ -220,7 +221,7 @@ namespace WizardWars.UI.Screens
                     //set IsManaDrained true to every card tapped in Elysium (redundant)
                     foreach (Card card in gameState.PlayerOne.Elysium)
                     {
-                        if (card.Tapped)
+                        if (card.IsTapped)
                             card.IsManaDrained = true;
                     }
 

@@ -65,7 +65,8 @@ namespace WizardWars
 
         public bool TryDevoteCard(Card card)
         {
-            if (GameState.CurrentTurn.ID == ID && NumberOfTimesDevoted < MAX_DEVOTION_PER_TURN && GameState.CurrentPhase == Phases.Main)
+            //If it's your turn, main phase, you haven't already devoted, and there isn't anything on the stack
+            if (GameState.CurrentTurn.ID == ID && NumberOfTimesDevoted < MAX_DEVOTION_PER_TURN && GameState.CurrentPhase == Phases.Main && GameState.GameStack.Count == 0)
             {
                 Elysium.AddCard(card);
                 NumberOfTimesDevoted++;

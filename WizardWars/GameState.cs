@@ -63,6 +63,7 @@ namespace WizardWars
             {
                 //Push both actions onto the stack and set the current action to null
                 GameStack.Push(CurrentAction);
+                NewStateAction?.Invoke(this, action);
                 CurrentAction = null;
             }
 
@@ -195,13 +196,13 @@ namespace WizardWars
                     if (tokens[0] == "tap")
                     {
                         //Tap each target
-                        target.Tapped = true;
+                        target.IsTapped = true;
                         OnTrigger(target, "tap");
                     }
                     else if (tokens[0] == "untap")
                     {
                         //Untap each target
-                        target.Tapped = false;
+                        target.IsTapped = false;
                         OnTrigger(target, "untap");
                     }
                     else if (tokens[0] == "destroy")
@@ -529,9 +530,11 @@ namespace WizardWars
         
         public event PhaseChangeEvent PhaseChange;
         public event StateActionResolved ActionResolved;
+        public event NewStateActionEvent NewStateAction;
 
         public delegate void PhaseChangeEvent(object sender, Phases phase);
         public delegate void StateActionResolved(object sender, StateAction action);
+        public delegate void NewStateActionEvent(object sender, StateAction action);
     }
 
     public class StateAction
@@ -599,10 +602,10 @@ namespace WizardWars
             else if (Phase == Phases.Upkeep)
             {
                 foreach (Card card in gameState.CurrentTurn.Field)
-                    card.Tapped = false;
+                    card.IsTapped = false;
                 foreach (Card card in gameState.CurrentTurn.Elysium)
                 {
-                    card.Tapped = false;
+                    card.IsTapped = false;
                     card.IsManaDrained = false;
                 }
             }

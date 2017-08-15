@@ -41,7 +41,7 @@ namespace WizardWars.UI.Controls
             Screen = getParentScreen();
         }
 
-        public bool Contains(Vector2 point)
+        public virtual bool Contains(Vector2 point)
         {
             return (point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom);
         }
