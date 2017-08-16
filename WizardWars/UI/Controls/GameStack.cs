@@ -75,6 +75,7 @@ namespace WizardWars.UI.Controls
 
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
+            //Choose Icon texture based on current action
             if (Action is PhaseAction)
             {
                 Texture2D texture = (((PhaseAction)Action).Phase == Phases.Cleanup) ? TurnSymbol : PhaseSymbol;
@@ -91,6 +92,7 @@ namespace WizardWars.UI.Controls
                 renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), Color4.White);
             }
 
+            //Adjust textbox position to be offset from the icon
             textBox.X = 50f;
             textBox.Y = (int)(Height / 2f - textBox.Height / 2f);
 

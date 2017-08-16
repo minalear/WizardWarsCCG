@@ -113,6 +113,7 @@ namespace WizardWars.UI.Controls
                 if (Children[i].Contains(mousePos))
                 {
                     Children[i].Hovered = true;
+                    CardHovered?.Invoke(this, new CardHoveredArgs(((Single)Children[i]).Card, mousePos));
                     break;
                 }
             }
