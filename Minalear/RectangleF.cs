@@ -33,7 +33,12 @@ namespace Minalear
             Width = Math.Abs(Width);
             Height = Math.Abs(Height);
         }
-        
+
+        public override string ToString()
+        {
+            return string.Format("({0}, {1}) ({2}x{3})", X, Y, Width, Height);
+        }
+
         public Vector2 Position { get { return position; } set { position = value; } }
         public Vector2 Size { get { return size; } set { size = value; } }
         public float X { get { return position.X; } set { position.X = value; } }

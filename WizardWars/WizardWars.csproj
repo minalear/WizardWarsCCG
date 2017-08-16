@@ -64,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Controls\Button.cs" />
     <Compile Include="UI\Controls\CardStack.cs" />
+    <Compile Include="UI\Controls\ContextMenu.cs" />
     <Compile Include="UI\Controls\Display.cs" />
     <Compile Include="UI\Controls\GameStack.cs" />
     <Compile Include="UI\Controls\HandCounter.cs" />

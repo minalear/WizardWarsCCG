@@ -9,6 +9,7 @@ namespace WizardWars.UI.Screens
 {
     public class Duel : Screen
     {
+        #region Private Members
         private GameState gameState;
         private Texture2D playfieldTexture;
 
@@ -39,11 +40,13 @@ namespace WizardWars.UI.Screens
         private TextBox promptBox;
         private Button continueButton;
         private Button endTurnButton;
+        private ContextMenu contextMenu;
 
         //Mechanics
         private Card castedCard;
         private bool isCasting = false;
         private int costPaid = 0;
+        #endregion
 
         public Duel(Game game, GameState gameState) : base(game)
         {
@@ -119,6 +122,9 @@ namespace WizardWars.UI.Screens
             endTurnButton = new Button(this, "End Turn", 12f);
             endTurnButton.Position = new Vector2(1170, 418);
             endTurnButton.Click += EndTurnButton_Click;
+
+            contextMenu = new ContextMenu(this);
+            contextMenu.Position = new Vector2(20f, 250f);
         }
 
         public override void LoadContent()
@@ -130,6 +136,8 @@ namespace WizardWars.UI.Screens
 
             playerOneHealthDisplay.Text = string.Format("HP: {0}", gameState.PlayerOne.Heatlh);
             playerTwoHealthDisplay.Text = string.Format("HP: {0}", gameState.PlayerTwo.Heatlh);
+
+            contextMenu.SetMenuOptions(new string[] { "Test Item #1", "Test Item #2", "Test Item #3" });
 
             base.LoadContent();
         }
@@ -144,6 +152,25 @@ namespace WizardWars.UI.Screens
             renderer.AddRenderTask(playfieldTexture, Vector2.Zero, Color4.White);
 
             base.Draw(gameTime, renderer);
+        }
+
+        public override void MouseUp(MouseButtonEventArgs e)
+        {
+            Vector2 mousePos = new Vector2(e.X, e.Y);
+            if (e.Button == MouseButton.Right)
+            {
+                if (!contextMenu.Enabled)
+                    contextMenu.ToggleDisplay(mousePos);
+                else
+                    contextMenu.Position = mousePos;
+            }
+            else if (e.Button == MouseButton.Left)
+            {
+                if (contextMenu.Enabled && !contextMenu.Hovered)
+                    contextMenu.SetDisplay(mousePos, false);
+            }
+
+            base.MouseUp(e);
         }
 
         /* EVENTS */

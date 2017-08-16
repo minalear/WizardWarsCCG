@@ -90,7 +90,6 @@ namespace WizardWars.UI.Controls
 
             base.MouseUp(e);
         }
-        
         public override void MouseLeave(MouseMoveEventArgs e)
         {
             foreach (Single single in Children)
