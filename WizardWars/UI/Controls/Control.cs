@@ -79,26 +79,37 @@ namespace WizardWars.UI.Controls
         public virtual void MouseMove(MouseMoveEventArgs e)
         {
             Vector2 mousePos = new Vector2(e.X, e.Y);
+
+            //Only set one control to be hovered, to prevent triggering effects on controls that appear beneath other ones
+            bool hoveredFound = false;
             for (int i = Children.Count - 1; i >= 0; i--)
             {
-                Control control = Children[i];
+                Control child = Children[i];
+                if (!child.Enabled) continue;
 
-                if (control.Enabled)
+                if (child.Hovered)
                 {
-                    bool contains = control.Contains(mousePos);
-                    if (contains && !control.Hovered)
+                    //No longer hovered controls should trigger MouseLeave or we're hovering over a control above
+                    if (!child.Contains(mousePos) || hoveredFound)
                     {
-                        control.Hovered = true;
-                        control.MouseEnter(e);
+                        child.Hovered = false;
+                        child.MouseLeave(e);
                     }
-                    else if (!contains && control.Hovered)
+                    else
                     {
-                        control.Hovered = false;
-                        control.MouseLeave(e);
+                        hoveredFound = true;
                     }
-
-                    control.MouseMove(e);
                 }
+                else if (child.Contains(mousePos) && !hoveredFound)
+                {
+                    child.Hovered = true;
+                    child.MouseEnter(e);
+                    hoveredFound = true;
+                }
+
+                //Only allow controls that are hovered to be updated further
+                if (child.Hovered)
+                    child.MouseMove(e);
             }
         }
         public virtual void MouseDown(MouseButtonEventArgs e)

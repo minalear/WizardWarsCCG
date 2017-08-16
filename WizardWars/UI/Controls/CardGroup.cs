@@ -79,43 +79,23 @@ namespace WizardWars.UI.Controls
         }
         public override void MouseUp(MouseButtonEventArgs e)
         {
-            //This is to avoid modifying the list while Invoking CardSelected
-            Card selectedCard = null; 
-            foreach (Single card in Children)
+            for (int i = 0; i < Children.Count; i++)
             {
-                if (card.Hovered)
+                if (Children[i].Hovered && Children[i] is Single)
                 {
-                    selectedCard = card.Card;
-                    break;
+                    Card card = ((Single)Children[i]).Card;
+                    CardSelected?.Invoke(this, new CardSelectionArgs(card, e.Button));
                 }
-            }
-
-            if (selectedCard != null)
-            {
-                CardSelected?.Invoke(this, new CardSelectionArgs(selectedCard, e.Button));
             }
 
             base.MouseUp(e);
         }
-        public override void MouseMove(MouseMoveEventArgs e)
+        
+        public override void MouseLeave(MouseMoveEventArgs e)
         {
-            Vector2 mousePos = new Vector2(e.X, e.Y);
-
-            //Only consider the last card hovered to be hovered, to prevent stacking issues
             foreach (Single single in Children)
             {
                 single.Hovered = false;
-            }
-
-            //Loop backwards and break after finding the first hovered control
-            for (int i = Children.Count - 1; i >= 0; i--)
-            {
-                if (Children[i].Contains(mousePos))
-                {
-                    Children[i].Hovered = true;
-                    CardHovered?.Invoke(this, new CardHoveredArgs(((Single)Children[i]).Card, mousePos));
-                    break;
-                }
             }
         }
 
