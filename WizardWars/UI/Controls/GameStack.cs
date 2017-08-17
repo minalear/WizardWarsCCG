@@ -63,6 +63,7 @@ namespace WizardWars.UI.Controls
         public StateAction Action;
 
         private TextBox textBox;
+        private static Color4 iconBorderColor = new Color4(83, 71, 65, 255);
 
         public GameStackElement(Control parent, StateAction action, float fontSize)
             : base(parent)
@@ -80,16 +81,19 @@ namespace WizardWars.UI.Controls
             {
                 Texture2D texture = (((PhaseAction)Action).Phase == Phases.Cleanup) ? TurnSymbol : PhaseSymbol;
                 renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), Color4.White);
+                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), texture.Size, 0f, Vector2.Zero, iconBorderColor);
             }
             else if (Action is CardCastAction)
             {
                 Texture2D texture = ((CardCastAction)Action).Card.Art;
                 renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), Color4.White);
+                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), iconBorderColor);
             }
             else if (Action is EffectAction)
             {
                 Texture2D texture = ((EffectAction)Action).Card.Art;
                 renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), Color4.White);
+                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), iconBorderColor);
             }
 
             //Adjust textbox position to be offset from the icon

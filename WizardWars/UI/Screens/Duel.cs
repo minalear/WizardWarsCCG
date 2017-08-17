@@ -40,7 +40,6 @@ namespace WizardWars.UI.Screens
         private TextBox promptBox;
         private Button continueButton;
         private Button endTurnButton;
-        private ContextMenu contextMenu;
 
         //Mechanics
         private Card castedCard;
@@ -117,14 +116,11 @@ namespace WizardWars.UI.Screens
 
             continueButton = new Button(this, "Continue", 12f);
             continueButton.Position = new Vector2(1170, 388);
-            continueButton.Click += ContinueButton_Click;
+            continueButton.OnClick += ContinueButton_Click;
 
             endTurnButton = new Button(this, "End Turn", 12f);
             endTurnButton.Position = new Vector2(1170, 418);
-            endTurnButton.Click += EndTurnButton_Click;
-
-            contextMenu = new ContextMenu(this);
-            contextMenu.Position = new Vector2(20f, 250f);
+            endTurnButton.OnClick += EndTurnButton_Click;
         }
 
         public override void LoadContent()
@@ -137,7 +133,7 @@ namespace WizardWars.UI.Screens
             playerOneHealthDisplay.Text = string.Format("HP: {0}", gameState.PlayerOne.Heatlh);
             playerTwoHealthDisplay.Text = string.Format("HP: {0}", gameState.PlayerTwo.Heatlh);
 
-            contextMenu.SetMenuOptions(new string[] { "Test Item #1", "Test Item #2", "Test Item #3" });
+            Menu.SetMenuOptions(new string[] { "Test Item #1", "Test Item #2", "Test Item #3" });
 
             base.LoadContent();
         }
@@ -156,19 +152,7 @@ namespace WizardWars.UI.Screens
 
         public override void MouseUp(MouseButtonEventArgs e)
         {
-            Vector2 mousePos = new Vector2(e.X, e.Y);
-            if (e.Button == MouseButton.Right)
-            {
-                if (!contextMenu.Enabled)
-                    contextMenu.ToggleDisplay(mousePos);
-                else
-                    contextMenu.Position = mousePos;
-            }
-            else if (e.Button == MouseButton.Left)
-            {
-                if (contextMenu.Enabled && !contextMenu.Hovered)
-                    contextMenu.SetDisplay(mousePos, false);
-            }
+            Menu.SetDisplay(new Vector2(e.X, e.Y), true);
 
             base.MouseUp(e);
         }

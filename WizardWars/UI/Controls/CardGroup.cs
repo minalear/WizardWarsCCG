@@ -77,7 +77,7 @@ namespace WizardWars.UI.Controls
 
             base.Update(gameTime);
         }
-        public override void MouseUp(MouseButtonEventArgs e)
+        public override void Click(MouseButtonEventArgs e)
         {
             for (int i = 0; i < Children.Count; i++)
             {
@@ -88,7 +88,7 @@ namespace WizardWars.UI.Controls
                 }
             }
 
-            base.MouseUp(e);
+            base.Click(e);
         }
         public override void MouseLeave(MouseMoveEventArgs e)
         {
@@ -114,6 +114,7 @@ namespace WizardWars.UI.Controls
         public event CardHoveredEvent CardHovered;
         
         private bool markedForUpdate = false;
+        private ContextMenu contextMenu;
 
         private const float MAX_SPACING = 105f;
     }

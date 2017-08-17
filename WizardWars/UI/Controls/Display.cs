@@ -39,7 +39,7 @@ namespace WizardWars.UI.Controls
             if (texture != null)
             {
                 Vector2 position = Position;
-                renderer.AddRenderTask(texture, position, Size, Color4.White);
+                renderer.AddRenderTask(texture, position, Size, Color4.White, -1f);
             }
         }
         public override void Update(GameTime gameTime)

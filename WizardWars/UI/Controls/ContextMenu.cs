@@ -3,6 +3,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Minalear;
+using OpenTK.Input;
 
 namespace WizardWars.UI.Controls
 {
@@ -13,6 +14,8 @@ namespace WizardWars.UI.Controls
         public ContextMenu(Control parent)
             : base(parent)
         {
+            orderPriority = -1;
+
             Visible = false;
             Enabled = false;
         }
@@ -30,16 +33,10 @@ namespace WizardWars.UI.Controls
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
             //Draw each fill texture for individual elements
-
-            bool colorSwap = true;
             foreach (Control child in Children)
             {
-                Vector2 childPos = child.Position;
-                Vector2 childSize = new Vector2(this.Width, child.Height);
-
                 Color4 color = (child.Hovered) ? Color4.White : Color4.Red;
-
-                renderer.AddRenderTask(fillTexture, childPos, childSize, color);
+                renderer.AddRenderTask(fillTexture, child.Position, child.Size, color, -2f);
             }
 
             base.Draw(gameTime, renderer);
@@ -48,18 +45,30 @@ namespace WizardWars.UI.Controls
         public void SetMenuOptions(string[] options)
         {
             clearChildren();
-            this.Height = 0f;
+
+            //Set the individual element heights to the largest of the textboxes, 100px width min
+            float maxWidth = 100f;
+            float maxHeight = 0f;
 
             for (int i = 0; i < options.Length; i++)
             {
                 ContextMenuItem item = new ContextMenuItem(this, options[i]);
                 item.LoadContent();
 
-                item.X = 5f;
-                item.Y = i * item.Height + 4f;
-                this.Height += item.Height + 4f;
-                if (item.Width + 10f > this.Width)
-                    this.Width = item.Width + 10f;
+                if (item.TextBox.Height > maxHeight)
+                    maxHeight = item.TextBox.Height;
+                if (item.TextBox.Width > maxWidth)
+                    maxWidth = item.TextBox.Width;
+            }
+
+            //Set the menu's size based on the biggest element width and the height of them all together
+            this.Size = new Vector2(maxWidth, maxHeight * Children.Count);
+
+            //Update the element's position and size based on the max sizes
+            for (int i = 0; i < Children.Count; i++)
+            {
+                Children[i].Position = new Vector2(5f, i * maxHeight);
+                Children[i].Size = new Vector2(maxWidth, maxHeight);
             }
         }
         public void ToggleDisplay(Vector2 position)
@@ -73,6 +82,14 @@ namespace WizardWars.UI.Controls
             Position = position;
             Enabled = state;
             Visible = state;
+        }
+
+        public override void MouseLeave(MouseMoveEventArgs e)
+        {
+            foreach (Control child in Children)
+                child.Hovered = false;
+
+            base.MouseLeave(e);
         }
 
         private void clearChildren()
@@ -93,10 +110,11 @@ namespace WizardWars.UI.Controls
             textBox = new TextBox(this, text, 10f);
         }
 
-        public override void LoadContent()
+        public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
-            base.LoadContent();
-            this.Size = textBox.Size;
+            renderer.AddRenderTask(textBox.Texture, this.Position, textBox.Size, textBox.TextColor, -3f);
         }
+        
+        public TextBox TextBox { get { return textBox; } }
     }
 }

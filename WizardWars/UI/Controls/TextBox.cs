@@ -15,8 +15,6 @@ namespace WizardWars.UI.Controls
         protected Color4 textColor;
         protected float fontSize;
 
-        
-
         public TextBox(Control parent, string text, float fontSize)
             : base(parent)
         {
@@ -152,6 +150,7 @@ namespace WizardWars.UI.Controls
 
         public Color4 TextColor { get { return textColor; } set { textColor = value; } }
         public string Text { get { return text; } set { SetText(value); } }
+        public Texture2D Texture { get { return texture; } }
         public bool WordWrap { get; set; }
         public int BufferWidth { get; set; }
     }

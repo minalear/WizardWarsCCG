@@ -8,6 +8,7 @@ namespace WizardWars.UI.Controls
 {
     public class Control
     {
+        protected int orderPriority = 0;
         protected Vector2 relativePosition, size;
         protected Control parent;
         protected List<Control> children;
@@ -48,6 +49,9 @@ namespace WizardWars.UI.Controls
 
         public virtual void LoadContent()
         {
+            //Order children by their priority (for controls that have to be drawn above others)
+            Children.Sort((x, y) => -(x.orderPriority.CompareTo(y.orderPriority)));
+
             foreach (Control control in Children)
                 control.LoadContent();
             ContentLoaded = true;
@@ -126,12 +130,17 @@ namespace WizardWars.UI.Controls
         {
             foreach (Control control in Children)
             {
-                if (control.Hovered && control.Enabled)
+                if (control.Enabled)
+                {
+                    if (control.Hovered)
+                        control.Click(e);
                     control.MouseUp(e);
+                }
             }
 
             MouseMove(new MouseMoveEventArgs(e.X, e.Y, 0, 0));
         }
+        public virtual void Click(MouseButtonEventArgs e) { }
 
         public virtual void MouseEnter(MouseMoveEventArgs e)
         {

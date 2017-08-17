@@ -26,24 +26,25 @@ namespace Minalear
             renderer = new TextureRenderer(new Shader("Content/Shaders/tex.vert", "Content/Shaders/tex.frag"), game.Window.Width, game.Window.Height);
         }
         
-        public void AddRenderTask(Texture2D texture, Vector2 position, Color4 color)
+        public void AddRenderTask(Texture2D texture, Vector2 position, Color4 color, float drawOrder = 0f)
         {
             RenderTask task = new RenderTask()
             {
                 Texture = texture,
                 Position = position,
                 Size = texture.Size,
-                
+
                 Rotation = 0f,
                 Origin = Vector2.Zero,
 
                 SourceRect = new RectangleF(Vector2.Zero, texture.Size),
-                DrawColor = color
+                DrawColor = color,
+                DrawOrder = drawOrder
             };
 
             renderTasks.Add(task);
         }
-        public void AddRenderTask(Texture2D texture, Vector2 position, Vector2 size, Color4 color)
+        public void AddRenderTask(Texture2D texture, Vector2 position, Vector2 size, Color4 color, float drawOrder = 0f)
         {
             RenderTask task = new RenderTask()
             {
@@ -55,12 +56,13 @@ namespace Minalear
                 Origin = Vector2.Zero,
 
                 SourceRect = new RectangleF(Vector2.Zero, texture.Size),
-                DrawColor = color
+                DrawColor = color,
+                DrawOrder = drawOrder
             };
 
             renderTasks.Add(task);
         }
-        public void AddRenderTask(Texture2D texture, Vector2 position, Vector2 size, RectangleF source, Color4 color)
+        public void AddRenderTask(Texture2D texture, Vector2 position, Vector2 size, RectangleF source, Color4 color, float drawOrder = 0f)
         {
             RenderTask task = new RenderTask()
             {
@@ -72,12 +74,13 @@ namespace Minalear
                 Origin = Vector2.Zero,
 
                 SourceRect = source,
-                DrawColor = color
+                DrawColor = color,
+                DrawOrder = drawOrder
             };
 
             renderTasks.Add(task);
         }
-        public void AddRenderTask(Texture2D texture, Vector2 position, Vector2 size, float rotation, Vector2 origin, Color4 color)
+        public void AddRenderTask(Texture2D texture, Vector2 position, Vector2 size, float rotation, Vector2 origin, Color4 color, float drawOrder = 0f)
         {
             RenderTask task = new RenderTask()
             {
@@ -89,15 +92,31 @@ namespace Minalear
                 Origin = origin,
 
                 SourceRect = new RectangleF(Vector2.Zero, texture.Size),
-                DrawColor = color
+                DrawColor = color,
+                DrawOrder = drawOrder
             };
 
             renderTasks.Add(task);
         }
 
+        public void AddOutlineTask(Texture2D texture, Vector2 position, Vector2 size, RectangleF source, Color4 color)
+        {
+            RenderTask task = new RenderTask()
+            {
+                Texture = texture,
+                Position = position,
+                Size = size,
+                Rotation = 0f,
+                Origin = Vector2.Zero,
+                DrawColor = color,
+
+                SourceRect = source,
+            };
+
+            effectsTasks.Add(task);
+        }
         public void AddOutlineTask(Texture2D texture, Vector2 position, Vector2 size, float rotation, Vector2 origin, Color4 color)
         {
-            //Texture will be the first Framebuffer
             RenderTask task = new RenderTask()
             {
                 Texture = texture,
@@ -115,6 +134,9 @@ namespace Minalear
 
         public void ProcessRenderCalls()
         {
+            //Sort renderTasks
+            renderTasks.Sort((x, y) => -(x.DrawOrder.CompareTo(y.DrawOrder)));
+
             //First (Main) render pass
             renderTargets[0].Bind();
             GL.ClearColor(Color4.Transparent);
@@ -179,5 +201,6 @@ namespace Minalear
         public Vector2 Origin { get; set; }
         public Color4 DrawColor { get; set; }
         public RectangleF SourceRect { get; set; }
+        public float DrawOrder { get; set; }
     }
 }
