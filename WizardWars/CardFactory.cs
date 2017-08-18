@@ -78,15 +78,20 @@ namespace WizardWars
         }
         private static Texture2D createCardTexture(CardInfo card)
         {
+            //Inefficient, but it doesn't really matter right now
             Bitmap bmp = new Bitmap(284, 357);
             Graphics graphics = Graphics.FromImage(bmp);
             graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-            Image cardFace = Image.FromFile("Content/Art/Assets/cardface.png");
-            Image cardArt = Image.FromFile(card.ImagePath);
-
             graphics.Clear(Color.Silver);
-            graphics.DrawImage(cardArt, 0f, 35f, cardArt.Width, cardArt.Height);
+            //Only load files that exist
+            if (File.Exists(card.ImagePath))
+            {
+                Image cardArt = Image.FromFile(card.ImagePath);
+                graphics.DrawImage(cardArt, 0f, 35f, cardArt.Width, cardArt.Height);
+            }
+
+            Image cardFace = Image.FromFile("Content/Art/Assets/cardface.png");
             graphics.DrawImage(cardFace, 0f, 0f, cardFace.Width, cardFace.Height);
 
             Font titleFont = new Font("Tahoma", 18f, FontStyle.Bold);

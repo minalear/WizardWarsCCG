@@ -55,7 +55,15 @@ namespace WizardWars.UI.Controls
 
                 //If the card is face down, add a half-transparent card back texture over it
                 if (Card.IsFaceDown && !IgnoreCardStates)
-                    renderer.AddRenderTask(CardInfo.CardBack, Position, Size, rotation, new Vector2(0.5f, 0.5f), new Color4(1f, 1f, 1f, 0.85f), -0.1f);
+                {
+                    if (Hovered)
+                    {
+                        Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
+                        renderer.AddOutlineTask(CardInfo.CardBack, Position, Size, new Color4(1f, 1f, 1f, 0.85f), rotation, new Vector2(0.5f, 0.5f), outlineColor, -0.1f);
+                    }
+                    else
+                        renderer.AddRenderTask(CardInfo.CardBack, Position, Size, rotation, new Vector2(0.5f, 0.5f), new Color4(1f, 1f, 1f, 0.85f), -0.1f);
+                }
             }
 
             base.Draw(gameTime, renderer);

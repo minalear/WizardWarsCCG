@@ -85,12 +85,12 @@ namespace WizardWars.UI.Controls
             else if (Action is CardCastAction)
             {
                 Texture2D texture = ((CardCastAction)Action).Card.Art;
-                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), Color4.White, new RectangleF(55f, 57f, 174f, 174f), iconBorderColor);
+                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), Color4.White, new RectangleF(71f, 51f, 142f, 142f), iconBorderColor);
             }
             else if (Action is EffectAction)
             {
                 Texture2D texture = ((EffectAction)Action).Card.Art;
-                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), Color4.White, new RectangleF(55f, 57f, 174f, 174f), iconBorderColor);
+                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), Color4.White, new RectangleF(71f, 51f, 142f, 142f), iconBorderColor);
             }
 
             //Adjust textbox position to be offset from the icon

@@ -98,7 +98,7 @@ namespace Minalear
             renderTasks.Add(task);
         }
 
-        public void AddOutlineTask(Texture2D texture, Vector2 position, Vector2 size, Color4 drawColor, RectangleF source, Color4 outlineColor)
+        public void AddOutlineTask(Texture2D texture, Vector2 position, Vector2 size, Color4 drawColor, RectangleF source, Color4 outlineColor, float drawOrder = 0f)
         {
             RenderTask task = new RenderTask()
             {
@@ -113,12 +113,13 @@ namespace Minalear
                 OutlineColor = outlineColor,
 
                 SourceRect = source,
+                DrawOrder = drawOrder
             };
 
             renderTasks.Add(task);
         }
 
-        public void AddOutlineTask(Texture2D texture, Vector2 position, Vector2 size, Color4 drawColor, float rotation, Vector2 origin, Color4 outlineColor)
+        public void AddOutlineTask(Texture2D texture, Vector2 position, Vector2 size, Color4 drawColor, float rotation, Vector2 origin, Color4 outlineColor, float drawOrder = 0f)
         {
             RenderTask task = new RenderTask()
             {
@@ -133,6 +134,7 @@ namespace Minalear
                 OutlineColor = outlineColor,
 
                 SourceRect = new RectangleF(Vector2.Zero, texture.Size),
+                DrawOrder = drawOrder
             };
 
             renderTasks.Add(task);
