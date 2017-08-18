@@ -1,7 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Minalear;
 
 namespace WizardWars
 {
@@ -51,7 +54,7 @@ namespace WizardWars
 
                     int num = int.Parse(numStr);
                     CardInfo info = getCardFromList(allCards, name);
-                    info.LoadCardArt();
+                    info.LoadCardArt(createCardTexture(info));
 
                     for (int k = 0; k < num; k++)
                     {
@@ -72,6 +75,41 @@ namespace WizardWars
             }
 
             throw new ArgumentException(string.Format("No card with the name ({0}) found!", title));
+        }
+        private static Texture2D createCardTexture(CardInfo card)
+        {
+            Bitmap bmp = new Bitmap(284, 357);
+            Graphics graphics = Graphics.FromImage(bmp);
+            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+            Image cardFace = Image.FromFile("Content/Art/Assets/cardface.png");
+            Image cardArt = Image.FromFile(card.ImagePath);
+
+            graphics.Clear(Color.Silver);
+            graphics.DrawImage(cardArt, 0f, 35f, cardArt.Width, cardArt.Height);
+            graphics.DrawImage(cardFace, 0f, 0f, cardFace.Width, cardFace.Height);
+
+            Font titleFont = new Font("Tahoma", 18f, FontStyle.Bold);
+            Font cardTextFont = new Font("Tahoma", 12f, FontStyle.Bold);
+
+            graphics.DrawString(card.Name, titleFont, Brushes.Black, 10f, 4f);
+            graphics.DrawString(card.Cost.ToString(), titleFont, Brushes.Black, 245f, 12f);
+
+            graphics.DrawString(card.Types[0].ToString(), cardTextFont, Brushes.Black, 25f, 204f);
+
+            graphics.DrawString(card.RulesText, cardTextFont, Brushes.Black, 5f, 228f);
+
+            BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
+                ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            Texture2D texture = new Texture2D(bmp.Width, bmp.Height, data.Scan0);
+            bmp.UnlockBits(data);
+
+            titleFont.Dispose();
+            cardTextFont.Dispose();
+            graphics.Dispose();
+            bmp.Dispose();
+
+            return texture;
         }
     }
 }

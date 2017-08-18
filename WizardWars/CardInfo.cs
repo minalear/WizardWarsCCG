@@ -42,6 +42,14 @@ namespace WizardWars
                 ArtLoaded = true;
             }
         }
+        public void LoadCardArt(Texture2D texture)
+        {
+            if (!ArtLoaded)
+            {
+                Art = texture;
+                ArtLoaded = true;
+            }
+        }
         public void UnloadCardArt()
         {
             if (ArtLoaded)
