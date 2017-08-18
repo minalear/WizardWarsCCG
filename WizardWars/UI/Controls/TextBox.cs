@@ -25,7 +25,7 @@ namespace WizardWars.UI.Controls
 
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
-            renderer.AddRenderTask(texture, Position, Size, textColor);
+            renderer.AddRenderTask(texture, Position, Size, textColor, -1f);
 
             base.Draw(gameTime, renderer);
         }

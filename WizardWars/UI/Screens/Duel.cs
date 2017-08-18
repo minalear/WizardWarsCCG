@@ -72,6 +72,7 @@ namespace WizardWars.UI.Screens
             playerOneBattlefield = new CardGroup(this, new Vector2(306, 312), zoneSize, gameState.PlayerOne.Field);
 
             playerOneHand.CardSelected += PlayerOneHand_CardSelected;
+            playerOneHand.CardContextSelected += PlayerOneHand_CardContextSelected;
             playerOneHand.CardHovered += CardHovered;
             playerOneElysium.CardSelected += PlayerOneElysium_CardSelected;
             playerOneElysium.CardHovered += CardHovered;
@@ -121,6 +122,8 @@ namespace WizardWars.UI.Screens
             endTurnButton = new Button(this, "End Turn", 12f);
             endTurnButton.Position = new Vector2(1170, 418);
             endTurnButton.OnClick += EndTurnButton_Click;
+
+            Menu.ItemSelected += Menu_ItemSelected;
         }
 
         public override void LoadContent()
@@ -145,16 +148,40 @@ namespace WizardWars.UI.Screens
         }
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
-            renderer.AddRenderTask(playfieldTexture, Vector2.Zero, Color4.White);
+            renderer.AddRenderTask(playfieldTexture, Vector2.Zero, Color4.White, 1f);
 
             base.Draw(gameTime, renderer);
         }
 
         public override void MouseUp(MouseButtonEventArgs e)
         {
-            Menu.SetDisplay(new Vector2(e.X, e.Y), true);
+            //Disable context menu if it's not relevant
+            if (e.Button == MouseButton.Left && !Menu.Hovered)
+            {
+                Menu.SetDisplay(Vector2.Zero, false);
+            }
 
             base.MouseUp(e);
+        }
+
+        private void attemptCastCard(Card card)
+        {
+            if (!isCasting && gameState.CanCastCard(gameState.PlayerOne, card))
+            {
+                isCasting = true;
+                castedCard = gameState.PlayerOne.Hand.RemoveCardID(card.ID);
+                gameState.PlayerOne.PromptPlayerPayCastingCost(castedCard, castedCard.Cost);
+
+                promptBox.Text = string.Format("Pay ({0}).", castedCard.Cost);
+                endTurnButton.Text = "Cancel";
+            }
+        }
+        private void attemptDevoteCard(Card card)
+        {
+            if (gameState.PlayerOne.TryDevoteCard(card))
+            {
+                gameState.PlayerOne.Hand.RemoveCardID(card.ID);
+            }
         }
 
         /* EVENTS */
@@ -168,25 +195,17 @@ namespace WizardWars.UI.Screens
             //Normal action
             if (e.Button == MouseButton.Left)
             {
-                if (!isCasting && gameState.CanCastCard(gameState.PlayerOne, e.SelectedCard))
-                {
-                    isCasting = true;
-                    castedCard = gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID);
-                    gameState.PlayerOne.PromptPlayerPayCastingCost(castedCard, castedCard.Cost);
+                attemptCastCard(e.SelectedCard);
+            }
+        }
+        private void PlayerOneHand_CardContextSelected(object sender, CardSelectionArgs e)
+        {
+            Menu.SetDisplay(e.MousePosition, true);
 
-                    promptBox.Text = string.Format("Pay ({0}).", castedCard.Cost);
-                    endTurnButton.Text = "Cancel";
-                }
-            }
-            //Advanced action
-            else if (e.Button == MouseButton.Right)
-            {
-                //Eventually have a popup box signifying you want to devote, and have other options if they're available
-                if (gameState.PlayerOne.TryDevoteCard(e.SelectedCard))
-                {
-                    gameState.PlayerOne.Hand.RemoveCardID(e.SelectedCard.ID);
-                }
-            }
+            ContextInfo cast = new ContextInfo("Cast", e.SelectedCard);
+            ContextInfo devote = new ContextInfo("Devote", e.SelectedCard);
+
+            Menu.SetMenuOptions(cast, devote);
         }
         private void PlayerOneElysium_CardSelected(object sender, CardSelectionArgs e)
         {
@@ -217,6 +236,19 @@ namespace WizardWars.UI.Screens
         private void CardHovered(object sender, CardHoveredArgs e)
         {
             previewCard.Card = e.Card;
+        }
+        private void Menu_ItemSelected(object sender, ContextMenuItemSelectedArgs e)
+        {
+            if (e.Text == "Cast")
+            {
+                Card card = (Card)e.Info.Args[0];
+                attemptCastCard(card);
+            }
+            else if (e.Text == "Devote")
+            {
+                Card card = (Card)e.Info.Args[0];
+                attemptDevoteCard(card);
+            }
         }
 
         private void ContinueButton_Click(object sender, MouseButtonEventArgs e)

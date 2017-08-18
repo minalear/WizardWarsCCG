@@ -18,6 +18,9 @@ namespace WizardWars.UI.Controls
 
             Visible = false;
             Enabled = false;
+
+            BackgroundColor = Color4.DarkGray;
+            HighlightColor = Color4.LightGray;
         }
 
         public override void LoadContent()
@@ -35,24 +38,81 @@ namespace WizardWars.UI.Controls
             //Draw each fill texture for individual elements
             foreach (Control child in Children)
             {
-                Color4 color = (child.Hovered) ? Color4.White : Color4.Red;
+                Color4 color = (child.Hovered) ? HighlightColor : BackgroundColor;
                 renderer.AddRenderTask(fillTexture, child.Position, child.Size, color, -2f);
             }
 
             base.Draw(gameTime, renderer);
         }
 
-        public void SetMenuOptions(string[] options)
+        public void SetMenuOptions(params string[] options)
         {
             clearChildren();
 
+            ContextMenuItem[] items = new ContextMenuItem[options.Length];
+            for (int i = 0; i < options.Length; i++)
+            {
+                items[i] = new ContextMenuItem(this, options[i]);
+            }
+
+            setContextList(items);
+        }
+        public void SetMenuOptions(params ContextInfo[] options)
+        {
+            clearChildren();
+
+            ContextMenuItem[] items = new ContextMenuItem[options.Length];
+            for (int i = 0; i < options.Length; i++)
+            {
+                items[i] = new ContextMenuItem(this, options[i]);
+            }
+
+            setContextList(items);
+        }
+
+        public void ToggleDisplay(Vector2 position)
+        {
+            Position = position;
+            Enabled = !Enabled;
+            Visible = !Visible;
+        }
+        public void SetDisplay(Vector2 position, bool state)
+        {
+            Position = position;
+            Enabled = state;
+            Visible = state;
+        }
+        public override void Click(MouseButtonEventArgs e)
+        {
+            Vector2 mousePos = new Vector2(e.X, e.Y);
+            foreach (ContextMenuItem item in Children)
+            {
+                if (item.Contains(mousePos))
+                {
+                    ItemSelected?.Invoke(this, new ContextMenuItemSelectedArgs(item));
+                    SetDisplay(Vector2.Zero, false);
+                    break;
+                }
+            }
+        }
+
+        public override void MouseLeave(MouseMoveEventArgs e)
+        {
+            foreach (Control child in Children)
+                child.Hovered = false;
+
+            base.MouseLeave(e);
+        }
+
+        private void setContextList(ContextMenuItem[] options)
+        {
             //Set the individual element heights to the largest of the textboxes, 100px width min
             float maxWidth = 100f;
             float maxHeight = 0f;
 
             for (int i = 0; i < options.Length; i++)
             {
-                ContextMenuItem item = new ContextMenuItem(this, options[i]);
+                ContextMenuItem item = options[i];
                 item.LoadContent();
 
                 if (item.TextBox.Height > maxHeight)
@@ -71,35 +131,23 @@ namespace WizardWars.UI.Controls
                 Children[i].Size = new Vector2(maxWidth, maxHeight);
             }
         }
-        public void ToggleDisplay(Vector2 position)
-        {
-            Position = position;
-            Enabled = !Enabled;
-            Visible = !Visible;
-        }
-        public void SetDisplay(Vector2 position, bool state)
-        {
-            Position = position;
-            Enabled = state;
-            Visible = state;
-        }
-
-        public override void MouseLeave(MouseMoveEventArgs e)
-        {
-            foreach (Control child in Children)
-                child.Hovered = false;
-
-            base.MouseLeave(e);
-        }
-
         private void clearChildren()
         {
             foreach (Control child in Children)
-                child.UnloadContent();
+            {
+                if (child.ContentLoaded)
+                    child.UnloadContent();
+            }
             Children.Clear();
         }
-    }
 
+        public delegate void ItemSelectedEvent(object sender, ContextMenuItemSelectedArgs e);
+        public event ItemSelectedEvent ItemSelected;
+
+        public Color4 BackgroundColor { get; set; }
+        public Color4 HighlightColor { get; set; }
+    }
+    
     public class ContextMenuItem : Control
     {
         private TextBox textBox;
@@ -109,6 +157,12 @@ namespace WizardWars.UI.Controls
         {
             textBox = new TextBox(this, text, 10f);
         }
+        public ContextMenuItem(Control parent, ContextInfo info)
+            : base(parent)
+        {
+            textBox = new TextBox(this, info.Text, 10f);
+            Info = info;
+        }
 
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
@@ -116,5 +170,29 @@ namespace WizardWars.UI.Controls
         }
         
         public TextBox TextBox { get { return textBox; } }
+        public ContextInfo Info { get; private set; }
+    }
+    public class ContextInfo
+    {
+        public ContextInfo(string text, params object[] args)
+        {
+            Text = text;
+            Args = args;
+        }
+
+        public string Text { get; private set; }
+        public object[] Args { get; private set; }
+    }
+
+    public class ContextMenuItemSelectedArgs : EventArgs
+    {
+        public ContextMenuItemSelectedArgs(ContextMenuItem item)
+        {
+            Item = item;
+        }
+
+        public ContextMenuItem Item { get; private set; }
+        public ContextInfo Info { get { return Item.Info; } }
+        public string Text { get { return Item.TextBox.Text; } }
     }
 }

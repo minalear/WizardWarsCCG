@@ -79,12 +79,27 @@ namespace WizardWars.UI.Controls
         }
         public override void Click(MouseButtonEventArgs e)
         {
+            //Find the card (if any) that the player has clicked
+            Card card = null;
             for (int i = 0; i < Children.Count; i++)
             {
                 if (Children[i].Hovered && Children[i] is Single)
                 {
-                    Card card = ((Single)Children[i]).Card;
-                    CardSelected?.Invoke(this, new CardSelectionArgs(card, e.Button));
+                    card = ((Single)Children[i]).Card;
+                    break;
+                }
+            }
+
+            //Trigger events based on the mouse button
+            if (card != null)
+            {
+                if (e.Button == MouseButton.Left)
+                {
+                    CardSelected?.Invoke(this, new CardSelectionArgs(card, new Vector2(e.X, e.Y), e.Button));
+                }
+                else if (e.Button == MouseButton.Right)
+                {
+                    CardContextSelected?.Invoke(this, new CardSelectionArgs(card, new Vector2(e.X, e.Y), e.Button));
                 }
             }
 
@@ -110,24 +125,25 @@ namespace WizardWars.UI.Controls
         public delegate void CardSelectedEvent(object sender, CardSelectionArgs e);
         public delegate void CardHoveredEvent(object sender, CardHoveredArgs e);
 
-        public event CardSelectedEvent CardSelected;
+        public event CardSelectedEvent CardSelected, CardContextSelected;
         public event CardHoveredEvent CardHovered;
         
         private bool markedForUpdate = false;
-        private ContextMenu contextMenu;
 
         private const float MAX_SPACING = 105f;
     }
 
     public class CardSelectionArgs : EventArgs
     {
-        public CardSelectionArgs(Card card, MouseButton button)
+        public CardSelectionArgs(Card card, Vector2 mousePos, MouseButton button)
         {
             SelectedCard = card;
+            MousePosition = mousePos;
             Button = button;
         }
 
         public Card SelectedCard { get; private set; }
+        public Vector2 MousePosition { get; private set; }
         public MouseButton Button { get; private set; }
     }
     public class CardHoveredArgs : EventArgs

@@ -22,7 +22,7 @@ namespace WizardWars.UI.Controls
 
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
-            renderer.AddRenderTask(symbol, Position + textureOffset, Color4.White);
+            renderer.AddRenderTask(symbol, Position + textureOffset, Color4.White, -0.5f);
             base.Draw(gameTime, renderer);
         }
 
