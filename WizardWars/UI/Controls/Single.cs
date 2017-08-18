@@ -37,22 +37,25 @@ namespace WizardWars.UI.Controls
         {
             if (Card != null)
             {
-                Color4 color = (Hovered) ? HoveredColor : Color4.White;
-                if (Card.Highlighted) color = HighlightedColor;
+                Color4 drawColor = (Hovered && !IgnoreCardStates) ? HoveredColor : Color4.White;
+                if (Card.Highlighted) drawColor = HighlightedColor;
 
                 float rotation = (Card.IsTapped && !IgnoreCardStates) ? 1.571f : 0f;
-                renderer.AddRenderTask(Card.Art, Position, Size, rotation, new Vector2(0.5f, 0.5f), color);
+
+                //Draw an outline if the card is hovered
+                if (Hovered && !IgnoreCardStates)
+                {
+                    Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
+                    renderer.AddOutlineTask(Card.Art, Position, Size, drawColor, rotation, new Vector2(0.5f, 0.5f), outlineColor);
+                }
+                else
+                {
+                    renderer.AddRenderTask(Card.Art, Position, Size, rotation, new Vector2(0.5f, 0.5f), drawColor);
+                }
 
                 //If the card is face down, add a half-transparent card back texture over it
                 if (Card.IsFaceDown && !IgnoreCardStates)
                     renderer.AddRenderTask(CardInfo.CardBack, Position, Size, rotation, new Vector2(0.5f, 0.5f), new Color4(1f, 1f, 1f, 0.85f), -0.1f);
-
-                //Draw outline
-                if (Hovered)
-                {
-                    Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
-                    renderer.AddOutlineTask(Card.Art, Position, Size, rotation, new Vector2(0.5f, 0.5f), outlineColor);
-                }
             }
 
             base.Draw(gameTime, renderer);

@@ -80,20 +80,17 @@ namespace WizardWars.UI.Controls
             if (Action is PhaseAction)
             {
                 Texture2D texture = (((PhaseAction)Action).Phase == Phases.Cleanup) ? TurnSymbol : PhaseSymbol;
-                renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), Color4.White);
-                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), texture.Size, 0f, Vector2.Zero, iconBorderColor);
+                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), texture.Size, Color4.White, 0f, Vector2.Zero, iconBorderColor);
             }
             else if (Action is CardCastAction)
             {
                 Texture2D texture = ((CardCastAction)Action).Card.Art;
-                renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), Color4.White);
-                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), iconBorderColor);
+                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), Color4.White, new RectangleF(55f, 57f, 174f, 174f), iconBorderColor);
             }
             else if (Action is EffectAction)
             {
                 Texture2D texture = ((EffectAction)Action).Card.Art;
-                renderer.AddRenderTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), Color4.White);
-                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), new RectangleF(55f, 57f, 174f, 174f), iconBorderColor);
+                renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), Color4.White, new RectangleF(55f, 57f, 174f, 174f), iconBorderColor);
             }
 
             //Adjust textbox position to be offset from the icon
