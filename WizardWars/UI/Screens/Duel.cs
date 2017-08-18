@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Input;
 using OpenTK.Graphics;
@@ -75,6 +75,7 @@ namespace WizardWars.UI.Screens
             playerOneHand.CardContextSelected += PlayerOneHand_CardContextSelected;
             playerOneHand.CardHovered += CardHovered;
             playerOneElysium.CardSelected += PlayerOneElysium_CardSelected;
+            playerOneElysium.CardContextSelected += PlayerOneElysium_CardContextSelected;
             playerOneElysium.CardHovered += CardHovered;
             playerOneBattlefield.CardSelected += PlayerOneBattlefield_CardSelected;
             playerOneBattlefield.CardHovered += CardHovered;
@@ -110,7 +111,7 @@ namespace WizardWars.UI.Screens
             previewCard = new Controls.Single(this, null);
             previewCard.Position = new Vector2(10f, 490f);
             previewCard.Size = new Vector2(175f, 220f);
-            previewCard.IgnoreTappedState = true;
+            previewCard.IgnoreCardStates = true;
 
             promptBox = new TextBox(this, string.Empty, 12f);
             promptBox.Position = new Vector2(1175f, 287f);
@@ -176,10 +177,11 @@ namespace WizardWars.UI.Screens
                 endTurnButton.Text = "Cancel";
             }
         }
-        private void attemptDevoteCard(Card card)
+        private void attemptDevoteCard(Card card, bool facedown)
         {
             if (gameState.PlayerOne.TryDevoteCard(card))
             {
+                card.IsFaceDown = facedown;
                 gameState.PlayerOne.Hand.RemoveCardID(card.ID);
             }
         }
@@ -202,10 +204,11 @@ namespace WizardWars.UI.Screens
         {
             Menu.SetDisplay(e.MousePosition, true);
 
-            ContextInfo cast = new ContextInfo("Cast", e.SelectedCard);
-            ContextInfo devote = new ContextInfo("Devote", e.SelectedCard);
+            ContextInfo cast = new ContextInfo("Cast", ContextInfoTypes.Cast, e.SelectedCard);
+            ContextInfo devoteUp = new ContextInfo("Devote - Face Up", ContextInfoTypes.DevoteUp, e.SelectedCard);
+            ContextInfo devoteDown = new ContextInfo("Devote - Face Down", ContextInfoTypes.DevoteDown, e.SelectedCard);
 
-            Menu.SetMenuOptions(cast, devote);
+            Menu.SetMenuOptions(cast, devoteUp, devoteDown);
         }
         private void PlayerOneElysium_CardSelected(object sender, CardSelectionArgs e)
         {
@@ -219,7 +222,7 @@ namespace WizardWars.UI.Screens
                 //If the player is casting a spell, add the mana directly to the cost paid, otherwise add it to their mana pool
                 if (isCasting)
                 {
-                    costPaid += e.SelectedCard.Meta.ManaValue * mod;
+                    costPaid += e.SelectedCard.GetManaValue() * mod;
                     promptBox.Text = string.Format("Pay ({0}).", castedCard.Cost - costPaid);
                 }
                 else
@@ -227,6 +230,16 @@ namespace WizardWars.UI.Screens
                     gameState.PlayerOne.Mana += e.SelectedCard.Meta.ManaValue * mod;
                 }
             }
+        }
+        private void PlayerOneElysium_CardContextSelected(object sender, CardSelectionArgs e)
+        {
+            Menu.SetDisplay(e.MousePosition, true);
+
+            List<ContextInfo> contextOptions = new List<ContextInfo>();
+            if (e.SelectedCard.IsFaceDown)
+                contextOptions.Add(new ContextInfo("Turn Face Up", ContextInfoTypes.ElysiumTurnFaceUp, e.SelectedCard));
+
+            Menu.SetMenuOptions(contextOptions.ToArray());
         }
         private void PlayerOneBattlefield_CardSelected(object sender, CardSelectionArgs e)
         {
@@ -239,15 +252,27 @@ namespace WizardWars.UI.Screens
         }
         private void Menu_ItemSelected(object sender, ContextMenuItemSelectedArgs e)
         {
-            if (e.Text == "Cast")
+            //Hand Options
+            if (e.Type == ContextInfoTypes.Cast)
             {
                 Card card = (Card)e.Info.Args[0];
                 attemptCastCard(card);
             }
-            else if (e.Text == "Devote")
+            else if (e.Type == ContextInfoTypes.DevoteUp)
             {
                 Card card = (Card)e.Info.Args[0];
-                attemptDevoteCard(card);
+                attemptDevoteCard(card, false);
+            }
+            else if (e.Type == ContextInfoTypes.DevoteDown)
+            {
+                Card card = (Card)e.Info.Args[0];
+                attemptDevoteCard(card, true);
+            }
+
+            //Elysium Options
+            if (e.Type == ContextInfoTypes.ElysiumTurnFaceUp)
+            {
+                gameState.PlayerOne.TryTurnElysiumCardUp((Card)e.Info.Args[0]);
             }
         }
 

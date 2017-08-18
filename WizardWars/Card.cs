@@ -16,6 +16,7 @@ namespace WizardWars
         public bool Highlighted { get; set; }
 
         public bool IsTapped { get; set; }
+        public bool IsFaceDown { get; set; }
         public bool Attacking { get; set; }
         public bool IsBlocked { get; set; }
         public Card BlockerRef { get; set; }
@@ -86,6 +87,12 @@ namespace WizardWars
 
             effect = null;
             return false;
+        }
+
+        public int GetManaValue()
+        {
+            //Facedown cards are always worth 1 mana
+            return (IsFaceDown) ? 1 : Meta.ManaValue;
         }
 
         public override string ToString()

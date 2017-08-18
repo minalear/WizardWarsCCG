@@ -174,15 +174,18 @@ namespace WizardWars.UI.Controls
     }
     public class ContextInfo
     {
-        public ContextInfo(string text, params object[] args)
+        public ContextInfo(string text, ContextInfoTypes type, params object[] args)
         {
             Text = text;
+            Type = type;
             Args = args;
         }
 
         public string Text { get; private set; }
         public object[] Args { get; private set; }
+        public ContextInfoTypes Type { get; private set; }
     }
+    public enum ContextInfoTypes { Cast, DevoteUp, DevoteDown, ElysiumTurnFaceUp }
 
     public class ContextMenuItemSelectedArgs : EventArgs
     {
@@ -194,5 +197,6 @@ namespace WizardWars.UI.Controls
         public ContextMenuItem Item { get; private set; }
         public ContextInfo Info { get { return Item.Info; } }
         public string Text { get { return Item.TextBox.Text; } }
+        public ContextInfoTypes Type { get { return Info.Type; } }
     }
 }

@@ -13,7 +13,7 @@ namespace WizardWars.UI.Controls
         public Color4 HoveredColor { get; set; }
         public Color4 OutlineHighlighted { get; set; }
         public Color4 OutlineHovered { get; set; }
-        public bool IgnoreTappedState { get; set; }
+        public bool IgnoreCardStates { get; set; }
 
         public Single(Control parent, Card card)
             : base(parent)
@@ -40,14 +40,18 @@ namespace WizardWars.UI.Controls
                 Color4 color = (Hovered) ? HoveredColor : Color4.White;
                 if (Card.Highlighted) color = HighlightedColor;
 
-                float rotation = (Card.IsTapped && !IgnoreTappedState) ? 1.571f : 0f;
-                renderer.AddRenderTask(Card.Art, Position, Size, rotation, new OpenTK.Vector2(0.5f, 0.5f), color);
+                float rotation = (Card.IsTapped && !IgnoreCardStates) ? 1.571f : 0f;
+                renderer.AddRenderTask(Card.Art, Position, Size, rotation, new Vector2(0.5f, 0.5f), color);
+
+                //If the card is face down, add a half-transparent card back texture over it
+                if (Card.IsFaceDown && !IgnoreCardStates)
+                    renderer.AddRenderTask(CardInfo.CardBack, Position, Size, rotation, new Vector2(0.5f, 0.5f), new Color4(1f, 1f, 1f, 0.85f), -0.1f);
 
                 //Draw outline
                 if (Hovered)
                 {
                     Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
-                    renderer.AddOutlineTask(Card.Art, Position, Size, rotation, new OpenTK.Vector2(0.5f, 0.5f), outlineColor);
+                    renderer.AddOutlineTask(Card.Art, Position, Size, rotation, new Vector2(0.5f, 0.5f), outlineColor);
                 }
             }
 

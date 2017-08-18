@@ -75,6 +75,13 @@ namespace WizardWars
 
             return false;
         }
+        public bool TryTurnElysiumCardUp(Card card)
+        {
+            if (card.IsTapped || card.IsManaDrained) return false;
+            card.IsFaceDown = false;
+
+            return true;
+        }
 
         public virtual void PromptPlayerStateAction(StateAction action) { }
         public virtual void PromptPlayerTargetRequired(EffectAction action) { }
