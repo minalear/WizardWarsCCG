@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Minalear;
 
 namespace WizardWars
@@ -59,9 +60,12 @@ namespace WizardWars
         {
             return (Defense <= 0);
         }
-        public bool IsTriggered(Card source, string trigger, out Effect effect)
+        public bool IsTriggered(Card source, string trigger, out List<Effect> effects)
         {
             string ownerArg = (source.Controller.ID == Controller.ID) ? "controlled" : "opponent";
+
+            bool triggered = false;
+            effects = new List<Effect>();
 
             foreach (Effect cardEffect in Meta.Effects)
             {
@@ -73,20 +77,19 @@ namespace WizardWars
                         //If the source is also this
                         if ((tokens.Length == 1 || tokens[1] == "self") && ID == source.ID)
                         {
-                            effect = cardEffect;
-                            return true;
+                            effects.Add(cardEffect);
+                            triggered = true;
                         }
                         else if (tokens.Length != 1 && (tokens[1] == ownerArg || tokens[1] == "any"))
                         {
-                            effect = cardEffect;
-                            return true;
+                            effects.Add(cardEffect);
+                            triggered = true;
                         }
                     }
                 }
             }
-
-            effect = null;
-            return false;
+            
+            return triggered;
         }
 
         public int GetManaValue()

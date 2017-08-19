@@ -39,7 +39,7 @@ namespace WizardWars.Core
             {
                 if (gameState.RequiresTarget && e.SelectedCard.Highlighted)
                 {
-                    gameState.SubmitTargets(e.SelectedCard);
+                    gameState.SubmitTarget(e.SelectedCard);
                 }
                 else if (gameState.CurrentPhase == Phases.DeclareAttack)
                 {
@@ -62,6 +62,10 @@ namespace WizardWars.Core
             var oppoList = CardFactory.LoadDeckFile(gameState.PlayerTwo, "Content/Decks/opponent_deck.dek", cardList);
 
             gameState.AllCards.AddRange(deckList);
+            gameState.AllCards.AddRange(oppoList);
+            gameState.AllCards.Add(gameState.PlayerOne.PlayerCard);
+            gameState.AllCards.Add(gameState.PlayerTwo.PlayerCard);
+
             gameState.PlayerOne.Deck.AddCards(deckList, Location.Random);
             gameState.PlayerTwo.Deck.AddCards(oppoList, Location.Random);
             

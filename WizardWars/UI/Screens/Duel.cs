@@ -55,13 +55,14 @@ namespace WizardWars.UI.Screens
             Vector2 zoneSize = new Vector2(854, 126);
 
             /* PLAYER ONE */
-            playerOneHero = new Controls.Single(this, gameState.PlayerOne.PlayerCard);
+            playerOneHero = new Single(this, gameState.PlayerOne.PlayerCard);
             playerOneHero.Position = new Vector2(196, 584);
             playerOneHero.Size = cardSize;
 
             playerOneHealthDisplay = new Display(playerOneHero);
             playerOneHealthDisplay.Text = "HP: 20";
             playerOneHealthDisplay.Alignment = System.Drawing.ContentAlignment.BottomRight;
+            gameState.PlayerOne.HealthChanged += (sender, e) => playerOneHealthDisplay.SetText(string.Format("HP: {0}", e));
 
             playerOneDeck = new CardStack(this, gameState.PlayerOne.Deck, new Vector2(1170, 584), cardSize);
             playerOneGraveyard = new CardStack(this, gameState.PlayerOne.Graveyard, new Vector2(1170, 448), cardSize);
@@ -71,6 +72,7 @@ namespace WizardWars.UI.Screens
             playerOneElysium = new CardGroup(this, new Vector2(306, 448), zoneSize, gameState.PlayerOne.Elysium);
             playerOneBattlefield = new CardGroup(this, new Vector2(306, 312), zoneSize, gameState.PlayerOne.Field);
 
+            playerOneHero.Clicked += PlayerOneHero_Clicked;
             playerOneHand.CardSelected += PlayerOneHand_CardSelected;
             playerOneHand.CardContextSelected += PlayerOneHand_CardContextSelected;
             playerOneHand.CardHovered += CardHovered;
@@ -81,13 +83,15 @@ namespace WizardWars.UI.Screens
             playerOneBattlefield.CardHovered += CardHovered;
 
             /* PLAYER TWO */
-            playerTwoHero = new Controls.Single(this, gameState.PlayerTwo.PlayerCard);
+            playerTwoHero = new Single(this, gameState.PlayerTwo.PlayerCard);
             playerTwoHero.Position = new Vector2(196, 10);
             playerTwoHero.Size = cardSize;
+            playerTwoHero.Clicked += PlayerTwoHero_Clicked;
 
             playerTwoHealthDisplay = new Display(playerTwoHero);
             playerTwoHealthDisplay.Text = "HP: 20";
             playerTwoHealthDisplay.Alignment = System.Drawing.ContentAlignment.BottomRight;
+            gameState.PlayerTwo.HealthChanged += (sender, e) => playerTwoHealthDisplay.SetText(string.Format("HP: {0}", e));
 
             playerTwoDeck = new CardStack(this, gameState.PlayerTwo.Deck, new Vector2(1170, 10), cardSize);
             playerTwoGraveyard = new CardStack(this, gameState.PlayerTwo.Graveyard, new Vector2(1170, 146), cardSize);
@@ -95,6 +99,8 @@ namespace WizardWars.UI.Screens
 
             playerTwoElysium = new CardGroup(this, new Vector2(306, 10), zoneSize, gameState.PlayerTwo.Elysium);
             playerTwoBattlefield = new CardGroup(this, new Vector2(306, 146), zoneSize, gameState.PlayerTwo.Field);
+
+            playerTwoBattlefield.CardSelected += PlayerTwoBattlefield_CardSelected;
 
             playerTwoHandCounter = new HandCounter(this, "Content/Art/Assets/hand_count_symbol.png", new Vector2(206f, 12f));
             gameState.PlayerTwo.Hand.CollectionChanged += (sender, e) =>
@@ -108,7 +114,7 @@ namespace WizardWars.UI.Screens
 
             phaseTracker = new PhaseTracker(this, new Vector2(304f, 280f), gameState);
 
-            previewCard = new Controls.Single(this, null);
+            previewCard = new Single(this, null);
             previewCard.Position = new Vector2(10f, 490f);
             previewCard.Size = new Vector2(175f, 220f);
             previewCard.IgnoreCardStates = true;
@@ -192,6 +198,14 @@ namespace WizardWars.UI.Screens
             gameStackControl.RemoveGameStack(action);
         }
 
+        //Player One zones
+        private void PlayerOneHero_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            if (gameState.RequiresTarget)
+            {
+                gameState.SubmitTarget(gameState.PlayerOne.PlayerCard);
+            }
+        }
         private void PlayerOneHand_CardSelected(object sender, CardSelectionArgs e)
         {
             //Normal action
@@ -243,7 +257,26 @@ namespace WizardWars.UI.Screens
         }
         private void PlayerOneBattlefield_CardSelected(object sender, CardSelectionArgs e)
         {
+            if (gameState.RequiresTarget)
+            {
+                gameState.SubmitTarget(e.SelectedCard);
+            }
+        }
 
+        //Player Two zones
+        private void PlayerTwoHero_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            if (gameState.RequiresTarget)
+            {
+                gameState.SubmitTarget(gameState.PlayerTwo.PlayerCard);
+            }
+        }
+        private void PlayerTwoBattlefield_CardSelected(object sender, CardSelectionArgs e)
+        {
+            if (gameState.RequiresTarget)
+            {
+                gameState.SubmitTarget(e.SelectedCard);
+            }
         }
 
         private void CardHovered(object sender, CardHoveredArgs e)

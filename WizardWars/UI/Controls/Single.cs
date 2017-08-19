@@ -2,6 +2,7 @@
 using OpenTK.Graphics;
 using Minalear;
 using OpenTK;
+using OpenTK.Input;
 
 namespace WizardWars.UI.Controls
 {
@@ -86,5 +87,11 @@ namespace WizardWars.UI.Controls
 
             return rectangle.Contains(point);
         }
+        public override void Click(MouseButtonEventArgs e)
+        {
+            Clicked?.Invoke(this, e);
+        }
+
+        public event Button.ButtonPressEvent Clicked;
     }
 }

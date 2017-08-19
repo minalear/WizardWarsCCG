@@ -57,6 +57,15 @@ namespace WizardWars
         public void Damage(Card source, int num)
         {
             PlayerCard.Damage(num);
+            HealthChanged?.Invoke(this, PlayerCard.Defense);
+
+            //Eventually implement a fail state
+            if (PlayerCard.IsDestroyed()) { }
+        }
+        public void Heal(Card source, int num)
+        {
+            PlayerCard.Heal(num);
+            HealthChanged?.Invoke(this, PlayerCard.Defense);
 
             //Eventually implement a fail state
             if (PlayerCard.IsDestroyed()) { }
@@ -86,6 +95,9 @@ namespace WizardWars
         public virtual void PromptPlayerStateAction(StateAction action) { }
         public virtual void PromptPlayerTargetRequired(EffectAction action) { }
         public virtual void PromptPlayerPayCastingCost(Card card, int manaCost) { }
+
+        public delegate void PlayerHealthChanged(object sender, int num);
+        public event PlayerHealthChanged HealthChanged;
 
         public override string ToString()
         {

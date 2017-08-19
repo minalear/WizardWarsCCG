@@ -38,6 +38,8 @@ namespace WizardWars
                 Phases.Upkeep, Phases.Draw, Phases.Main,
                 Phases.DeclareAttack, Phases.DeclareBlock, Phases.Combat,
                 Phases.Main, Phases.Cleanup };
+
+            validTargets = new List<Card>();
         }
 
         public void StartGame()
@@ -230,7 +232,11 @@ namespace WizardWars
                     {
                         //Damage target creature
                         int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
-                        target.Damage(var);
+
+                        if (target.Meta.IsType(Types.Player))
+                            target.Controller.Damage(action.Card, var);
+                        else
+                            target.Damage(var);
 
                         OnTrigger(target, "damage");
 
@@ -242,7 +248,12 @@ namespace WizardWars
                     {
                         //Heal each target
                         int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
-                        target.Heal(var);
+
+                        if (target.Meta.IsType(Types.Player))
+                            target.Controller.Heal(action.Card, var);
+                        else
+                            target.Heal(var);
+
                         OnTrigger(target, "heal");
                     }
                     else if (tokens[0] == "counter")
@@ -330,7 +341,7 @@ namespace WizardWars
         public void HighlightValidTargets(Effect effect)
         {
             clearHighlights();
-            List<Card> validTargets = new List<Card>();
+            validTargets.Clear();
 
             //Assuming PlayerOne for testing
             foreach (string targetType in effect.ValidTargets)
@@ -339,7 +350,10 @@ namespace WizardWars
 
                 if (tokens[0] == "player")
                 {
-
+                    if (tokens[1] == "any" || tokens[1] == "opponent")
+                        validTargets.Add(PlayerTwo.PlayerCard);
+                    if (tokens[1] == "any" || tokens[1] == "self")
+                        validTargets.Add(PlayerOne.PlayerCard);
                 }
                 else if (tokens[0] == "creature")
                 {
@@ -370,31 +384,35 @@ namespace WizardWars
                 card.Highlighted = true;
             }
         }
-        public void SubmitTargets(params Card[] cards)
+        public void SubmitTarget(Card card)
         {
-            TargetedEffects.Pop().Targets = cards;
-            clearHighlights();
-            ContinueGame();
+            if (isValidTarget(TargetedEffects.Peek().Effect, card))
+            {
+                TargetedEffects.Pop().AddTarget(card);
+                clearHighlights();
+                ContinueGame();
+            }
         }
 
         public void OnTrigger(Card source, string trigger)
         {
             //Apply triggers to self
-            Effect effect = null;
-            if (source.IsTriggered(source, trigger, out effect))
+            List<Effect> effects = null;
+            if (source.IsTriggered(source, trigger, out effects))
             {
-                AddStateAction(new EffectAction(source, source.Controller, effect));
+                foreach (Effect effect in effects)
+                    AddStateAction(new EffectAction(source, source.Controller, effect));
             }
-
-
+            
             //Apply triggers to other permanents 
             foreach (Player player in TurnOrder)
             {
                 foreach (Card card in player.Field)
                 {
-                    if (card.ID != source.ID && card.IsTriggered(source, trigger, out effect))
+                    if (card.ID != source.ID && card.IsTriggered(source, trigger, out effects))
                     {
-                        AddStateAction(new EffectAction(card, card.Controller, effect));
+                        foreach (Effect effect in effects)
+                            AddStateAction(new EffectAction(card, card.Controller, effect));
                     }
                 }
             }
@@ -527,6 +545,19 @@ namespace WizardWars
 
             return targets;
         }
+        private bool isValidTarget(Effect effect, Card card)
+        {
+            //validTargets was set earlier when validTargets were highlighted
+            foreach (Card validTarget in validTargets)
+            {
+                if (validTarget.ID == card.ID)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private List<Card> validTargets;
         
         public event PhaseChangeEvent PhaseChange;
         public event StateActionResolved ActionResolved;
@@ -566,13 +597,14 @@ namespace WizardWars
         public Card Card { get; set; }
         public Player Caster { get; set; }
         public Effect Effect { get; set; }
-        public Card[] Targets { get; set; }
+        public List<Card> Targets { get; set; }
 
         public EffectAction(Card card, Player caster, Effect effect)
         {
             Card = card;
             Caster = caster;
             Effect = effect;
+            Targets = new List<Card>();
         }
 
         public override void Init(GameState gameState)
@@ -583,6 +615,11 @@ namespace WizardWars
         public override string ToString()
         {
             return string.Format("Player #{0}'s card ({1}) effect: {2}", Caster.ID + 1, Card, Effect);
+        }
+
+        public void AddTarget(Card card)
+        {
+            Targets.Add(card);
         }
     }
     public class PhaseAction : StateAction
