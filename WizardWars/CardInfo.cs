@@ -88,6 +88,16 @@ namespace WizardWars
 
             return IsSubType((SubTypes)Enum.Parse(typeof(SubTypes), literal, true));
         }
+        public bool HasKeyword(string literal)
+        {
+            foreach (string keyword in Keywords)
+            {
+                if (literal == keyword)
+                    return true;
+            }
+
+            return false;
+        }
 
         public Card CreateInstance(Player owner)
         {
@@ -98,6 +108,10 @@ namespace WizardWars
         {
             return string.Format("{0} - {1}", Name, Cost);
         }
+
+        public const string HASTE = "Shock";
+        public const string FLASH = "Interrupt";
+        public const string DEFENDER = "Passive";
     }
 
     public enum Types

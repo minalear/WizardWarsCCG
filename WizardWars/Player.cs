@@ -93,11 +93,17 @@ namespace WizardWars
         }
 
         public virtual void PromptPlayerStateAction(StateAction action) { }
-        public virtual void PromptPlayerTargetRequired(EffectAction action) { }
+        public virtual void PromptPlayerTargetRequired(EffectAction action)
+        {
+            Prompt?.Invoke(this, action.Effect.Prompt);
+        }
         public virtual void PromptPlayerPayCastingCost(Card card, int manaCost) { }
 
         public delegate void PlayerHealthChanged(object sender, int num);
+        public delegate void PlayerPromptEvent(object sender, string prompt);
+
         public event PlayerHealthChanged HealthChanged;
+        public event PlayerPromptEvent Prompt;
 
         public override string ToString()
         {

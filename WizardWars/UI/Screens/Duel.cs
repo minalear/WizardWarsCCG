@@ -121,6 +121,7 @@ namespace WizardWars.UI.Screens
 
             promptBox = new TextBox(this, string.Empty, 12f);
             promptBox.Position = new Vector2(1175f, 287f);
+            gameState.PlayerOne.Prompt += (sender, e) => promptBox.SetText(e);
 
             continueButton = new Button(this, "Continue", 12f);
             continueButton.Position = new Vector2(1170, 388);

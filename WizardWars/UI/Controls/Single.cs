@@ -39,7 +39,7 @@ namespace WizardWars.UI.Controls
             if (Card != null)
             {
                 Color4 drawColor = (Hovered && !IgnoreCardStates) ? HoveredColor : Color4.White;
-                if (Card.Highlighted) drawColor = HighlightedColor;
+                if (Card.Highlighted && !IgnoreCardStates) drawColor = HighlightedColor;
 
                 float rotation = (Card.IsTapped && !IgnoreCardStates) ? 1.571f : 0f;
 

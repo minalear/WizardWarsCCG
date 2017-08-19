@@ -21,6 +21,7 @@ namespace WizardWars
         public bool Attacking { get; set; }
         public bool IsBlocked { get; set; }
         public Card BlockerRef { get; set; }
+        public bool IsSummoningSick { get; set; }
 
         public bool Blocking { get; set; }
         public bool IsManaDrained { get; set; }
@@ -90,6 +91,24 @@ namespace WizardWars
             }
             
             return triggered;
+        }
+        public bool CanAttack()
+        {
+            if (!Meta.IsType(Types.Creature)) return false;
+            if (IsSummoningSick || !Meta.HasKeyword(CardInfo.HASTE)) return false;
+            if (IsTapped) return false;
+            if (Meta.HasKeyword(CardInfo.DEFENDER)) return false;
+
+            return true;
+        }
+
+        public void EnteredBattlefield()
+        {
+            if (Meta.IsType(Types.Creature))
+            {
+                if (!Meta.HasKeyword(CardInfo.HASTE))
+                    IsSummoningSick = true;
+            }
         }
 
         public int GetManaValue()

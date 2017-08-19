@@ -175,6 +175,7 @@ namespace WizardWars
             if (card.Meta.IsType(Types.Creature) || card.Meta.IsType(Types.Relic))
             {
                 caster.Field.AddCard(card);
+                card.EnteredBattlefield();
                 OnTrigger(card, "enterbattlefield");
             }
             else
@@ -638,7 +639,10 @@ namespace WizardWars
             else if (Phase == Phases.Upkeep)
             {
                 foreach (Card card in gameState.CurrentTurn.Field)
+                {
                     card.IsTapped = false;
+                    card.IsSummoningSick = false;
+                }
                 foreach (Card card in gameState.CurrentTurn.Elysium)
                 {
                     card.IsTapped = false;
@@ -676,7 +680,7 @@ namespace WizardWars
                         card.IsManaDrained = true;
                 }
             }
-            
+
             base.Resolve(gameState);
         }
         public override string ToString()
