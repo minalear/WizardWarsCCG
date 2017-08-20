@@ -10,116 +10,86 @@ namespace WizardWars
 
         public int ID { get; private set; }
 
-        public string Name { get { return Meta.Name; } }
-        public int Cost { get { return Meta.Cost; } }
-        public Texture2D Art { get { return Meta.Art; } }
-        public CardInfo Meta { get; private set; }
-        public bool Highlighted { get; set; }
+        public Texture2D Art { get { return MetaInfo.Art; } }
 
-        public bool IsTapped { get; set; }
-        public bool IsFaceDown { get; set; }
-        public bool Attacking { get; set; }
-        public bool IsBlocked { get; set; }
-        public Card BlockerRef { get; set; }
-        public bool IsSummoningSick { get; set; }
+        public string Name;
+        public int BaseAttack, BaseHealth;
+        public int BonusAttack, BonusHealth;
+        public int CurrentAttack, CurrentHealth;
+        public int Damage;
 
-        public bool Blocking { get; set; }
-        public bool IsManaDrained { get; set; }
+        public int Cost;
 
-        public Collection Zone { get; set; }
-
-        public int Attack, Defense;
         public Player Owner, Controller;
+        public List<Effect> Effects;
 
-        public Card(CardInfo card)
+        public List<Counter> Counters;
+
+        public bool IsPermanent;
+        public bool IsTapped;
+        public bool IsFaceDown;
+        public bool IsSummoningSick;
+
+        public List<string> Keywords;
+
+        public CardInfo MetaInfo;
+
+        public Collection Zone;
+
+
+        public Card(CardInfo card, Player owner)
         {
             ID = _nextValidID++;
-            Meta = card;
-            Attack = card.Attack;
-            Defense = card.Defense;
+            MetaInfo = card;
+
+            Owner = owner;
+            Controller = owner;
+
+            Effects = new List<Effect>();
+            Counters = new List<Counter>();
+
+            IsPermanent = (IsOfType(Types.Creature) || IsOfType(Types.Relic));
+            UpdateStats();
         }
+
+
+        public void UpdateStats()
+        {
+            Name = MetaInfo.Name;
+
+            BaseAttack = MetaInfo.Attack;
+            BaseHealth = MetaInfo.Health;
+            BonusAttack = 0;
+            BonusHealth = 0;
+        }
+
+        public void DealDamage(Card source, int number)
+        {
+
+        }
+
+        public bool IsOfType(Types type)
+        {
+            return MetaInfo.IsType(type);
+        }
+        public bool IsOfSubType(SubTypes subType)
+        {
+            return MetaInfo.IsSubType(subType);
+        }
+
+        public void ApplyStaticEffects(List<Effect> effects)
+        {
+
+        }
+
 
         public bool Equals(Card other)
         {
             return (ID == other.ID);
         }
-
-        public void Damage(int amount)
-        {
-            Defense -= amount;
-        }
-        public void Heal(int amount)
-        {
-            //Can't heal more than max defense
-            Defense = OpenTK.MathHelper.Clamp(Defense + amount, Defense + amount, Meta.Defense);
-        }
-        public void Destroy()
-        {
-            Defense = 0;
-        }
-        public bool IsDestroyed()
-        {
-            return (Defense <= 0);
-        }
-        public bool IsTriggered(Card source, string trigger, out List<Effect> effects)
-        {
-            string ownerArg = (source.Controller.ID == Controller.ID) ? "controlled" : "opponent";
-
-            bool triggered = false;
-            effects = new List<Effect>();
-
-            foreach (Effect cardEffect in Meta.Effects)
-            {
-                foreach (string effectTrigger in cardEffect.Triggers)
-                {
-                    string[] tokens = effectTrigger.Split('.');
-                    if (tokens[0] == trigger)
-                    {
-                        //If the source is also this
-                        if ((tokens.Length == 1 || tokens[1] == "self") && ID == source.ID)
-                        {
-                            effects.Add(cardEffect);
-                            triggered = true;
-                        }
-                        else if (tokens.Length != 1 && (tokens[1] == ownerArg || tokens[1] == "any"))
-                        {
-                            effects.Add(cardEffect);
-                            triggered = true;
-                        }
-                    }
-                }
-            }
-            
-            return triggered;
-        }
-        public bool CanAttack()
-        {
-            if (!Meta.IsType(Types.Creature)) return false;
-            if (IsSummoningSick || !Meta.HasKeyword(CardInfo.HASTE)) return false;
-            if (IsTapped) return false;
-            if (Meta.HasKeyword(CardInfo.DEFENDER)) return false;
-
-            return true;
-        }
-
-        public void EnteredBattlefield()
-        {
-            if (Meta.IsType(Types.Creature))
-            {
-                if (!Meta.HasKeyword(CardInfo.HASTE))
-                    IsSummoningSick = true;
-            }
-        }
-
-        public int GetManaValue()
-        {
-            //Facedown cards are always worth 1 mana
-            return (IsFaceDown) ? 1 : Meta.ManaValue;
-        }
-
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Meta.Name, ID);
+            return string.Format("{0} ({1})", Name, ID);
         }
     }
 }

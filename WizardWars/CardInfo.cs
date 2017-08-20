@@ -17,7 +17,7 @@ namespace WizardWars
         public string[] Keywords;
 
         public int Attack;
-        public int Defense;
+        public int Health;
 
         public Types[] Types;
         public SubTypes[] SubTypes;
@@ -101,7 +101,7 @@ namespace WizardWars
 
         public Card CreateInstance(Player owner)
         {
-            return new Card(this) { Owner = owner, Controller = owner };
+            return new Card(this, owner);
         }
 
         public override string ToString()

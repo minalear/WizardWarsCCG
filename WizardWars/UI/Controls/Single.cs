@@ -21,12 +21,12 @@ namespace WizardWars.UI.Controls
         {
             Card = card;
 
-            if (card != null && card.Meta.IsType(Types.Creature))
+            /*if (card != null && card.Meta.IsType(Types.Creature))
             {
                 Display display = new Display(this);
                 display.SetText(string.Format("{0}/{1}", card.Attack, card.Defense));
                 display.Alignment = System.Drawing.ContentAlignment.BottomRight;
-            }
+            }*/
 
             HighlightedColor = new Color4(1f, 0.65f, 0.65f, 1f);
             HoveredColor = new Color4(0.65f, 1f, 0.65f, 1f);
@@ -39,14 +39,14 @@ namespace WizardWars.UI.Controls
             if (Card != null)
             {
                 Color4 drawColor = (Hovered && !IgnoreCardStates) ? HoveredColor : Color4.White;
-                if (Card.Highlighted && !IgnoreCardStates) drawColor = HighlightedColor;
+                if (/*Card.Highlighted*/false && !IgnoreCardStates) drawColor = HighlightedColor;
 
                 float rotation = (Card.IsTapped && !IgnoreCardStates) ? 1.571f : 0f;
 
                 //Draw an outline if the card is hovered
                 if (Hovered && !IgnoreCardStates)
                 {
-                    Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
+                    Color4 outlineColor = (/*Card.Highlighted*/false) ? OutlineHighlighted : OutlineHovered;
                     renderer.AddOutlineTask(Card.Art, Position, Size, drawColor, rotation, new Vector2(0.5f, 0.5f), outlineColor);
                 }
                 else
@@ -59,7 +59,7 @@ namespace WizardWars.UI.Controls
                 {
                     if (Hovered)
                     {
-                        Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
+                        Color4 outlineColor = (/*Card.Highlighted*/false) ? OutlineHighlighted : OutlineHovered;
                         renderer.AddOutlineTask(CardInfo.CardBack, Position, Size, new Color4(1f, 1f, 1f, 0.85f), rotation, new Vector2(0.5f, 0.5f), outlineColor, -0.1f);
                     }
                     else

@@ -9,7 +9,7 @@ namespace WizardWars
         public int ID { get; private set; }
         public GameState GameState;
 
-        public int Heatlh { get { return PlayerCard.Defense; } }
+        public int Heatlh { get { return PlayerCard.CurrentHealth; } }
         public int Mana;
 
         public Card PlayerCard;
@@ -56,19 +56,11 @@ namespace WizardWars
         }
         public void Damage(Card source, int num)
         {
-            PlayerCard.Damage(num);
-            HealthChanged?.Invoke(this, PlayerCard.Defense);
 
-            //Eventually implement a fail state
-            if (PlayerCard.IsDestroyed()) { }
         }
         public void Heal(Card source, int num)
         {
-            PlayerCard.Heal(num);
-            HealthChanged?.Invoke(this, PlayerCard.Defense);
 
-            //Eventually implement a fail state
-            if (PlayerCard.IsDestroyed()) { }
         }
 
         public bool TryDevoteCard(Card card)
@@ -86,7 +78,7 @@ namespace WizardWars
         }
         public bool TryTurnElysiumCardUp(Card card)
         {
-            if (card.IsTapped || card.IsManaDrained) return false;
+            if (card.IsTapped/* || card.IsManaDrained*/) return false;
             card.IsFaceDown = false;
 
             return true;

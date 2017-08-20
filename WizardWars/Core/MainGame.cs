@@ -32,24 +32,6 @@ namespace WizardWars.Core
             gameState = new GameState();
             gameAI = new AI(gameState.PlayerTwo);
             duelScreen = new Duel(this, gameState);
-
-            return;
-
-            playerOneField.CardSelected += (sender, e) =>
-            {
-                if (gameState.RequiresTarget && e.SelectedCard.Highlighted)
-                {
-                    gameState.SubmitTarget(e.SelectedCard);
-                }
-                else if (gameState.CurrentPhase == Phases.DeclareAttack)
-                {
-                    if (e.SelectedCard.Meta.IsType(Types.Creature))
-                    {
-                        e.SelectedCard.IsTapped = !e.SelectedCard.IsTapped;
-                        e.SelectedCard.Attacking = e.SelectedCard.IsTapped;
-                    }
-                }
-            };
         }
         public override void LoadContent()
         {

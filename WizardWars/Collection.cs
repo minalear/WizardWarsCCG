@@ -155,7 +155,7 @@ namespace WizardWars
             int num = 0;
             foreach (Card instance in this)
             {
-                CardInfo card = instance.Meta;
+                CardInfo card = instance.MetaInfo;
                 foreach (Types type in card.Types)
                 {
                     if (type == cardType)
@@ -170,7 +170,7 @@ namespace WizardWars
             int num = 0;
             foreach (Card instance in this)
             {
-                CardInfo card = instance.Meta;
+                CardInfo card = instance.MetaInfo;
                 foreach (SubTypes type in card.SubTypes)
                     num++;
             }

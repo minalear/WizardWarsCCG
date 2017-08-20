@@ -228,7 +228,7 @@ namespace WizardWars.UI.Screens
         private void PlayerOneElysium_CardSelected(object sender, CardSelectionArgs e)
         {
             //Can't get mana out of Mana Drained Elysium cards
-            if (!e.SelectedCard.IsManaDrained)
+            /*if (!e.SelectedCard.IsManaDrained)
             {
                 //You may untap cards if they're not drained
                 e.SelectedCard.IsTapped = !e.SelectedCard.IsTapped;
@@ -244,7 +244,7 @@ namespace WizardWars.UI.Screens
                 {
                     gameState.PlayerOne.Mana += e.SelectedCard.Meta.ManaValue * mod;
                 }
-            }
+            }*/
         }
         private void PlayerOneElysium_CardContextSelected(object sender, CardSelectionArgs e)
         {
@@ -330,8 +330,8 @@ namespace WizardWars.UI.Screens
                     //set IsManaDrained true to every card tapped in Elysium (redundant)
                     foreach (Card card in gameState.PlayerOne.Elysium)
                     {
-                        if (card.IsTapped)
-                            card.IsManaDrained = true;
+                        /*if (card.IsTapped)
+                            card.IsManaDrained = true;*/
                     }
 
                     //Finally cast the card and update the UI

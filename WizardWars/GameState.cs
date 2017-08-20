@@ -96,6 +96,7 @@ namespace WizardWars
         }
         public void PassPriority()
         {
+            //Check if an effect requires a target and prompt the proper player if so
             if (TargetedEffects.Count > 0)
             {
                 HighlightValidTargets(TargetedEffects.Peek().Effect);
@@ -156,7 +157,7 @@ namespace WizardWars
                 return false;
 
             //Players can cast Interrupt cards anytime they have priority
-            if (card.Meta.IsSubType(SubTypes.Interrupt))
+            if (card.IsOfSubType(SubTypes.Interrupt))
                 return true;
 
             //If the card is not a interrupt card, they cannot cast it unless the only thing left on the stack is the PhaseAction
@@ -171,11 +172,11 @@ namespace WizardWars
             //Trigger self-cast effects
             OnTrigger(card, "cast");
 
-            //Add creatures/relics to the battlefield and trigger ETB effects
-            if (card.Meta.IsType(Types.Creature) || card.Meta.IsType(Types.Relic))
+            //Add permanent cards to the battlefield and trigger ETB effects
+            if (card.IsPermanent)
             {
                 caster.Field.AddCard(card);
-                card.EnteredBattlefield();
+                //card.EnteredBattlefield();
                 OnTrigger(card, "enterbattlefield");
             }
             else
@@ -195,7 +196,7 @@ namespace WizardWars
                 foreach (Card target in targets)
                 {
                     #region Spell Effects
-                    string[] tokens = effect.Actions[i].Split('.');
+                    /*string[] tokens = effect.Actions[i].Split('.');
                     if (tokens[0] == "tap")
                     {
                         //Tap each target
@@ -270,7 +271,7 @@ namespace WizardWars
 
                             OnTrigger(target, "draw");
                         }
-                    }
+                    }*/
                     #endregion
                 }
             }
@@ -293,7 +294,7 @@ namespace WizardWars
         }
         public void CalculateCombat()
         {
-            Player attacker = CurrentTurn;
+            /*Player attacker = CurrentTurn;
             Player defender = GetOpponent(attacker);
 
             List<Card> attackingCreatures = new List<Card>();
@@ -326,7 +327,7 @@ namespace WizardWars
                     OnTrigger(card, "destroy");
             }
 
-            UpdateGameState();
+            UpdateGameState();*/
         }
         public Player GetOpponent(Player self)
         {
@@ -345,7 +346,7 @@ namespace WizardWars
             validTargets.Clear();
 
             //Assuming PlayerOne for testing
-            foreach (string targetType in effect.ValidTargets)
+            /*foreach (string targetType in effect.ValidTargets)
             {
                 string[] tokens = targetType.Split('.');
 
@@ -383,7 +384,7 @@ namespace WizardWars
             foreach (Card card in validTargets)
             {
                 card.Highlighted = true;
-            }
+            }*/
         }
         public void SubmitTarget(Card card)
         {
@@ -398,7 +399,7 @@ namespace WizardWars
         public void OnTrigger(Card source, string trigger)
         {
             //Apply triggers to self
-            List<Effect> effects = null;
+            /*List<Effect> effects = null;
             if (source.IsTriggered(source, trigger, out effects))
             {
                 foreach (Effect effect in effects)
@@ -416,11 +417,11 @@ namespace WizardWars
                             AddStateAction(new EffectAction(card, card.Controller, effect));
                     }
                 }
-            }
+            }*/
         }
         public void UpdateGameState()
         {
-            foreach (Player player in TurnOrder)
+            /*foreach (Player player in TurnOrder)
             {
                 for (int i = 0; i < player.Field.Count; i++)
                 {
@@ -433,7 +434,7 @@ namespace WizardWars
                         i--;
                     }
                 }
-            }
+            }*/
         }
 
         private void swapTurns()
@@ -448,8 +449,8 @@ namespace WizardWars
         }
         private void clearHighlights()
         {
-            foreach (Card card in AllCards)
-                card.Highlighted = false;
+            /*foreach (Card card in AllCards)
+                card.Highlighted = false;*/
         }
         private int parseNumberVariable(Player caster, Card card, EffectAction action, object var)
         {
@@ -478,7 +479,7 @@ namespace WizardWars
                 }
                 else if (tokens[2] == "health")
                 {
-                    return target.PlayerCard.Defense;
+                    return target.PlayerCard.CurrentHealth;
                 }
                 else if (tokens[2] == "creatures")
                 {
@@ -528,16 +529,16 @@ namespace WizardWars
                         {
                             foreach (Card opponentCard in PlayerTwo.Field)
                             {
-                                if (opponentCard.Meta.IsCreatureType(typeRestriction))
-                                    targets.Add(opponentCard);
+                                /*if (opponentCard.Meta.IsCreatureType(typeRestriction))
+                                    targets.Add(opponentCard);*/
                             }
                         }
                         if (tokens[1] == "controlled" || tokens[1] == "all")
                         {
                             foreach (Card controlledCard in PlayerOne.Field)
                             {
-                                if (controlledCard.Meta.IsCreatureType(typeRestriction))
-                                    targets.Add(controlledCard);
+                                /*if (controlledCard.Meta.IsCreatureType(typeRestriction))
+                                    targets.Add(controlledCard);*/
                             }
                         }
                     }
@@ -646,15 +647,15 @@ namespace WizardWars
                 foreach (Card card in gameState.CurrentTurn.Elysium)
                 {
                     card.IsTapped = false;
-                    card.IsManaDrained = false;
+                    //card.IsManaDrained = false;
                 }
             }
             else if (Phase == Phases.DeclareBlock)
             {
                 foreach (Card card in gameState.CurrentTurn.Field)
                 {
-                    if (card.Attacking)
-                        gameState.OnTrigger(card, "attack");
+                    /*if (card.Attacking)
+                        gameState.OnTrigger(card, "attack");*/
                 }
             }
             else if (Phase == Phases.Combat)
@@ -676,8 +677,8 @@ namespace WizardWars
                 //Ensure all tapped lands are considered drained between phases
                 foreach (Card card in player.Elysium)
                 {
-                    if (card.IsTapped)
-                        card.IsManaDrained = true;
+                    /*if (card.IsTapped)
+                        card.IsManaDrained = true;*/
                 }
             }
 
