@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Microsoft.Scripting.Hosting;
 using Minalear;
 
 namespace WizardWars
@@ -16,7 +17,22 @@ namespace WizardWars
         {
             return JsonConvert.DeserializeObject<List<CardInfo>>(jsonText);
         }
+        public static List<CardInfo> LoadCards(ScriptEngine scriptEngine)
+        {
+            List<CardInfo> cardList = new List<CardInfo>();
+            ScriptScope scope = scriptEngine.CreateScope();
+            
+            string[] scriptFiles = Directory.GetFiles("Content/Scripts/", "*.py");
+            foreach (string scriptFile in scriptFiles)
+            {
+                CompiledCode source = scriptEngine.CreateScriptSourceFromFile(scriptFile).Compile();
+                source.Execute(scope);
 
+                cardList.Add(scope.GetVariable<CardInfo>("card"));
+            }
+
+            return cardList;
+        }
         public static List<Card> LoadDeckFile(Player player, string path, List<CardInfo> allCards)
         {
             List<Card> deck = new List<Card>();

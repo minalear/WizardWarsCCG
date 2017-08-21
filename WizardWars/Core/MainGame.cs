@@ -1,8 +1,7 @@
 ﻿using Minalear;
 using OpenTK;
-using OpenTK.Input;
-using OpenTK.Graphics;
-using WizardWars.UI.Controls;
+using IronPython.Hosting;
+using Microsoft.Scripting.Hosting;
 using WizardWars.UI.Screens;
 
 namespace WizardWars.Core
@@ -10,11 +9,10 @@ namespace WizardWars.Core
     public class MainGame : Game
     {
         private RenderEngine renderEngine;
+        private ScriptEngine scriptEngine;
 
         private GameState gameState;
         private AI gameAI;
-        
-        private CardGroup playerOneField;
         
         private Duel duelScreen;
 
@@ -36,9 +34,14 @@ namespace WizardWars.Core
         public override void LoadContent()
         {
             renderEngine = new RenderEngine(this, 2);
+            scriptEngine = Python.CreateEngine();
+            scriptEngine.Runtime.LoadAssembly(System.Reflection.Assembly.GetAssembly(typeof(CardInfo)));
+            scriptEngine.Runtime.LoadAssembly(System.Reflection.Assembly.GetAssembly(typeof(Types)));
+            scriptEngine.Runtime.LoadAssembly(System.Reflection.Assembly.GetAssembly(typeof(SubTypes)));
 
             CardInfo.CardBack = Texture2D.LoadFromSource("Content/Art/Assets/cardback.png");
 
+            CardFactory.LoadCards(scriptEngine);
             var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
             var deckList = CardFactory.LoadDeckFile(gameState.PlayerOne, "Content/Decks/test_deck.dek", cardList);
             var oppoList = CardFactory.LoadDeckFile(gameState.PlayerTwo, "Content/Decks/opponent_deck.dek", cardList);
