@@ -1,6 +1,6 @@
 ﻿[{
 	"name" : "Flinnan, the Blue Mage",
-	"imagepath" : "Content/Art/Cards/player_flinnan.png",
+	"imagepath" : "player_flinnan.png",
 	"cost" : 0,
 	"types" : ["player"],
 	"attack" : 0,
@@ -8,186 +8,36 @@
 },
 {
 	"name" : "Flannin, the Black Mage",
-	"imagepath" : "Content/Art/Cards/player_flannin.png",
+	"imagepath" : "player_flannin.png",
 	"cost" : 0,
 	"types" : ["player"],
 	"attack" : 0,
 	"defense" : 20
 },
 {
-	"name" : "Grunka Lunkan",
-	"imagepath" : "Content/Art/Cards/grunka_lunkan.png",
-	"cost" : 0,
-	"types" : ["creature"],
-	"subtypes" : ["grunkan"],
-	"keywords" : ["passive"],
-	"rulestext" : "Passive (This creature cannot attack.)",
-	"flavortext" : "The residents of the Isle of Grunk are small, fat creatures without much redeeming factors.",
-	"attack" : 0,
-	"defense" : 1
-},
-{
-	"name" : "Oompa Looter",
-	"imagepath" : "Content/Art/Cards/oompa_looter.png",
-	"cost" : 1,
-	"types" : ["creature"],
-	"subtypes" : ["grunkan", "rebel"],
-	"rulestext" : "When Oompa Looter enters the battlefield, draw a card.",
-	"flavortext" : "Oompa Loompa was supposed to be a noble movement.  Many used it as a ruse to steal and pillage.",
-	"attack" : 1,
-	"defense" : 1,
-	"effects" : 
-	[{
-		"triggers" : ["enterbattlefield"],
-		"affects" : ["player.self"],
-		"actions" : ["draw"],
-		"vars" : [1]
-	}]
-},
-{
-	"name" : "Red Dragon Whelp",
-	"imagepath" : "Content/Art/Cards/red_dragon_whelp.png",
-	"cost" : 4,
-	"types" : ["creature"],
-	"subtypes" : ["dragon"],
-	"rulestext" : "Whenever a minion dies, deal 3 damage to each opponent.",
-	"flavortext" : "The whelpings swarmed the skies looking for their first meal.",
-	"attack" : 2,
-	"defense" : 2,
-	"effects" :
-	[{
-		"triggers" : ["destroy.any"],
-		"affects" : ["player.opponent"],
-		"actions" : ["damage"],
-		"vars" : [3]
-	}]
-},
-{
-	"name" : "Spirit Grunk",
-	"imagepath" : "Content/Art/Cards/spirit_grunk.png",
-	"cost" : 1,
-	"types" : ["creature"],
-	"subtypes" : ["grunkan", "spirit"],
-	"rulestext" : "Passive (this creature cannot attack.)\nEternal - (t): Add (2) to your mana pool.",
-	"flavortext" : "The Grunka Lunkas don't worship gods.  They only revere their dead.",
-	"attack" : 1,
-	"defense" : 1,
-	"manavalue" : 2
-},
-{
-	"name" : "Heal",
-	"imagepath" : "Content/Art/Cards/heal.png",
-	"cost" : 3,
-	"types" : ["spell"],
-	"rulestext" : "You gain 7 health.",
-	"flavortext" : "Warriors may fall, but clerics are there to help.",
-	"effects" : 
-	[{
-		"triggers" : ["cast"],
-		"affects" : ["player.self"],
-		"actions" : ["heal"],
-		"vars" : [7]
-	}]
-},
-{
-	"name" : "Lightning Helix",
-	"imagepath" : "Content/Art/Cards/lightning_helix.png",
-	"cost" : 2,
-	"types" : ["spell"],
-	"rulestext" : "Deal 3 damage to target creature or player and you gain 3 life.",
-	"flavortext" : "Though less well-known than its army of soldiers, the Boros Legion's mage-priests are as repsected by the innocent as they are hated by the ghosts of the guilty.",
-	"effects" : 
-	[{
-		"triggers" : ["cast"],
-		"prompt" : "Target creature or player takes damage.",
-		"actions" : ["damage"],
-		"vars" : [3],
-		"validtargets" : ["player.any", "creature.any"]
-	},
-	{
-		"triggers" : ["cast"],
-		"affects" : ["player.self"],
-		"actions" : ["heal"],
-		"vars" : [3]
-	}]
-},
-{
-	"name" : "Wrath of God",
-	"imagepath" : "Content/Art/Cards/wrath_of_god.png",
-	"cost" : 7,
-	"types" : ["spell"],
-	"rulestext" : "Destroy all creatures.",
-	"flavortext" : "When the Material God descended from above, the beings below wept.",
-	"effects" :
-	[{
-		"triggers" : ["cast"],
-		"affects" : ["creatures.all"],
-		"actions" : ["destroy"]
-	}]
-},
-{
-	"name" : "Glorious Anthem",
-	"imagepath" : "Content/Art/Cards/glorious_anthem.png",
-	"cost" : 3,
-	"types" : ["relic"],
-	"rulestext" : "Creatures you control gain +1/+1.",
-	"flavortext" : "Once heard, the battle song of an angel becomes part of the listener forever.",
-	"effects" :
-	[{
-		"triggers" : ["static"],
-		"affects" : ["creatures.controlled"],
-		"actions" : ["buff.attack", "buff.defense"],
-		"vars" : [1, 1]
-	}]
-},
-{
-	"name" : "Orb of Confusion",
-	"imagepath" : "Content/Art/Cards/orb_of_confusion.png",
-	"cost" : 10,
-	"types" : ["relic"],
-	"rulestext" : "Players can't draw card.\n(3): Put a card from the top of your library and place it into your hand.",
-	"flavortext" : "The waves emitted from the orb could numb even the sharpest of minds.",
-	"effects" : 
-	[{
-		"triggers" : ["static"],
-		"affects" : ["players.all"],
-		"actions" : ["disable.carddraw"]
-	},
-	{
-		"triggers" : ["activated"],
-		"affects" : ["player.self"],
-		"actions" : ["draw"],
-		"cost" : 3
-	}]
-},
-{
-	"name" : "Counter-Song",
-	"imagepath" : "Content/Art/Cards/counter_song.png",
-	"cost" : 2,
-	"types" : ["spell"],
-	"subtypes" : ["interrupt"],
-	"rulestext" : "Counter target spell.  (Creatures and Relics are not considered spells.)",
-	"flavortext" : "The bard's words echoed out, confusing the lich lord in the word's absurdity.  The spell was lost.",
-	"effects" :
-	[{
-		"triggers" : ["cast"],
-		"affects" : ["spell.last"],
-		"actions" : ["counter"]
-	}]
-},
-{
 	"name" : "Cantrip",
-	"imagepath" : "Content/Art/Cards/cantrip.png",
+	"imagepath" : "cantrip.jpg",
 	"cost" : 1,
 	"types" : ["spell"],
-	"subtypes" : ["interrupt"],
-	"rulestext" : "Draw a card.",
-	"flavortext" : "Even the most powerful mages still recall their first spell.",
-	"effects" : 
+	"keywords" : ["interrupt"],
+	
+	"abilities" :
 	[{
-		"triggers" : ["cast"],
-		"affects" : ["player.self"],
-		"actions" : ["draw"],
-		"vars" : [1]
+		"type" : "cast",
+		"action" : "draw",
+		"affects" : "player.self",
+		"actionvars" : [1]
+	}]
+},
+{
+	"name" : "Temptation",
+	"imagepath" : ".jpg",
+	"cost" : 2,
+	"types" : ["spell"],
+	"keywords" : ["interrupt"],
+	
+	"abilities" :
+	[{
+	
 	}]
 }]

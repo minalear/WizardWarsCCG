@@ -5,13 +5,20 @@ namespace WizardWars
 {
     public class Effect
     {
+        public object Cost;
+
         public string[] Triggers;
         public string Prompt;
+
+        public string Origin, Destination;
+        
+
+
+        public string Action;
         public object[] Vars;
         public string[] ValidTargets;
         public string[] Affects;
-        public object Cost;
-        public string[] Actions;
+        
         public object NumTargets = 1;
 
         [JsonIgnore()]
@@ -32,7 +39,7 @@ namespace WizardWars
 
         public override string ToString()
         {
-            return string.Format("Action: ({0})", Actions[0]);
+            return string.Format("Action: ({0})", Action);
         }
     }
 }

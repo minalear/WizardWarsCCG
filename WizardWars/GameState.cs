@@ -190,90 +190,86 @@ namespace WizardWars
             Effect effect = action.Effect;
             List<Card> targets = getAffectedTargets(caster, card, action);
 
-            //Loop through each effect action and apply it
-            for (int i = 0; i < effect.Actions.Length; i++)
+            foreach (Card target in targets)
             {
-                foreach (Card target in targets)
+                #region Spell Effects
+                /*string[] tokens = effect.Actions[i].Split('.');
+                if (tokens[0] == "tap")
                 {
-                    #region Spell Effects
-                    /*string[] tokens = effect.Actions[i].Split('.');
-                    if (tokens[0] == "tap")
-                    {
-                        //Tap each target
-                        target.IsTapped = true;
-                        OnTrigger(target, "tap");
-                    }
-                    else if (tokens[0] == "untap")
-                    {
-                        //Untap each target
-                        target.IsTapped = false;
-                        OnTrigger(target, "untap");
-                    }
-                    else if (tokens[0] == "destroy")
-                    {
-                        //Destroy all the god damn targets
-                        target.Destroy();
-
-                        //Send it to the graveyard if it is destroyed
-                        if (target.IsDestroyed())
-                            OnTrigger(target, "destroy");
-                    }
-                    else if (tokens[0] == "exile")
-                    {
-                        //Exile each target
-                        target.Owner.Exile.AddCard(target);
-                        OnTrigger(target, "exile");
-                    }
-                    else if (tokens[0] == "devote")
-                    {
-                        //Add target cards to owner's elysium field
-                        target.Owner.Elysium.AddCard(target);
-                        OnTrigger(target, "devote");
-                    }
-                    else if (tokens[0] == "damage")
-                    {
-                        //Damage target creature
-                        int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
-
-                        if (target.Meta.IsType(Types.Player))
-                            target.Controller.Damage(action.Card, var);
-                        else
-                            target.Damage(var);
-
-                        OnTrigger(target, "damage");
-
-                        //Send it to the graveyard if it is destroyed
-                        if (target.IsDestroyed())
-                            OnTrigger(target, "destroy");
-                    }
-                    else if (tokens[0] == "heal")
-                    {
-                        //Heal each target
-                        int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
-
-                        if (target.Meta.IsType(Types.Player))
-                            target.Controller.Heal(action.Card, var);
-                        else
-                            target.Heal(var);
-
-                        OnTrigger(target, "heal");
-                    }
-                    else if (tokens[0] == "counter")
-                    {
-
-                    }
-                    else if (tokens[0] == "draw")
-                    {
-                        if (target.Meta.IsType(Types.Player))
-                        {
-                            int num = parseNumberVariable(caster, card, action, effect.Vars[i]);
-                            target.Controller.DrawCards(num);
-
-                            OnTrigger(target, "draw");
-                        }
-                    }*/
-                    #endregion
+                    //Tap each target
+                    target.IsTapped = true;
+                    OnTrigger(target, "tap");
                 }
+                else if (tokens[0] == "untap")
+                {
+                    //Untap each target
+                    target.IsTapped = false;
+                    OnTrigger(target, "untap");
+                }
+                else if (tokens[0] == "destroy")
+                {
+                    //Destroy all the god damn targets
+                    target.Destroy();
+
+                    //Send it to the graveyard if it is destroyed
+                    if (target.IsDestroyed())
+                        OnTrigger(target, "destroy");
+                }
+                else if (tokens[0] == "exile")
+                {
+                    //Exile each target
+                    target.Owner.Exile.AddCard(target);
+                    OnTrigger(target, "exile");
+                }
+                else if (tokens[0] == "devote")
+                {
+                    //Add target cards to owner's elysium field
+                    target.Owner.Elysium.AddCard(target);
+                    OnTrigger(target, "devote");
+                }
+                else if (tokens[0] == "damage")
+                {
+                    //Damage target creature
+                    int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
+
+                    if (target.Meta.IsType(Types.Player))
+                        target.Controller.Damage(action.Card, var);
+                    else
+                        target.Damage(var);
+
+                    OnTrigger(target, "damage");
+
+                    //Send it to the graveyard if it is destroyed
+                    if (target.IsDestroyed())
+                        OnTrigger(target, "destroy");
+                }
+                else if (tokens[0] == "heal")
+                {
+                    //Heal each target
+                    int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
+
+                    if (target.Meta.IsType(Types.Player))
+                        target.Controller.Heal(action.Card, var);
+                    else
+                        target.Heal(var);
+
+                    OnTrigger(target, "heal");
+                }
+                else if (tokens[0] == "counter")
+                {
+
+                }
+                else if (tokens[0] == "draw")
+                {
+                    if (target.Meta.IsType(Types.Player))
+                    {
+                        int num = parseNumberVariable(caster, card, action, effect.Vars[i]);
+                        target.Controller.DrawCards(num);
+
+                        OnTrigger(target, "draw");
+                    }
+                }*/
+                #endregion
             }
 
             UpdateGameState();

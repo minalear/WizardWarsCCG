@@ -10,6 +10,8 @@ namespace WizardWars
 {
     public static class CardFactory
     {
+        public const string CARD_ART_DIRECTORY = "Content/Art/Cards/";
+
         public static List<CardInfo> LoadCards(string jsonText)
         {
             return JsonConvert.DeserializeObject<List<CardInfo>>(jsonText);
@@ -85,9 +87,9 @@ namespace WizardWars
 
             graphics.Clear(Color.Silver);
             //Only load files that exist
-            if (File.Exists(card.ImagePath))
+            if (File.Exists(CARD_ART_DIRECTORY + card.ImagePath))
             {
-                Image cardArt = Image.FromFile(card.ImagePath);
+                Image cardArt = Image.FromFile(CARD_ART_DIRECTORY + card.ImagePath);
                 graphics.DrawImage(cardArt, 0f, 35f, cardArt.Width, cardArt.Height);
             }
 

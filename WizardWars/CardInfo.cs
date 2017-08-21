@@ -38,7 +38,7 @@ namespace WizardWars
         {
             if (!ArtLoaded)
             {
-                Art = Texture2D.LoadFromSource(ImagePath);
+                Art = Texture2D.LoadFromSource(CardFactory.CARD_ART_DIRECTORY + ImagePath);
                 ArtLoaded = true;
             }
         }

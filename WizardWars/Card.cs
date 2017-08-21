@@ -82,7 +82,6 @@ namespace WizardWars
 
         }
 
-
         public bool Equals(Card other)
         {
             return (ID == other.ID);
