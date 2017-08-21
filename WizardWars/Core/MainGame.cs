@@ -41,8 +41,7 @@ namespace WizardWars.Core
 
             CardInfo.CardBack = Texture2D.LoadFromSource("Content/Art/Assets/cardback.png");
 
-            CardFactory.LoadCards(scriptEngine);
-            var cardList = CardFactory.LoadCards(System.IO.File.ReadAllText("Content/cards.json"));
+            var cardList = CardFactory.LoadCards(scriptEngine);
             var deckList = CardFactory.LoadDeckFile(gameState.PlayerOne, "Content/Decks/test_deck.dek", cardList);
             var oppoList = CardFactory.LoadDeckFile(gameState.PlayerTwo, "Content/Decks/opponent_deck.dek", cardList);
 

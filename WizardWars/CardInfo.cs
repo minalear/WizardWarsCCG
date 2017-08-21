@@ -1,5 +1,6 @@
 ﻿using System;
 using Minalear;
+using Microsoft.Scripting.Hosting;
 
 namespace WizardWars
 {
@@ -24,6 +25,8 @@ namespace WizardWars
 
         public Effect[] Effects;
 
+        public Ability Ability;
+
         public Texture2D Art;
         public bool ArtLoaded { get; private set; }
 
@@ -33,20 +36,22 @@ namespace WizardWars
             SubTypes = new SubTypes[0];
             Effects = new Effect[0];
         }
+        public CardInfo(string name, string image, int cost)
+        {
+            Name = name;
+            ImagePath = image;
+            Cost = cost;
+
+            Types = new Types[0];
+            SubTypes = new SubTypes[0];
+            Effects = new Effect[0];
+        }
 
         public void LoadCardArt()
         {
             if (!ArtLoaded)
             {
-                Art = Texture2D.LoadFromSource(CardFactory.CARD_ART_DIRECTORY + ImagePath);
-                ArtLoaded = true;
-            }
-        }
-        public void LoadCardArt(Texture2D texture)
-        {
-            if (!ArtLoaded)
-            {
-                Art = texture;
+                Art = CardFactory.CreateCardTexture(this);
                 ArtLoaded = true;
             }
         }
@@ -102,6 +107,19 @@ namespace WizardWars
         public Card CreateInstance(Player owner)
         {
             return new Card(this, owner);
+        }
+
+        public void SetKeywords(params string[] keywords)
+        {
+            Keywords = keywords;
+        }
+        public void SetTypes(params Types[] types)
+        {
+            Types = types;
+        }
+        public void SetSubTypes(params SubTypes[] subTypes)
+        {
+            SubTypes = subTypes;
         }
 
         public override string ToString()

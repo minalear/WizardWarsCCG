@@ -1,11 +1,15 @@
 ﻿import System
 from WizardWars import *
 
-card = CardInfo()
-card.Name = "Cantrip"
-card.ImagePath = "cantrip.png"
-card.Cost = 1
+class DrawCard(Ability):
+	def __init__(self):
+		self.Type = AbilityTypes.Triggered
+	def Execute(self, gameState):
+		gameState.PlayerOne.DrawCards(1)
+
+card = CardInfo("Cantrip", "cantrip.png", 1)
 card.RulesText = "Draw a card."
 card.FlavorText = "Even the most powerful mages still recall their first spells."
-card.Types = System.Array[Types]([Types.Spell])
-card.SubTypes = System.Array[SubTypes]([SubTypes.Interrupt])
+card.SetTypes(Types.Spell)
+card.SetSubTypes(SubTypes.Interrupt)
+card.Ability = DrawCard()

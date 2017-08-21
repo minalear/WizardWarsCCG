@@ -9,7 +9,7 @@ namespace WizardWars
         public int ID { get; private set; }
         public GameState GameState;
 
-        public int Heatlh { get { return PlayerCard.CurrentHealth; } }
+        public int Heatlh { get { /*return PlayerCard.CurrentHealth;*/return 20; } }
         public int Mana;
 
         public Card PlayerCard;

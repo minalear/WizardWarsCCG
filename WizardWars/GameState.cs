@@ -169,6 +169,9 @@ namespace WizardWars
         }
         public void ResolveCardCastAction(Player caster, Card card)
         {
+            if (card.MetaInfo.Ability.Type == AbilityTypes.Triggered)
+                card.MetaInfo.Ability.Execute(this);
+
             //Trigger self-cast effects
             OnTrigger(card, "cast");
 
@@ -431,6 +434,13 @@ namespace WizardWars
                     }
                 }
             }*/
+        }
+
+        public void CreateTokenCreature(CardInfo info)
+        {
+            info.LoadCardArt();
+            Card instance = info.CreateInstance(PlayerOne);
+            PlayerOne.Field.AddCard(instance);
         }
 
         private void swapTurns()

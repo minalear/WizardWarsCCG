@@ -28,9 +28,12 @@ namespace WizardWars
                 CompiledCode source = scriptEngine.CreateScriptSourceFromFile(scriptFile).Compile();
                 source.Execute(scope);
 
-                cardList.Add(scope.GetVariable<CardInfo>("card"));
-            }
+                CardInfo info = scope.GetVariable<CardInfo>("card");
+                info.LoadCardArt();
 
+                cardList.Add(info);
+            }
+            
             return cardList;
         }
         public static List<Card> LoadDeckFile(Player player, string path, List<CardInfo> allCards)
@@ -51,6 +54,8 @@ namespace WizardWars
                     readIntoDeck = (line == "-MAINBOARD-");
                     if (!readIntoDeck && line == "-HERO-")
                     {
+                        continue;
+
                         //Hero card
                         CardInfo info = getCardFromList(allCards, lines[i + 1]);
                         foreach (Effect effect in info.Effects)
@@ -72,7 +77,6 @@ namespace WizardWars
 
                     int num = int.Parse(numStr);
                     CardInfo info = getCardFromList(allCards, name);
-                    info.LoadCardArt(createCardTexture(info));
 
                     for (int k = 0; k < num; k++)
                     {
@@ -94,7 +98,7 @@ namespace WizardWars
 
             throw new ArgumentException(string.Format("No card with the name ({0}) found!", title));
         }
-        private static Texture2D createCardTexture(CardInfo card)
+        public static Texture2D CreateCardTexture(CardInfo card)
         {
             //Inefficient, but it doesn't really matter right now
             Bitmap bmp = new Bitmap(284, 357);
