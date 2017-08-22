@@ -15,7 +15,8 @@ namespace WizardWars
         public string Name;
         public int BaseAttack, BaseHealth;
         public int BonusAttack, BonusHealth;
-        public int CurrentAttack, CurrentHealth;
+        public int CurrentAttack { get { return BaseAttack + BonusAttack; } }
+        public int CurrentHealth { get { return BaseHealth + BonusHealth; } }
         public int Damage;
 
         public int Cost;
@@ -35,8 +36,7 @@ namespace WizardWars
         public CardInfo MetaInfo;
 
         public Collection Zone;
-
-
+        
         public Card(CardInfo card, Player owner)
         {
             ID = _nextValidID++;
@@ -51,8 +51,7 @@ namespace WizardWars
             IsPermanent = (IsOfType(Types.Creature) || IsOfType(Types.Relic));
             UpdateStats();
         }
-
-
+        
         public void UpdateStats()
         {
             Name = MetaInfo.Name;
@@ -101,6 +100,8 @@ namespace WizardWars
         }
         public override string ToString()
         {
+            if (IsOfType(Types.Creature))
+                return string.Format("{0} ({1}) ({2}/{3})", Name, ID, CurrentAttack, CurrentHealth);
             return string.Format("{0} ({1})", Name, ID);
         }
     }

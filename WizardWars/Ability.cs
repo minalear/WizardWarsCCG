@@ -10,7 +10,7 @@ namespace WizardWars
         public Triggers Trigger;
         public Zones Origin, Destination;
         
-        public virtual void Execute(GameState gameState) { }
+        public virtual void Execute(GameState gameState, Card card) { }
         public virtual bool IsValidCard(Card source, Card card) { return false; }
         public bool IsValidZones(Zones origin, Zones destination)
         {

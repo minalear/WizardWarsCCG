@@ -144,6 +144,43 @@ namespace WizardWars
                 PhaseAction phaseAction = (PhaseAction)action;
                 ResolvePhaseAction(phaseAction.Phase);
             }
+
+            UpdateGameState();
+        }
+        public void ResolveCardCastAction(Player caster, Card card)
+        {
+            //Trigger self-cast effects
+            OnCast(card);
+
+            //Add permanent cards to the battlefield and trigger ETB effects
+            if (card.IsPermanent)
+            {
+                caster.Field.AddCard(card);
+                OnChangeZones(card, Zones.Hand, Zones.Battlefield);
+            }
+            else
+            {
+                caster.Graveyard.AddCard(card);
+                //OnTrigger(card, "entergraveyard");
+            }
+        }
+        public void ResolveAbilityAction(Player caster, Card card, AbilityAction action)
+        {
+            action.Ability.Execute(this, card);
+        }
+        public void ResolvePhaseAction(Phases phase)
+        {
+            //Increment phase counter and change turns if it surpasses Cleanup
+            PhaseCounter++;
+            if (PhaseCounter >= PhaseSequence.Count)
+            {
+                PhaseCounter = 0;
+                swapTurns();
+            }
+
+            //Add the new phase to the stack and trigger PhaseChange
+            AddStateAction(new PhaseAction(CurrentPhase));
+            PhaseChange?.Invoke(this, CurrentPhase);
         }
 
         public bool HasPriority(Player player)
@@ -167,41 +204,7 @@ namespace WizardWars
             //Check if the current Phase is Main and that it is their turn
             return (CurrentTurn.ID == caster.ID && CurrentPhase == Phases.Main);
         }
-        public void ResolveCardCastAction(Player caster, Card card)
-        {
-            //Trigger self-cast effects
-            OnCast(card);
-
-            //Add permanent cards to the battlefield and trigger ETB effects
-            if (card.IsPermanent)
-            {
-                caster.Field.AddCard(card);
-                OnChangeZones(card, Zones.Hand, Zones.Battlefield);
-            }
-            else
-            {
-                caster.Graveyard.AddCard(card);
-                //OnTrigger(card, "entergraveyard");
-            }
-        }
-        public void ResolveAbilityAction(Player caster, Card card, AbilityAction action)
-        {
-            action.Ability.Execute(this);
-        }
-        public void ResolvePhaseAction(Phases phase)
-        {
-            //Increment phase counter and change turns if it surpasses Cleanup
-            PhaseCounter++;
-            if (PhaseCounter >= PhaseSequence.Count)
-            {
-                PhaseCounter = 0;
-                swapTurns();
-            }
-
-            //Add the new phase to the stack and trigger PhaseChange
-            AddStateAction(new PhaseAction(CurrentPhase));
-            PhaseChange?.Invoke(this, CurrentPhase);
-        }
+        
         public void CalculateCombat()
         {
             /*Player attacker = CurrentTurn;
@@ -262,7 +265,17 @@ namespace WizardWars
 
         public void OnCast(Card source)
         {
+            foreach (Ability ability in source.Abilities)
+            {
+                if (ability.Type == AbilityTypes.Cast)
+                    AddStateAction(new AbilityAction(source, source.Controller, ability));
+            }
 
+            Ability triggeredAbility = null;
+            if (source.IsTriggered(Triggers.Cast, source, out triggeredAbility))
+            {
+                AddStateAction(new AbilityAction(source, source.Controller, triggeredAbility));
+            }
         }
         public void OnChangeZones(Card source, Zones origin, Zones destination)
         {
@@ -275,14 +288,27 @@ namespace WizardWars
 
         public void UpdateGameState()
         {
-           
+            foreach (Card card in PlayerOne.Field)
+            {
+                card.BonusAttack = 0;
+                card.BonusHealth = 0;
+            }
+
+            foreach (Card card in PlayerOne.Field)
+            {
+                foreach (Ability ability in card.Abilities)
+                {
+                    if (ability.Type == AbilityTypes.Static)
+                        ability.Execute(this, card);
+                }
+            }
         }
 
-        public void CreateTokenCreature(CardInfo info)
+        public void CreateTokenCreature(CardInfo info, Player owner)
         {
             info.LoadCardArt();
-            Card instance = info.CreateInstance(PlayerOne);
-            PlayerOne.Field.AddCard(instance);
+            Card instance = info.CreateInstance(owner);
+            owner.Field.AddCard(instance);
         }
 
         private void swapTurns()

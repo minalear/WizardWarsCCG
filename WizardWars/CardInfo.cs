@@ -156,6 +156,7 @@ namespace WizardWars
         //Roles
         Monk,
         Pirate,
-        Rebel
+        Rebel,
+        Soldier
     }
 }
