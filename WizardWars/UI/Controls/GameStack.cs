@@ -87,9 +87,9 @@ namespace WizardWars.UI.Controls
                 Texture2D texture = ((CardCastAction)Action).Card.Art;
                 renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), Color4.White, new RectangleF(71f, 51f, 142f, 142f), iconBorderColor);
             }
-            else if (Action is EffectAction)
+            else if (Action is AbilityAction)
             {
-                Texture2D texture = ((EffectAction)Action).Card.Art;
+                Texture2D texture = ((AbilityAction)Action).Card.Art;
                 renderer.AddOutlineTask(texture, new Vector2(X + 5f, Y + 5f), new Vector2(40f, 40f), Color4.White, new RectangleF(71f, 51f, 142f, 142f), iconBorderColor);
             }
 

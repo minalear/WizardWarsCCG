@@ -7,6 +7,8 @@ class CreateToken(Ability):
         self.Trigger = Triggers.ChangesZone
         self.Origin = Zones.Any
         self.Destination = Zones.Battlefield
+    def IsValidCard(self, source, card):
+        return (source.ID == card.ID)
     def Execute(self, gameState):
         token = CardInfo("Wobbuffet", ".png", 0)
         token.SetTypes(Types.Creature)
@@ -25,4 +27,4 @@ card.FlavorText = "Considered even a legend at a young age, Trevor's blade is th
 card.SetKeywords("Double strike", "Vigilance", "Haste")
 card.SetTypes(Types.Hero, Types.Creature)
 card.SetSubTypes(SubTypes.Human)
-card.Ability = CreateToken()
+card.SetAbilities(CreateToken())

@@ -10,7 +10,7 @@ namespace WizardWars
         public List<Player> TurnOrder;
         public List<Phases> PhaseSequence;
         public Stack<StateAction> GameStack;
-        public Stack<EffectAction> TargetedEffects; //Used for determining targets for multiple effects
+        public Stack<AbilityAction> TargetedEffects; //Used for determining targets for multiple effects
         public StateAction CurrentAction;
 
         public int PriorityCounter;
@@ -29,7 +29,7 @@ namespace WizardWars
             PlayerTwo = new Player(this);
 
             GameStack = new Stack<StateAction>();
-            TargetedEffects = new Stack<EffectAction>();
+            TargetedEffects = new Stack<AbilityAction>();
 
             AllCards = new List<Card>();
 
@@ -90,8 +90,8 @@ namespace WizardWars
             }
             else if (TargetedEffects.Count > 0)
             {
-                HighlightValidTargets(TargetedEffects.Peek().Effect);
-                TargetedEffects.Peek().Caster.PromptPlayerTargetRequired(TargetedEffects.Peek());
+                //HighlightValidTargets(TargetedEffects.Peek().Effect);
+                //TargetedEffects.Peek().Caster.PromptPlayerTargetRequired(TargetedEffects.Peek());
             }
         }
         public void PassPriority()
@@ -99,8 +99,8 @@ namespace WizardWars
             //Check if an effect requires a target and prompt the proper player if so
             if (TargetedEffects.Count > 0)
             {
-                HighlightValidTargets(TargetedEffects.Peek().Effect);
-                TargetedEffects.Peek().Caster.PromptPlayerTargetRequired(TargetedEffects.Peek());
+                //HighlightValidTargets(TargetedEffects.Peek().Effect);
+                //TargetedEffects.Peek().Caster.PromptPlayerTargetRequired(TargetedEffects.Peek());
             }
             else
             {
@@ -134,10 +134,10 @@ namespace WizardWars
                 CardCastAction castAction = (CardCastAction)action;
                 ResolveCardCastAction(castAction.Caster, castAction.Card);
             }
-            else if (action is EffectAction)
+            else if (action is AbilityAction)
             {
-                EffectAction effectAction = (EffectAction)action;
-                ResolveEffectAction(effectAction.Caster, effectAction.Card, effectAction);
+                AbilityAction effectAction = (AbilityAction)action;
+                ResolveAbilityAction(effectAction.Caster, effectAction.Card, effectAction);
             }
             else if (action is PhaseAction)
             {
@@ -169,113 +169,24 @@ namespace WizardWars
         }
         public void ResolveCardCastAction(Player caster, Card card)
         {
-            if (card.MetaInfo.Ability.Type == AbilityTypes.Triggered)
-                card.MetaInfo.Ability.Execute(this);
-
             //Trigger self-cast effects
-            OnTrigger(card, "cast");
+            OnCast(card);
 
             //Add permanent cards to the battlefield and trigger ETB effects
             if (card.IsPermanent)
             {
                 caster.Field.AddCard(card);
-                //card.EnteredBattlefield();
-                OnTrigger(card, "enterbattlefield");
+                OnChangeZones(card, Zones.Hand, Zones.Battlefield);
             }
             else
             {
                 caster.Graveyard.AddCard(card);
-                OnTrigger(card, "entergraveyard");
+                //OnTrigger(card, "entergraveyard");
             }
         }
-        public void ResolveEffectAction(Player caster, Card card, EffectAction action)
+        public void ResolveAbilityAction(Player caster, Card card, AbilityAction action)
         {
-            Effect effect = action.Effect;
-            List<Card> targets = getAffectedTargets(caster, card, action);
-
-            foreach (Card target in targets)
-            {
-                #region Spell Effects
-                /*string[] tokens = effect.Actions[i].Split('.');
-                if (tokens[0] == "tap")
-                {
-                    //Tap each target
-                    target.IsTapped = true;
-                    OnTrigger(target, "tap");
-                }
-                else if (tokens[0] == "untap")
-                {
-                    //Untap each target
-                    target.IsTapped = false;
-                    OnTrigger(target, "untap");
-                }
-                else if (tokens[0] == "destroy")
-                {
-                    //Destroy all the god damn targets
-                    target.Destroy();
-
-                    //Send it to the graveyard if it is destroyed
-                    if (target.IsDestroyed())
-                        OnTrigger(target, "destroy");
-                }
-                else if (tokens[0] == "exile")
-                {
-                    //Exile each target
-                    target.Owner.Exile.AddCard(target);
-                    OnTrigger(target, "exile");
-                }
-                else if (tokens[0] == "devote")
-                {
-                    //Add target cards to owner's elysium field
-                    target.Owner.Elysium.AddCard(target);
-                    OnTrigger(target, "devote");
-                }
-                else if (tokens[0] == "damage")
-                {
-                    //Damage target creature
-                    int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
-
-                    if (target.Meta.IsType(Types.Player))
-                        target.Controller.Damage(action.Card, var);
-                    else
-                        target.Damage(var);
-
-                    OnTrigger(target, "damage");
-
-                    //Send it to the graveyard if it is destroyed
-                    if (target.IsDestroyed())
-                        OnTrigger(target, "destroy");
-                }
-                else if (tokens[0] == "heal")
-                {
-                    //Heal each target
-                    int var = parseNumberVariable(caster, card, action, effect.Vars[i]);
-
-                    if (target.Meta.IsType(Types.Player))
-                        target.Controller.Heal(action.Card, var);
-                    else
-                        target.Heal(var);
-
-                    OnTrigger(target, "heal");
-                }
-                else if (tokens[0] == "counter")
-                {
-
-                }
-                else if (tokens[0] == "draw")
-                {
-                    if (target.Meta.IsType(Types.Player))
-                    {
-                        int num = parseNumberVariable(caster, card, action, effect.Vars[i]);
-                        target.Controller.DrawCards(num);
-
-                        OnTrigger(target, "draw");
-                    }
-                }*/
-                #endregion
-            }
-
-            UpdateGameState();
+            action.Ability.Execute(this);
         }
         public void ResolvePhaseAction(Phases phase)
         {
@@ -343,97 +254,28 @@ namespace WizardWars
         {
             clearHighlights();
             validTargets.Clear();
-
-            //Assuming PlayerOne for testing
-            /*foreach (string targetType in effect.ValidTargets)
-            {
-                string[] tokens = targetType.Split('.');
-
-                if (tokens[0] == "player")
-                {
-                    if (tokens[1] == "any" || tokens[1] == "opponent")
-                        validTargets.Add(PlayerTwo.PlayerCard);
-                    if (tokens[1] == "any" || tokens[1] == "self")
-                        validTargets.Add(PlayerOne.PlayerCard);
-                }
-                else if (tokens[0] == "creature")
-                {
-                    string typeRestriction = (tokens.Length > 2) ? tokens[2] : "any";
-
-                    if (tokens[1] == "any" || tokens[1] == "opponent")
-                    {
-                        foreach (Card card in PlayerTwo.Field)
-                        {
-                            if (card.Meta.IsCreatureType(typeRestriction))
-                                validTargets.Add(card);
-                        }
-                    }
-                    if (tokens[1] == "any" || tokens[1] == "controlled")
-                    {
-                        foreach (Card card in PlayerOne.Field)
-                        {
-                            if (card.Meta.IsCreatureType(typeRestriction))
-                                validTargets.Add(card);
-                        }
-                    }
-                }
-            }
-
-            //Highlight targets
-            foreach (Card card in validTargets)
-            {
-                card.Highlighted = true;
-            }*/
         }
         public void SubmitTarget(Card card)
         {
-            if (isValidTarget(TargetedEffects.Peek().Effect, card))
+            
+        }
+
+        public void OnCast(Card source)
+        {
+
+        }
+        public void OnChangeZones(Card source, Zones origin, Zones destination)
+        {
+            Ability triggeredAbility = null;
+            if (source.IsTriggered(Triggers.ChangesZone, source, out triggeredAbility) && triggeredAbility.IsValidZones(origin, destination))
             {
-                TargetedEffects.Pop().AddTarget(card);
-                clearHighlights();
-                ContinueGame();
+                AddStateAction(new AbilityAction(source, source.Controller, triggeredAbility));
             }
         }
 
-        public void OnTrigger(Card source, string trigger)
-        {
-            //Apply triggers to self
-            /*List<Effect> effects = null;
-            if (source.IsTriggered(source, trigger, out effects))
-            {
-                foreach (Effect effect in effects)
-                    AddStateAction(new EffectAction(source, source.Controller, effect));
-            }
-            
-            //Apply triggers to other permanents 
-            foreach (Player player in TurnOrder)
-            {
-                foreach (Card card in player.Field)
-                {
-                    if (card.ID != source.ID && card.IsTriggered(source, trigger, out effects))
-                    {
-                        foreach (Effect effect in effects)
-                            AddStateAction(new EffectAction(card, card.Controller, effect));
-                    }
-                }
-            }*/
-        }
         public void UpdateGameState()
         {
-            /*foreach (Player player in TurnOrder)
-            {
-                for (int i = 0; i < player.Field.Count; i++)
-                {
-                    Card card = player.Field[i];
-                    if (card.IsDestroyed())
-                    {
-                        card.Zone.RemoveCardID(card.ID);
-                        card.Owner.Graveyard.AddCard(card);
-
-                        i--;
-                    }
-                }
-            }*/
+           
         }
 
         public void CreateTokenCreature(CardInfo info)
@@ -457,112 +299,6 @@ namespace WizardWars
         {
             /*foreach (Card card in AllCards)
                 card.Highlighted = false;*/
-        }
-        private int parseNumberVariable(Player caster, Card card, EffectAction action, object var)
-        {
-            Type varType = var.GetType();
-            if (varType == typeof(int) || varType == typeof(long))
-                return Convert.ToInt32(var);
-            else if (varType == typeof(string))
-            {
-                string syntax = (string)var;
-                string[] tokens = syntax.Split('.');
-
-                Player target = PlayerOne;
-                if (tokens[0] == "player")
-                {
-                    if (tokens[1] == "target")
-                        target = action.Targets[0].Controller;
-                    else if (tokens[1] == "self")
-                        target = card.Controller;
-                    else if (tokens[1] == "opponent")
-                        target = GetOpponent(card.Controller);
-                }
-
-                if (tokens[2] == "hand" && tokens[3] == "count")
-                {
-                    return target.Hand.Count;
-                }
-                else if (tokens[2] == "health")
-                {
-                    return target.PlayerCard.CurrentHealth;
-                }
-                else if (tokens[2] == "creatures")
-                {
-                    if (tokens[3] == "oftype")
-                    {
-                        //X = number of creatures of the type
-                        return target.Field.CountTypes((SubTypes)Enum.Parse(typeof(SubTypes), tokens[4], true));
-                    }
-                    else if (tokens[3] == "count")
-                    {
-                        return target.Field.CountTypes(Types.Creature);
-                    }
-                }
-            }
-
-            throw new ArgumentException(string.Format("Invalid syntax for variable: {0}", var));
-        }
-        private List<Card> getAffectedTargets(Player caster, Card card, EffectAction action)
-        {
-            Effect effect = action.Effect;
-            List<Card> targets = new List<Card>();
-
-            //Add specifically targeted
-            if (effect.RequiresTarget())
-                targets.AddRange(action.Targets);
-
-            //Add everything else under "affects"
-            if (effect.Affects != null && effect.Affects.Length > 0)
-            {
-                foreach (string group in effect.Affects)
-                {
-                    string[] tokens = group.Split('.');
-
-                    //PLAYERS
-                    if (tokens[0] == "player")
-                    {
-                        if (tokens[1] == "self" || tokens[1] == "all")
-                            targets.Add(caster.PlayerCard);
-                        if (tokens[1] == "opponent" || tokens[1] == "all")
-                            targets.Add(GetOpponent(caster).PlayerCard);
-                    }
-                    else if (tokens[0] == "creatures")
-                    {
-                        string typeRestriction = (tokens.Length > 2) ? tokens[2] : "any";
-
-                        if (tokens[1] == "opponent" || tokens[1] == "all")
-                        {
-                            foreach (Card opponentCard in PlayerTwo.Field)
-                            {
-                                /*if (opponentCard.Meta.IsCreatureType(typeRestriction))
-                                    targets.Add(opponentCard);*/
-                            }
-                        }
-                        if (tokens[1] == "controlled" || tokens[1] == "all")
-                        {
-                            foreach (Card controlledCard in PlayerOne.Field)
-                            {
-                                /*if (controlledCard.Meta.IsCreatureType(typeRestriction))
-                                    targets.Add(controlledCard);*/
-                            }
-                        }
-                    }
-                }
-            }
-
-            return targets;
-        }
-        private bool isValidTarget(Effect effect, Card card)
-        {
-            //validTargets was set earlier when validTargets were highlighted
-            foreach (Card validTarget in validTargets)
-            {
-                if (validTarget.ID == card.ID)
-                    return true;
-            }
-
-            return false;
         }
 
         private List<Card> validTargets;
@@ -600,29 +336,29 @@ namespace WizardWars
             return string.Format("Player #{0} cast card ({1})", Caster.ID + 1, Card.ToString());
         }
     }
-    public class EffectAction : StateAction
+    public class AbilityAction : StateAction
     {
         public Card Card { get; set; }
         public Player Caster { get; set; }
-        public Effect Effect { get; set; }
+        public Ability Ability { get; set; }
         public List<Card> Targets { get; set; }
 
-        public EffectAction(Card card, Player caster, Effect effect)
+        public AbilityAction(Card card, Player caster, Ability ability)
         {
             Card = card;
             Caster = caster;
-            Effect = effect;
+            Ability = ability;
             Targets = new List<Card>();
         }
 
         public override void Init(GameState gameState)
         {
-            if (Effect.RequiresTarget())
-                gameState.TargetedEffects.Push(this);
+            /*if (Effect.RequiresTarget())
+                gameState.TargetedEffects.Push(this);*/
         }
         public override string ToString()
         {
-            return string.Format("Player #{0}'s card ({1}) effect: {2}", Caster.ID + 1, Card, Effect);
+            return string.Format("Player #{0}'s card ({1}) effect: {2}", Caster.ID + 1, Card, Ability);
         }
 
         public void AddTarget(Card card)

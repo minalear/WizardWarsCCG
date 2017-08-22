@@ -22,10 +22,8 @@ namespace WizardWars
 
         public Types[] Types;
         public SubTypes[] SubTypes;
-
-        public Effect[] Effects;
-
-        public Ability Ability;
+        
+        public Ability[] Abilities;
 
         public Texture2D Art;
         public bool ArtLoaded { get; private set; }
@@ -34,7 +32,7 @@ namespace WizardWars
         {
             Types = new Types[0];
             SubTypes = new SubTypes[0];
-            Effects = new Effect[0];
+            Abilities = new Ability[0];
         }
         public CardInfo(string name, string image, int cost)
         {
@@ -44,7 +42,7 @@ namespace WizardWars
 
             Types = new Types[0];
             SubTypes = new SubTypes[0];
-            Effects = new Effect[0];
+            Abilities = new Ability[0];
         }
 
         public void LoadCardArt()
@@ -120,6 +118,10 @@ namespace WizardWars
         public void SetSubTypes(params SubTypes[] subTypes)
         {
             SubTypes = subTypes;
+        }
+        public void SetAbilities(params Ability[] abilities)
+        {
+            Abilities = abilities;
         }
 
         public override string ToString()

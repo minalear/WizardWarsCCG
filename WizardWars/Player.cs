@@ -85,9 +85,9 @@ namespace WizardWars
         }
 
         public virtual void PromptPlayerStateAction(StateAction action) { }
-        public virtual void PromptPlayerTargetRequired(EffectAction action)
+        public virtual void PromptPlayerTargetRequired(AbilityAction action)
         {
-            Prompt?.Invoke(this, action.Effect.Prompt);
+            //Prompt?.Invoke(this, action.Ability.Prompt);
         }
         public virtual void PromptPlayerPayCastingCost(Card card, int manaCost) { }
 

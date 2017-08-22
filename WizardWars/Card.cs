@@ -21,7 +21,7 @@ namespace WizardWars
         public int Cost;
 
         public Player Owner, Controller;
-        public List<Effect> Effects;
+        public List<Ability> Abilities;
 
         public List<Counter> Counters;
 
@@ -45,7 +45,7 @@ namespace WizardWars
             Owner = owner;
             Controller = owner;
 
-            Effects = new List<Effect>();
+            Abilities = new List<Ability>(card.Abilities);
             Counters = new List<Counter>();
 
             IsPermanent = (IsOfType(Types.Creature) || IsOfType(Types.Relic));
@@ -77,9 +77,22 @@ namespace WizardWars
             return MetaInfo.IsSubType(subType);
         }
 
-        public void ApplyStaticEffects(List<Effect> effects)
+        public bool IsTriggered(Triggers trigger, Card source, out Ability triggeredAbility)
         {
+            foreach (Ability ability in Abilities)
+            {
+                if (ability.Type == AbilityTypes.Triggered && ability.Trigger == trigger)
+                {
+                    if (ability.IsValidCard(this, source))
+                    {
+                        triggeredAbility = ability;
+                        return true;
+                    }
+                }
+            }
 
+            triggeredAbility = null;
+            return false;
         }
 
         public bool Equals(Card other)
