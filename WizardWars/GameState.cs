@@ -10,7 +10,7 @@ namespace WizardWars
         public List<Player> TurnOrder;
         public List<Phases> PhaseSequence;
         public Stack<StateAction> GameStack;
-        public Stack<AbilityAction> TargetedEffects; //Used for determining targets for multiple effects
+        public Stack<AbilityAction> TargetedAbilities; //Used for determining targets for multiple effects
         public StateAction CurrentAction;
 
         public int PriorityCounter;
@@ -21,7 +21,7 @@ namespace WizardWars
         public Player CurrentPriority { get { return TurnOrder[PriorityCounter]; } }
         public Player CurrentTurn { get { return TurnOrder[0]; } }
         public Phases CurrentPhase { get { return PhaseSequence[PhaseCounter]; } }
-        public bool RequiresTarget { get { return TargetedEffects.Count > 0; } }
+        public bool RequiresTarget { get { return TargetedAbilities.Count > 0; } }
 
         public GameState()
         {
@@ -29,7 +29,7 @@ namespace WizardWars
             PlayerTwo = new Player(this);
 
             GameStack = new Stack<StateAction>();
-            TargetedEffects = new Stack<AbilityAction>();
+            TargetedAbilities = new Stack<AbilityAction>();
 
             AllCards = new List<Card>();
 
@@ -74,7 +74,7 @@ namespace WizardWars
         public void ContinueGame()
         {
             //Resolve action since all players have passed
-            if (CurrentAction != null && TargetedEffects.Count == 0)
+            if (CurrentAction != null && TargetedAbilities.Count == 0)
             {
                 StateAction currentAction = CurrentAction;
                 CurrentAction = null;
@@ -83,27 +83,29 @@ namespace WizardWars
             }
 
             //If there are state actions to process
-            if (GameStack.Count > 0 && TargetedEffects.Count == 0)
+            if (GameStack.Count > 0 && TargetedAbilities.Count == 0)
             {
                 CurrentAction = GameStack.Pop();
                 SetPriority(0); //Reset priority to 0
             }
-            else if (TargetedEffects.Count > 0)
+            else if (TargetedAbilities.Count > 0)
             {
-                //HighlightValidTargets(TargetedEffects.Peek().Effect);
-                //TargetedEffects.Peek().Caster.PromptPlayerTargetRequired(TargetedEffects.Peek());
+                //Prompt player if an ability requires a target
+                HighlightValidTargets(TargetedAbilities.Peek());
+                TargetedAbilities.Peek().Caster.PromptPlayerTargetRequired(TargetedAbilities.Peek());
             }
         }
         public void PassPriority()
         {
             //Check if an effect requires a target and prompt the proper player if so
-            if (TargetedEffects.Count > 0)
+            if (TargetedAbilities.Count > 0)
             {
-                //HighlightValidTargets(TargetedEffects.Peek().Effect);
-                //TargetedEffects.Peek().Caster.PromptPlayerTargetRequired(TargetedEffects.Peek());
+                HighlightValidTargets(TargetedAbilities.Peek());
+                TargetedAbilities.Peek().Caster.PromptPlayerTargetRequired(TargetedAbilities.Peek());
             }
             else
             {
+                //Pass priority and pass the game if all players have passed, otherwise prompt the next player
                 PriorityCounter++;
                 if (PriorityCounter >= TurnOrder.Count)
                 {
@@ -194,7 +196,7 @@ namespace WizardWars
                 return false;
 
             //Players can cast Interrupt cards anytime they have priority
-            if (card.IsOfSubType(SubTypes.Interrupt))
+            if (card.IsSubType(SubTypes.Interrupt))
                 return true;
 
             //If the card is not a interrupt card, they cannot cast it unless the only thing left on the stack is the PhaseAction
@@ -253,10 +255,22 @@ namespace WizardWars
             throw new InvalidProgramException("Couldn't find opponent.  Either players have matching IDs or there's only one player in the game.");
         }
 
-        public void HighlightValidTargets(Effect effect)
+        public void HighlightValidTargets(AbilityAction action)
         {
             clearHighlights();
             validTargets.Clear();
+
+            foreach (Player player in TurnOrder)
+            {
+                if (action.Ability.IsValidTarget(action.Card, player.PlayerCard))
+                    player.PlayerCard.IsValidTarget = true;
+
+                foreach (Card card in player.Field)
+                {
+                    if (action.Ability.IsValidTarget(action.Card, card))
+                        card.IsValidTarget = true;
+                }
+            }
         }
         public void SubmitTarget(Card card)
         {
@@ -288,18 +302,29 @@ namespace WizardWars
 
         public void UpdateGameState()
         {
-            foreach (Card card in PlayerOne.Field)
+            //Reset all stats and UI specific states
+            foreach (Player player in TurnOrder)
             {
-                card.BonusAttack = 0;
-                card.BonusHealth = 0;
+                player.PlayerCard.IsValidTarget = false;
+                foreach (Card card in player.Field)
+                {
+                    card.IsValidTarget = false;
+
+                    card.BonusAttack = 0;
+                    card.BonusHealth = 0;
+                }
             }
 
-            foreach (Card card in PlayerOne.Field)
+            //Update all static effects
+            foreach (Player player in TurnOrder)
             {
-                foreach (Ability ability in card.Abilities)
+                foreach (Card card in player.Field)
                 {
-                    if (ability.Type == AbilityTypes.Static)
-                        ability.Execute(this, card);
+                    foreach (Ability ability in card.Abilities)
+                    {
+                        if (ability.Type == AbilityTypes.Static)
+                            ability.Execute(this, card);
+                    }
                 }
             }
         }
@@ -379,8 +404,8 @@ namespace WizardWars
 
         public override void Init(GameState gameState)
         {
-            /*if (Effect.RequiresTarget())
-                gameState.TargetedEffects.Push(this);*/
+            if (Ability.TargetRequired)
+                  gameState.TargetedAbilities.Push(this);
         }
         public override string ToString()
         {

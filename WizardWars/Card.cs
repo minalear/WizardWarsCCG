@@ -31,6 +31,8 @@ namespace WizardWars
         public bool IsFaceDown;
         public bool IsSummoningSick;
 
+        public bool IsValidTarget;
+
         public List<string> Keywords;
 
         public CardInfo MetaInfo;
@@ -48,7 +50,7 @@ namespace WizardWars
             Abilities = new List<Ability>(card.Abilities);
             Counters = new List<Counter>();
 
-            IsPermanent = (IsOfType(Types.Creature) || IsOfType(Types.Relic));
+            IsPermanent = (IsType(Types.Creature) || IsType(Types.Relic));
             UpdateStats();
         }
         
@@ -67,11 +69,11 @@ namespace WizardWars
 
         }
 
-        public bool IsOfType(Types type)
+        public bool IsType(Types type)
         {
             return MetaInfo.IsType(type);
         }
-        public bool IsOfSubType(SubTypes subType)
+        public bool IsSubType(SubTypes subType)
         {
             return MetaInfo.IsSubType(subType);
         }
@@ -100,7 +102,7 @@ namespace WizardWars
         }
         public override string ToString()
         {
-            if (IsOfType(Types.Creature))
+            if (IsType(Types.Creature))
                 return string.Format("{0} ({1}) ({2}/{3})", Name, ID, CurrentAttack, CurrentHealth);
             return string.Format("{0} ({1})", Name, ID);
         }

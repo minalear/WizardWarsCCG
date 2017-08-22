@@ -21,12 +21,12 @@ namespace WizardWars.UI.Controls
         {
             Card = card;
 
-            /*if (card != null && card.Meta.IsType(Types.Creature))
+            if (card != null && card.IsType(Types.Creature))
             {
                 Display display = new Display(this);
-                display.SetText(string.Format("{0}/{1}", card.Attack, card.Defense));
+                display.SetText(string.Format("{0}/{1}", card.CurrentAttack, card.CurrentHealth));
                 display.Alignment = System.Drawing.ContentAlignment.BottomRight;
-            }*/
+            }
 
             HighlightedColor = new Color4(1f, 0.65f, 0.65f, 1f);
             HoveredColor = new Color4(0.65f, 1f, 0.65f, 1f);
@@ -36,36 +36,39 @@ namespace WizardWars.UI.Controls
 
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
-            if (Card != null)
+            if (Card == null) return;
+            if (IgnoreCardStates)
             {
-                Color4 drawColor = (Hovered && !IgnoreCardStates) ? HoveredColor : Color4.White;
-                if (/*Card.Highlighted*/false && !IgnoreCardStates) drawColor = HighlightedColor;
+                renderer.AddRenderTask(Card.Art, Position, Size, 0f, new Vector2(0.5f, 0.5f), Color4.White);
+            }
+            else if (Hovered)
+            {
+                float rotation = (Card.IsTapped) ? 1.571f : 0f;
+                renderer.AddOutlineTask(Card.Art, Position, Size, HoveredColor, rotation, new Vector2(0.5f, 0.5f), OutlineHovered);
+            }
+            else if (Card.IsValidTarget)
+            {
+                float rotation = (Card.IsTapped) ? 1.571f : 0f;
+                renderer.AddOutlineTask(Card.Art, Position, Size, HighlightedColor, rotation, new Vector2(0.5f, 0.5f), OutlineHighlighted);
+            }
+            else
+            {
+                float rotation = (Card.IsTapped) ? 1.571f : 0f;
+                renderer.AddRenderTask(Card.Art, Position, Size, rotation, new Vector2(0.5f, 0.5f), Color4.White);
+            }
 
-                float rotation = (Card.IsTapped && !IgnoreCardStates) ? 1.571f : 0f;
 
-                //Draw an outline if the card is hovered
-                if (Hovered && !IgnoreCardStates)
+            //If the card is face down, add a half-transparent card back texture over it
+            /*if (Card.IsFaceDown && !IgnoreCardStates)
+            {
+                if (Hovered)
                 {
-                    Color4 outlineColor = (/*Card.Highlighted*/false) ? OutlineHighlighted : OutlineHovered;
-                    renderer.AddOutlineTask(Card.Art, Position, Size, drawColor, rotation, new Vector2(0.5f, 0.5f), outlineColor);
+                    Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
+                    renderer.AddOutlineTask(CardInfo.CardBack, Position, Size, new Color4(1f, 1f, 1f, 0.85f), rotation, new Vector2(0.5f, 0.5f), outlineColor, -0.1f);
                 }
                 else
-                {
-                    renderer.AddRenderTask(Card.Art, Position, Size, rotation, new Vector2(0.5f, 0.5f), drawColor);
-                }
-
-                //If the card is face down, add a half-transparent card back texture over it
-                if (Card.IsFaceDown && !IgnoreCardStates)
-                {
-                    if (Hovered)
-                    {
-                        Color4 outlineColor = (/*Card.Highlighted*/false) ? OutlineHighlighted : OutlineHovered;
-                        renderer.AddOutlineTask(CardInfo.CardBack, Position, Size, new Color4(1f, 1f, 1f, 0.85f), rotation, new Vector2(0.5f, 0.5f), outlineColor, -0.1f);
-                    }
-                    else
-                        renderer.AddRenderTask(CardInfo.CardBack, Position, Size, rotation, new Vector2(0.5f, 0.5f), new Color4(1f, 1f, 1f, 0.85f), -0.1f);
-                }
-            }
+                    renderer.AddRenderTask(CardInfo.CardBack, Position, Size, rotation, new Vector2(0.5f, 0.5f), new Color4(1f, 1f, 1f, 0.85f), -0.1f);
+            }*/
 
             base.Draw(gameTime, renderer);
         }

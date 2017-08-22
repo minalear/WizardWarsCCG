@@ -5,6 +5,8 @@ namespace WizardWars
     public class Ability
     {
         public AbilityTypes Type;
+        public bool TargetRequired = false;
+        public Card Target;
 
         //Trigger Ability Variables
         public Triggers Trigger;
@@ -12,6 +14,8 @@ namespace WizardWars
         
         public virtual void Execute(GameState gameState, Card card) { }
         public virtual bool IsValidCard(Card source, Card card) { return false; }
+        public virtual bool IsValidTarget(Card source, Card target) { return false; }
+
         public bool IsValidZones(Zones origin, Zones destination)
         {
             return ((Origin == origin || Origin == Zones.Any) && 

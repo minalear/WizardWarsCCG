@@ -6,10 +6,10 @@ class BuffCreatures(Ability):
         self.Type = AbilityTypes.Static
     def Execute(self, gameState, card):
         for permanent in card.Controller.Field:
-            if permanent.IsOfType(Types.Creature):
+            if permanent.IsType(Types.Creature):
                 permanent.BonusAttack += 1
                 permanent.BonusHealth += 1
-            if permanent.IsOfSubType(SubTypes.Soldier):
+            if permanent.IsSubType(SubTypes.Soldier):
                 permanent.BonusAttack += 1
 
 card = CardInfo()

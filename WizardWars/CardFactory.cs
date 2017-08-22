@@ -54,8 +54,6 @@ namespace WizardWars
                     readIntoDeck = (line == "-MAINBOARD-");
                     if (!readIntoDeck && line == "-HERO-")
                     {
-                        continue;
-
                         //Hero card
                         CardInfo info = getCardFromList(allCards, lines[i + 1]);
                         /*foreach (Effect effect in info.Effects)
