@@ -2,11 +2,14 @@
 from WizardWars import *
 
 class DealDamage(Ability):
-    def __init__(self):
-        self.Type = AbilityTypes.Cast
-        self.TargetRequired = True
-    def IsValidTarget(self, source, target):
-        return target.IsType(Types.Player) or target.IsType(Types.Creature)
+	def __init__(self):
+		self.Type = AbilityTypes.Cast
+		self.TargetRequired = True
+	def IsValidTarget(self, source, target):
+		return target.IsType(Types.Player) or target.IsType(Types.Creature)
+	def Execute(self, gameState, source):
+		self.Target.Damage(source, 3)
+		source.Controller.Heal(source, 3)
 
 card = CardInfo()
 card.Name = "Lightning Helix"

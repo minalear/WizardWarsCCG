@@ -23,8 +23,12 @@ namespace WizardWars
         public Phases CurrentPhase { get { return PhaseSequence[PhaseCounter]; } }
         public bool RequiresTarget { get { return TargetedAbilities.Count > 0; } }
 
-        public GameState()
+        private Core.MainGame Game;
+
+        public GameState(Core.MainGame game)
         {
+            Game = game;
+
             PlayerOne = new Player(this);
             PlayerTwo = new Player(this);
 
@@ -274,7 +278,18 @@ namespace WizardWars
         }
         public void SubmitTarget(Card card)
         {
-            
+            AbilityAction action = TargetedAbilities.Peek();
+            action.AddTarget(card);
+
+            if (action.Ability.NumTargets == action.Targets.Count)
+            {
+                //Set the ability targets to the stored targets and POP IT
+                action.Ability.Targets = action.Targets;
+                TargetedAbilities.Pop();
+
+                clearHighlights();
+            }
+            ContinueGame();
         }
 
         public void OnCast(Card source)
@@ -306,8 +321,10 @@ namespace WizardWars
             foreach (Player player in TurnOrder)
             {
                 player.PlayerCard.IsValidTarget = false;
-                foreach (Card card in player.Field)
+
+                for (int i = 0; i < player.Field.Count; i++)
                 {
+                    Card card = player.Field[i];
                     card.IsValidTarget = false;
 
                     card.BonusAttack = 0;
@@ -318,12 +335,28 @@ namespace WizardWars
             //Update all static effects
             foreach (Player player in TurnOrder)
             {
-                foreach (Card card in player.Field)
+                for (int i = 0; i < player.Field.Count; i++)
                 {
+                    Card card = player.Field[i];
                     foreach (Ability ability in card.Abilities)
                     {
                         if (ability.Type == AbilityTypes.Static)
                             ability.Execute(this, card);
+                    }
+                }
+            }
+
+            //Check for destroyed permanents
+            foreach (Player player in TurnOrder)
+            {
+                for (int i = 0; i < player.Field.Count; i++)
+                {
+                    Card card = player.Field[i];
+                    if (card.IsPermanent && card.IsDestroyed())
+                    {
+                        player.Field.RemoveCardID(card.ID);
+                        player.Graveyard.AddCard(card);
+                        OnChangeZones(card, Zones.Battlefield, Zones.Graveyard);
                     }
                 }
             }
@@ -348,8 +381,8 @@ namespace WizardWars
         }
         private void clearHighlights()
         {
-            /*foreach (Card card in AllCards)
-                card.Highlighted = false;*/
+            foreach (Card card in AllCards)
+                card.IsValidTarget = false;
         }
 
         private List<Card> validTargets;

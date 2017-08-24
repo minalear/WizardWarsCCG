@@ -17,7 +17,7 @@ namespace WizardWars
         public int BonusAttack, BonusHealth;
         public int CurrentAttack { get { return BaseAttack + BonusAttack; } }
         public int CurrentHealth { get { return BaseHealth + BonusHealth; } }
-        public int Damage;
+        public int DamageAmount;
 
         public int Cost;
 
@@ -64,10 +64,11 @@ namespace WizardWars
             BonusHealth = 0;
         }
 
-        public void DealDamage(Card source, int number)
+        public void Damage(Card source, int number)
         {
-
+            DamageAmount += number;
         }
+        public void Heal(Card source, int number) { }
 
         public bool IsType(Types type)
         {
@@ -76,6 +77,10 @@ namespace WizardWars
         public bool IsSubType(SubTypes subType)
         {
             return MetaInfo.IsSubType(subType);
+        }
+        public bool IsDestroyed()
+        {
+            return DamageAmount > CurrentHealth;
         }
 
         public bool IsTriggered(Triggers trigger, Card source, out Ability triggeredAbility)

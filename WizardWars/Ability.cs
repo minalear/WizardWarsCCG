@@ -1,12 +1,16 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace WizardWars
 {
     public class Ability
     {
         public AbilityTypes Type;
+
+        //Targeting Variables
+        public int NumTargets = 1;
+        public Card Target { get { return Targets[0]; } }
+        public List<Card> Targets;
         public bool TargetRequired = false;
-        public Card Target;
 
         //Trigger Ability Variables
         public Triggers Trigger;

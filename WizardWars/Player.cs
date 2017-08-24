@@ -9,7 +9,7 @@ namespace WizardWars
         public int ID { get; private set; }
         public GameState GameState;
 
-        public int Heatlh { get { /*return PlayerCard.CurrentHealth;*/return 20; } }
+        public int Heatlh { get { return PlayerCard.CurrentHealth; } }
         public int Mana;
 
         public Card PlayerCard;
@@ -56,11 +56,11 @@ namespace WizardWars
         }
         public void Damage(Card source, int num)
         {
-
+            PlayerCard.Damage(source, num);
         }
         public void Heal(Card source, int num)
         {
-
+            PlayerCard.Heal(source, num);
         }
 
         public bool TryDevoteCard(Card card)
