@@ -81,6 +81,7 @@ namespace WizardWars.UI.Screens
             playerOneElysium.CardHovered += CardHovered;
             playerOneBattlefield.CardSelected += PlayerOneBattlefield_CardSelected;
             playerOneBattlefield.CardHovered += CardHovered;
+            playerOneBattlefield.CardContextSelected += PlayerOneBattlefield_CardContextSelected;
 
             /* PLAYER TWO */
             playerTwoHero = new Single(this, gameState.PlayerTwo.PlayerCard);
@@ -216,9 +217,19 @@ namespace WizardWars.UI.Screens
         //Player One zones
         private void PlayerOneHero_Clicked(object sender, MouseButtonEventArgs e)
         {
-            if (gameState.RequiresTarget)
+            if (isCasting && gameState.RequiresTarget)
             {
                 gameState.SubmitTarget(gameState.PlayerOne.PlayerCard);
+            }
+            else if (e.Button == MouseButton.Right)
+            {
+                List<ContextInfo> contextOptions = new List<ContextInfo>();
+                foreach (Ability ability in gameState.PlayerOne.PlayerCard.Abilities)
+                {
+                    contextOptions.Add(new ContextInfo(ability.ToString(), ContextInfoTypes.Ability, gameState.PlayerOne.PlayerCard, ability));
+                }
+                Menu.SetMenuOptions(contextOptions.ToArray());
+                Menu.SetDisplay(new Vector2(e.X, e.Y), true);
             }
         }
         private void PlayerOneHand_CardSelected(object sender, CardSelectionArgs e)
@@ -280,6 +291,10 @@ namespace WizardWars.UI.Screens
                 gameState.SubmitTarget(e.SelectedCard);
             }
         }
+        private void PlayerOneBattlefield_CardContextSelected(object sender, CardSelectionArgs e)
+        {
+
+        }
 
         //Player Two zones
         private void PlayerTwoHero_Clicked(object sender, MouseButtonEventArgs e)
@@ -324,6 +339,12 @@ namespace WizardWars.UI.Screens
             if (e.Type == ContextInfoTypes.ElysiumTurnFaceUp)
             {
                 gameState.PlayerOne.TryTurnElysiumCardUp((Card)e.Info.Args[0]);
+            }
+
+            //Battlefield Options
+            if (e.Type == ContextInfoTypes.Ability)
+            {
+                gameState.AddStateAction(new AbilityAction((Card)e.Info.Args[0], gameState.PlayerOne, (Ability)e.Info.Args[1]));
             }
         }
 

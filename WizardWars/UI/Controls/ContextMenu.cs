@@ -185,7 +185,7 @@ namespace WizardWars.UI.Controls
         public object[] Args { get; private set; }
         public ContextInfoTypes Type { get; private set; }
     }
-    public enum ContextInfoTypes { Cast, DevoteUp, DevoteDown, ElysiumTurnFaceUp }
+    public enum ContextInfoTypes { Ability, Cast, DevoteUp, DevoteDown, ElysiumTurnFaceUp }
 
     public class ContextMenuItemSelectedArgs : EventArgs
     {
