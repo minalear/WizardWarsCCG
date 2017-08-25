@@ -67,6 +67,11 @@ namespace WizardWars
             BonusAttack = 0;
             BonusHealth = 0;
         }
+        public void Destroy()
+        {
+            //Replace this with a more direct method
+            DamageAmount = CurrentHealth;
+        }
 
         public void Damage(Card source, int number)
         {
@@ -84,7 +89,7 @@ namespace WizardWars
         }
         public bool IsDestroyed()
         {
-            return DamageAmount > CurrentHealth;
+            return DamageAmount >= CurrentHealth;
         }
 
         public bool IsTriggered(Triggers trigger, Card source, out Ability triggeredAbility)

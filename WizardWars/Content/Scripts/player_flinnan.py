@@ -7,7 +7,16 @@ class DrawCard(Ability):
         self.Cost = 2
     def Execute(self, gameState, card):
         card.Controller.DrawCards(1)
+class AshnodValue(Ability):
+    def __init__(self):
+        self.Type = AbilityTypes.Activated
+        self.TargetRequired = True
+    def IsValidTarget(self, source, target):
+        return target.IsType(Types.Creature) and target.Controller.ID == source.Controller.ID
+    def Execute(self, gameState, card):
+        self.Target.Destroy()
+        card.Controller.Mana += 2
 
 card = CardInfo("Flinnan, the Blue Mage", "player_flinnan.png", 0)
 card.SetTypes(Types.Player)
-card.SetAbilities(DrawCard())
+card.SetAbilities(DrawCard(), AshnodValue())

@@ -373,6 +373,12 @@ namespace WizardWars.UI.Screens
             {
                 gameState.PassPriority();
             }
+            else if (castingController.CastingState != CastingState.None)
+            {
+                //Dump all of the mana we currently have into the castingController
+                castingController.PayMana(gameState.PlayerOne.Mana);
+                gameState.PlayerOne.Mana = 0;
+            }
         }
         private void EndTurnButton_Click(MouseButtonEventArgs e)
         {
