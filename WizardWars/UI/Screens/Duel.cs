@@ -20,7 +20,7 @@ namespace WizardWars.UI.Screens
         private CardGroup playerOneElysium;
         private CardGroup playerOneBattlefield;
 
-        private Controls.Single playerOneHero;
+        private Single playerOneHero;
         private Display playerOneHealthDisplay;
 
         //Player Two
@@ -42,9 +42,7 @@ namespace WizardWars.UI.Screens
         private Button endTurnButton;
 
         //Mechanic
-        private int requiredCost = 0;
-        private bool isCasting = false;
-        private int costPaid = 0;
+        CastingController castingController;
         #endregion
 
         public Duel(Game game, GameState gameState) : base(game)
@@ -133,6 +131,10 @@ namespace WizardWars.UI.Screens
             endTurnButton.OnClick += EndTurnButton_Click;
 
             Menu.ItemSelected += Menu_ItemSelected;
+
+            castingController = new CastingController(gameState, gameState.PlayerOne);
+            castingController.CostPaid += CastingController_CostPaid;
+            castingController.Canceled += CastingController_Canceled;
         }
 
         public override void LoadContent()
@@ -175,29 +177,16 @@ namespace WizardWars.UI.Screens
 
         private void attemptCastCard(Card card)
         {
-            if (!isCasting && gameState.CanCastCard(gameState.PlayerOne, card))
+            if (castingController.CastingState == CastingState.None && gameState.CanCastCard(gameState.PlayerOne, card))
             {
-                isCasting = true;
-                castedCard = gameState.PlayerOne.Hand.RemoveCardID(card.ID);
+                Card castedCard = gameState.PlayerOne.Hand.RemoveCardID(card.ID);
                 gameState.PlayerOne.PromptPlayerPayCastingCost(castedCard, castedCard.Cost);
 
                 promptBox.Text = string.Format("Pay ({0}).", castedCard.Cost);
                 endTurnButton.Text = "Cancel";
-            }
-        }
-        private void castCard()
-        {
-            //Drain the mana required from the mana pool to cover the cost
-            int manaDrain = castedCard.Cost - costPaid;
-            gameState.PlayerOne.Mana -= manaDrain;
-            costPaid = 0;
 
-            //Finally cast the card and update the UI
-            isCasting = false;
-            gameState.AddStateAction(new CardCastAction(castedCard, gameState.PlayerOne));
-            gameState.ContinueGame();
-            endTurnButton.Text = "End Turn";
-            promptBox.Text = string.Empty;
+                castingController.StageCard(castedCard);
+            }
         }
         private void attemptDevoteCard(Card card, bool facedown)
         {
@@ -205,6 +194,38 @@ namespace WizardWars.UI.Screens
             {
                 card.IsFaceDown = facedown;
                 gameState.PlayerOne.Hand.RemoveCardID(card.ID);
+            }
+        }
+        private void attemptActivateAbility(Card card, Ability ability)
+        {
+            if (castingController.CastingState == CastingState.None)
+            {
+                gameState.PlayerOne.PromptPlayerPayCastingCost(card, ability.Cost);
+
+                promptBox.Text = string.Format("Pay ({0}).", ability.Cost);
+                endTurnButton.Text = "Cancel";
+
+                castingController.StageAbility(card, ability);
+            }
+        }
+        private void CastingController_CostPaid(CastingEventArgs obj)
+        {
+            //Add the refunded mana to your mana pool
+            gameState.PlayerOne.Mana += obj.Refund;
+
+            if (castingController.CastingState == CastingState.CardCast)
+            {
+                gameState.AddStateAction(new CardCastAction(obj.Card, gameState.PlayerOne));
+                gameState.ContinueGame();
+                endTurnButton.Text = "End Turn";
+                promptBox.Text = string.Empty;
+            }
+            else if (castingController.CastingState == CastingState.Ability)
+            {
+                gameState.AddStateAction(new AbilityAction(obj.Card, gameState.PlayerOne, obj.Ability));
+                gameState.ContinueGame();
+                endTurnButton.Text = "End Turn";
+                promptBox.Text = string.Empty;
             }
         }
 
@@ -217,7 +238,7 @@ namespace WizardWars.UI.Screens
         //Player One zones
         private void PlayerOneHero_Clicked(MouseButtonEventArgs e)
         {
-            if (isCasting && gameState.RequiresTarget)
+            if (castingController.CastingState != CastingState.None && gameState.RequiresTarget)
             {
                 gameState.SubmitTarget(gameState.PlayerOne.PlayerCard);
             }
@@ -260,13 +281,10 @@ namespace WizardWars.UI.Screens
                 int mod = (e.SelectedCard.IsTapped) ? 1 : -1;
 
                 //If the player is casting a spell, add the mana directly to the cost paid, otherwise add it to their mana pool
-                if (isCasting)
+                if (castingController.CastingState != CastingState.None)
                 {
-                    costPaid += e.SelectedCard.ManaValue * mod;
-                    promptBox.Text = string.Format("Pay ({0}).", castedCard.Cost - costPaid);
-
-                    if (costPaid == e.SelectedCard.Cost)
-                        castCard();
+                    castingController.PayMana(e.SelectedCard.ManaValue * mod);
+                    promptBox.Text = string.Format("Pay ({0}).", castingController.RemainingCost);
                 }
                 else
                 {
@@ -344,45 +362,40 @@ namespace WizardWars.UI.Screens
             //Battlefield Options
             if (e.Type == ContextInfoTypes.Ability)
             {
-                gameState.AddStateAction(new AbilityAction((Card)e.Info.Args[0], gameState.PlayerOne, (Ability)e.Info.Args[1]));
+                attemptActivateAbility((Card)e.Info.Args[0], (Ability)e.Info.Args[1]);
             }
         }
 
         private void ContinueButton_Click(MouseButtonEventArgs e)
         {
             //Continue state
-            if (!isCasting && gameState.HasPriority(gameState.PlayerOne))
+            if (castingController.CastingState == CastingState.None && gameState.HasPriority(gameState.PlayerOne))
             {
                 gameState.PassPriority();
-            }
-            else if (isCasting)
-            {
-                //Count the mana both intentionally paid towards the spell and the mana in the mana pool
-                if (costPaid + gameState.PlayerOne.Mana >= castedCard.Cost)
-                {
-                    castCard();
-                }
             }
         }
         private void EndTurnButton_Click(MouseButtonEventArgs e)
         {
             //Acts as the cancel button
-            if (isCasting)
+            if (castingController.CastingState != CastingState.None)
             {
                 endTurnButton.Text = "End Turn";
                 promptBox.Text = string.Empty;
-                gameState.PlayerOne.Hand.AddCard(castedCard);
-                castedCard = null;
-                costPaid = 0;
 
-                isCasting = false;
+                castingController.Cancel();
+            }
+        }
 
-                //Untap all lands used to cast the casting card
-                foreach (Card card in gameState.PlayerOne.Elysium)
-                {
-                    if (card.IsTapped && !card.IsManaDrained)
-                        card.IsTapped = false;
-                }
+        private void CastingController_Canceled(CastingEventArgs obj)
+        {
+            if (castingController.CastingState == CastingState.CardCast)
+                gameState.PlayerOne.Hand.AddCard(obj.Card);
+
+            //Untap all lands used to cast the casting card
+            foreach (Card card in gameState.PlayerOne.Elysium)
+            {
+                if (card.IsTapped && !card.IsManaDrained)
+                    card.IsTapped = false;
             }
         }
     }

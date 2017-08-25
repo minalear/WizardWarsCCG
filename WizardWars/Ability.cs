@@ -5,6 +5,7 @@ namespace WizardWars
     public class Ability
     {
         public AbilityTypes Type;
+        public int Cost = 0;
 
         //Targeting Variables
         public int NumTargets = 1;
