@@ -87,7 +87,7 @@ namespace WizardWars.UI.Controls
             }
         }
 
-        private void GameState_PhaseChange(object sender, Phases phase)
+        private void GameState_PhaseChange(Phases phase)
         {
             if (phase == Phases.Main)
             {

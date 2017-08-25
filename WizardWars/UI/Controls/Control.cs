@@ -180,8 +180,7 @@ namespace WizardWars.UI.Controls
         public float Bottom { get { return getAbsolutePosition().Y + size.Y; } }
 
         public List<Control> Children { get { return children; } }
-
-        public delegate void ControlHoveredEvent(object sender, MouseMoveEventArgs e);
-        public event ControlHoveredEvent ControlHovered;
+        
+        public event EventHandler<MouseMoveEventArgs> ControlHovered;
     }
 }

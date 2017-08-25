@@ -26,7 +26,7 @@ namespace WizardWars.Core
             }
         }
 
-        private void GameState_ActionResolved(object sender, StateAction action) { }
-        private void GameState_PhaseChange(object sender, Phases phase) { }
+        private void GameState_ActionResolved(StateAction action) { }
+        private void GameState_PhaseChange(Phases phase) { }
     }
 }

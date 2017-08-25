@@ -198,7 +198,7 @@ namespace WizardWars
 
         private void collectionChanged()
         {
-            CollectionChanged?.Invoke(this, EventArgs.Empty);
+            CollectionChanged?.Invoke();
         }
         
         public IEnumerator<Card> GetEnumerator()
@@ -210,8 +210,7 @@ namespace WizardWars
             return ((IEnumerable<Card>)this.RawList).GetEnumerator();
         }
 
-        public delegate void CollectionChangeEvent(object sender, EventArgs e);
-        public event CollectionChangeEvent CollectionChanged;
+        public event Action CollectionChanged;
 
         public Card this[int i]
         {

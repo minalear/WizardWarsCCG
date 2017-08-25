@@ -35,7 +35,7 @@ namespace WizardWars.UI.Controls
             base.Draw(gameTime, renderer);
         }
 
-        private void Collection_CollectionChanged(object sender, EventArgs e)
+        private void Collection_CollectionChanged()
         {
             display.SetText(string.Format("{0} ({1})", Collection.Name, Collection.Count));
         }

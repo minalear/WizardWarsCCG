@@ -91,11 +91,8 @@ namespace WizardWars
         }
         public virtual void PromptPlayerPayCastingCost(Card card, int manaCost) { }
 
-        public delegate void PlayerHealthChanged(object sender, int num);
-        public delegate void PlayerPromptEvent(object sender, string prompt);
-
-        public event PlayerHealthChanged HealthChanged;
-        public event PlayerPromptEvent Prompt;
+        public event Action<int> HealthChanged;
+        public event Action<string> Prompt;
 
         public override string ToString()
         {

@@ -89,7 +89,7 @@ namespace WizardWars.UI.Controls
             {
                 if (item.Contains(mousePos))
                 {
-                    ItemSelected?.Invoke(this, new ContextMenuItemSelectedArgs(item));
+                    ItemSelected?.Invoke(new ContextMenuItemSelectedArgs(item));
                     SetDisplay(Vector2.Zero, false);
                     break;
                 }
@@ -140,9 +140,8 @@ namespace WizardWars.UI.Controls
             }
             Children.Clear();
         }
-
-        public delegate void ItemSelectedEvent(object sender, ContextMenuItemSelectedArgs e);
-        public event ItemSelectedEvent ItemSelected;
+        
+        public event Action<ContextMenuItemSelectedArgs> ItemSelected;
 
         public Color4 BackgroundColor { get; set; }
         public Color4 HighlightColor { get; set; }

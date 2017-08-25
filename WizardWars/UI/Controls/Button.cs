@@ -22,7 +22,7 @@ namespace WizardWars.UI.Controls
 
         public override void Click(MouseButtonEventArgs e)
         {
-            OnClick?.Invoke(this, e);
+            OnClick?.Invoke(e);
         }
 
         public override void MouseEnter(MouseMoveEventArgs e)
@@ -36,7 +36,6 @@ namespace WizardWars.UI.Controls
             base.MouseLeave(e);
         }
 
-        public event ButtonPressEvent OnClick;
-        public delegate void ButtonPressEvent(object sender, MouseButtonEventArgs e);
+        public event Action<MouseButtonEventArgs> OnClick;
     }
 }

@@ -95,11 +95,11 @@ namespace WizardWars.UI.Controls
             {
                 if (e.Button == MouseButton.Left)
                 {
-                    CardSelected?.Invoke(this, new CardSelectionArgs(card, new Vector2(e.X, e.Y), e.Button));
+                    CardSelected?.Invoke(new CardSelectionArgs(card, new Vector2(e.X, e.Y), e.Button));
                 }
                 else if (e.Button == MouseButton.Right)
                 {
-                    CardContextSelected?.Invoke(this, new CardSelectionArgs(card, new Vector2(e.X, e.Y), e.Button));
+                    CardContextSelected?.Invoke(new CardSelectionArgs(card, new Vector2(e.X, e.Y), e.Button));
                 }
             }
 
@@ -113,20 +113,17 @@ namespace WizardWars.UI.Controls
             }
         }
 
-        private void Collection_CollectionChanged(object sender, EventArgs e)
+        private void Collection_CollectionChanged()
         {
             UpdateList();
         }
         private void Single_ControlHovered(object sender, MouseMoveEventArgs e)
         {
-            CardHovered?.Invoke(this, new CardHoveredArgs(((Single)sender).Card, new Vector2(e.X, e.Y)));
+            CardHovered?.Invoke(new CardHoveredArgs(((Single)sender).Card, new Vector2(e.X, e.Y)));
         }
 
-        public delegate void CardSelectedEvent(object sender, CardSelectionArgs e);
-        public delegate void CardHoveredEvent(object sender, CardHoveredArgs e);
-
-        public event CardSelectedEvent CardSelected, CardContextSelected;
-        public event CardHoveredEvent CardHovered;
+        public event Action<CardSelectionArgs> CardSelected, CardContextSelected;
+        public event Action<CardHoveredArgs> CardHovered;
         
         private bool markedForUpdate = false;
 

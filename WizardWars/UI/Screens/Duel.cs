@@ -29,20 +29,20 @@ namespace WizardWars.UI.Screens
         private CardGroup playerTwoElysium;
         private CardGroup playerTwoBattlefield;
 
-        private Controls.Single playerTwoHero;
+        private Single playerTwoHero;
         private Display playerTwoHealthDisplay;
         private HandCounter playerTwoHandCounter;
 
         //Other
         private GameStack gameStackControl;
         private PhaseTracker phaseTracker;
-        private Controls.Single previewCard;
+        private Single previewCard;
         private TextBox promptBox;
         private Button continueButton;
         private Button endTurnButton;
 
-        //Mechanics
-        private Card castedCard;
+        //Mechanic
+        private int requiredCost = 0;
         private bool isCasting = false;
         private int costPaid = 0;
         #endregion
@@ -62,7 +62,7 @@ namespace WizardWars.UI.Screens
             playerOneHealthDisplay = new Display(playerOneHero);
             playerOneHealthDisplay.Text = "HP: 20";
             playerOneHealthDisplay.Alignment = System.Drawing.ContentAlignment.BottomRight;
-            gameState.PlayerOne.HealthChanged += (sender, e) => playerOneHealthDisplay.SetText(string.Format("HP: {0}", e));
+            gameState.PlayerOne.HealthChanged += (e) => playerOneHealthDisplay.SetText(string.Format("HP: {0}", e));
 
             playerOneDeck = new CardStack(this, gameState.PlayerOne.Deck, new Vector2(1170, 584), cardSize);
             playerOneGraveyard = new CardStack(this, gameState.PlayerOne.Graveyard, new Vector2(1170, 448), cardSize);
@@ -92,7 +92,7 @@ namespace WizardWars.UI.Screens
             playerTwoHealthDisplay = new Display(playerTwoHero);
             playerTwoHealthDisplay.Text = "HP: 20";
             playerTwoHealthDisplay.Alignment = System.Drawing.ContentAlignment.BottomRight;
-            gameState.PlayerTwo.HealthChanged += (sender, e) => playerTwoHealthDisplay.SetText(string.Format("HP: {0}", e));
+            gameState.PlayerTwo.HealthChanged += (e) => playerTwoHealthDisplay.SetText(string.Format("HP: {0}", e));
 
             playerTwoDeck = new CardStack(this, gameState.PlayerTwo.Deck, new Vector2(1170, 10), cardSize);
             playerTwoGraveyard = new CardStack(this, gameState.PlayerTwo.Graveyard, new Vector2(1170, 146), cardSize);
@@ -104,14 +104,14 @@ namespace WizardWars.UI.Screens
             playerTwoBattlefield.CardSelected += PlayerTwoBattlefield_CardSelected;
 
             playerTwoHandCounter = new HandCounter(this, "Content/Art/Assets/hand_count_symbol.png", new Vector2(206f, 12f));
-            gameState.PlayerTwo.Hand.CollectionChanged += (sender, e) =>
+            gameState.PlayerTwo.Hand.CollectionChanged += () =>
             {
                 playerTwoHandCounter.Text = gameState.PlayerTwo.Hand.Count.ToString();
             };
 
             /* OTHER */
             gameStackControl = new GameStack(this, new Vector2(10f, 10f), new Vector2(175f, 470f));
-            gameState.NewStateAction += (sender, e) => gameStackControl.AddGameStack(e);
+            gameState.NewStateAction += (e) => gameStackControl.AddGameStack(e);
 
             phaseTracker = new PhaseTracker(this, new Vector2(304f, 280f), gameState);
 
@@ -122,7 +122,7 @@ namespace WizardWars.UI.Screens
 
             promptBox = new TextBox(this, string.Empty, 12f);
             promptBox.Position = new Vector2(1175f, 287f);
-            gameState.PlayerOne.Prompt += (sender, e) => promptBox.SetText(e);
+            gameState.PlayerOne.Prompt += (e) => promptBox.SetText(e);
 
             continueButton = new Button(this, "Continue", 12f);
             continueButton.Position = new Vector2(1170, 388);
@@ -209,13 +209,13 @@ namespace WizardWars.UI.Screens
         }
 
         /* EVENTS */
-        private void GameState_ActionResolved(object sender, StateAction action)
+        private void GameState_ActionResolved(StateAction action)
         {
             gameStackControl.RemoveGameStack(action);
         }
 
         //Player One zones
-        private void PlayerOneHero_Clicked(object sender, MouseButtonEventArgs e)
+        private void PlayerOneHero_Clicked(MouseButtonEventArgs e)
         {
             if (isCasting && gameState.RequiresTarget)
             {
@@ -232,7 +232,7 @@ namespace WizardWars.UI.Screens
                 Menu.SetDisplay(new Vector2(e.X, e.Y), true);
             }
         }
-        private void PlayerOneHand_CardSelected(object sender, CardSelectionArgs e)
+        private void PlayerOneHand_CardSelected(CardSelectionArgs e)
         {
             //Normal action
             if (e.Button == MouseButton.Left)
@@ -240,7 +240,7 @@ namespace WizardWars.UI.Screens
                 attemptCastCard(e.SelectedCard);
             }
         }
-        private void PlayerOneHand_CardContextSelected(object sender, CardSelectionArgs e)
+        private void PlayerOneHand_CardContextSelected(CardSelectionArgs e)
         {
             Menu.SetDisplay(e.MousePosition, true);
 
@@ -250,7 +250,7 @@ namespace WizardWars.UI.Screens
 
             Menu.SetMenuOptions(cast, devoteUp, devoteDown);
         }
-        private void PlayerOneElysium_CardSelected(object sender, CardSelectionArgs e)
+        private void PlayerOneElysium_CardSelected(CardSelectionArgs e)
         {
             //Can't get mana out of Mana Drained Elysium cards
             if (!e.SelectedCard.IsManaDrained)
@@ -274,7 +274,7 @@ namespace WizardWars.UI.Screens
                 }
             }
         }
-        private void PlayerOneElysium_CardContextSelected(object sender, CardSelectionArgs e)
+        private void PlayerOneElysium_CardContextSelected(CardSelectionArgs e)
         {
             Menu.SetDisplay(e.MousePosition, true);
 
@@ -284,27 +284,27 @@ namespace WizardWars.UI.Screens
 
             Menu.SetMenuOptions(contextOptions.ToArray());
         }
-        private void PlayerOneBattlefield_CardSelected(object sender, CardSelectionArgs e)
+        private void PlayerOneBattlefield_CardSelected(CardSelectionArgs e)
         {
             if (gameState.RequiresTarget)
             {
                 gameState.SubmitTarget(e.SelectedCard);
             }
         }
-        private void PlayerOneBattlefield_CardContextSelected(object sender, CardSelectionArgs e)
+        private void PlayerOneBattlefield_CardContextSelected(CardSelectionArgs e)
         {
 
         }
 
         //Player Two zones
-        private void PlayerTwoHero_Clicked(object sender, MouseButtonEventArgs e)
+        private void PlayerTwoHero_Clicked(MouseButtonEventArgs e)
         {
             if (gameState.RequiresTarget)
             {
                 gameState.SubmitTarget(gameState.PlayerTwo.PlayerCard);
             }
         }
-        private void PlayerTwoBattlefield_CardSelected(object sender, CardSelectionArgs e)
+        private void PlayerTwoBattlefield_CardSelected(CardSelectionArgs e)
         {
             if (gameState.RequiresTarget)
             {
@@ -312,11 +312,11 @@ namespace WizardWars.UI.Screens
             }
         }
 
-        private void CardHovered(object sender, CardHoveredArgs e)
+        private void CardHovered(CardHoveredArgs e)
         {
             previewCard.Card = e.Card;
         }
-        private void Menu_ItemSelected(object sender, ContextMenuItemSelectedArgs e)
+        private void Menu_ItemSelected(ContextMenuItemSelectedArgs e)
         {
             //Hand Options
             if (e.Type == ContextInfoTypes.Cast)
@@ -348,7 +348,7 @@ namespace WizardWars.UI.Screens
             }
         }
 
-        private void ContinueButton_Click(object sender, MouseButtonEventArgs e)
+        private void ContinueButton_Click(MouseButtonEventArgs e)
         {
             //Continue state
             if (!isCasting && gameState.HasPriority(gameState.PlayerOne))
@@ -364,7 +364,7 @@ namespace WizardWars.UI.Screens
                 }
             }
         }
-        private void EndTurnButton_Click(object sender, MouseButtonEventArgs e)
+        private void EndTurnButton_Click(MouseButtonEventArgs e)
         {
             //Acts as the cancel button
             if (isCasting)

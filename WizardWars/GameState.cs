@@ -51,14 +51,14 @@ namespace WizardWars
             PlayerTwo.DrawCards(7);
 
             AddStateAction(new PhaseAction(PhaseSequence[PhaseCounter]));
-            PhaseChange?.Invoke(this, CurrentPhase);
+            PhaseChange?.Invoke(CurrentPhase);
             ContinueGame();
         }
 
         public void AddStateAction(StateAction action)
         {
             PriorityCounter = 0;
-            NewStateAction?.Invoke(this, action);
+            NewStateAction?.Invoke(action);
             action.Init(this);
 
             //True if a player is reacting to a state action
@@ -129,7 +129,7 @@ namespace WizardWars
 
         public void ResolveStateAction(StateAction action)
         {
-            ActionResolved?.Invoke(this, action);
+            ActionResolved?.Invoke(action);
 
             if (action is CardCastAction)
             {
@@ -182,7 +182,7 @@ namespace WizardWars
 
             //Add the new phase to the stack and trigger PhaseChange
             AddStateAction(new PhaseAction(CurrentPhase));
-            PhaseChange?.Invoke(this, CurrentPhase);
+            PhaseChange?.Invoke(CurrentPhase);
         }
 
         public bool HasPriority(Player player)
@@ -383,13 +383,8 @@ namespace WizardWars
 
         private List<Card> validTargets;
         
-        public event PhaseChangeEvent PhaseChange;
-        public event StateActionResolved ActionResolved;
-        public event NewStateActionEvent NewStateAction;
-
-        public delegate void PhaseChangeEvent(object sender, Phases phase);
-        public delegate void StateActionResolved(object sender, StateAction action);
-        public delegate void NewStateActionEvent(object sender, StateAction action);
+        public event Action<Phases> PhaseChange;
+        public event Action<StateAction> ActionResolved, NewStateAction;
     }
 
     public class StateAction

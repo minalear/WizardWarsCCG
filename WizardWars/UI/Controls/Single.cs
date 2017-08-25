@@ -91,9 +91,9 @@ namespace WizardWars.UI.Controls
         }
         public override void Click(MouseButtonEventArgs e)
         {
-            Clicked?.Invoke(this, e);
+            Clicked?.Invoke(e);
         }
 
-        public event Button.ButtonPressEvent Clicked;
+        public event Action<MouseButtonEventArgs> Clicked;
     }
 }
