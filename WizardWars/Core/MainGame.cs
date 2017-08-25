@@ -27,7 +27,7 @@ namespace WizardWars.Core
 
         public override void Initialize()
         {
-            gameState = new GameState(this);
+            gameState = new GameState();
             gameAI = new AI(gameState.PlayerTwo);
             duelScreen = new Duel(this, gameState);
         }

@@ -20,6 +20,7 @@ namespace WizardWars
         public int DamageAmount;
 
         public int Cost;
+        public int ManaValue = 1;
 
         public Player Owner, Controller;
         public List<Ability> Abilities;
@@ -30,6 +31,7 @@ namespace WizardWars
         public bool IsTapped;
         public bool IsFaceDown;
         public bool IsSummoningSick;
+        public bool IsManaDrained;
 
         public bool IsValidTarget;
 
@@ -46,6 +48,8 @@ namespace WizardWars
 
             Owner = owner;
             Controller = owner;
+
+            Cost = MetaInfo.Cost;
 
             Abilities = new List<Ability>(card.Abilities);
             Counters = new List<Counter>();

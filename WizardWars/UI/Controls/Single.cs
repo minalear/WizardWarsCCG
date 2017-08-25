@@ -37,38 +37,37 @@ namespace WizardWars.UI.Controls
         public override void Draw(GameTime gameTime, RenderEngine renderer)
         {
             if (Card == null) return;
+
+            float rotation = (Card.IsTapped) ? 1.571f : 0f;
             if (IgnoreCardStates)
             {
                 renderer.AddRenderTask(Card.Art, Position, Size, 0f, new Vector2(0.5f, 0.5f), Color4.White);
             }
             else if (Hovered)
             {
-                float rotation = (Card.IsTapped) ? 1.571f : 0f;
                 renderer.AddOutlineTask(Card.Art, Position, Size, HoveredColor, rotation, new Vector2(0.5f, 0.5f), OutlineHovered);
             }
             else if (Card.IsValidTarget)
             {
-                float rotation = (Card.IsTapped) ? 1.571f : 0f;
                 renderer.AddOutlineTask(Card.Art, Position, Size, HighlightedColor, rotation, new Vector2(0.5f, 0.5f), OutlineHighlighted);
             }
             else
             {
-                float rotation = (Card.IsTapped) ? 1.571f : 0f;
                 renderer.AddRenderTask(Card.Art, Position, Size, rotation, new Vector2(0.5f, 0.5f), Color4.White);
             }
 
 
             //If the card is face down, add a half-transparent card back texture over it
-            /*if (Card.IsFaceDown && !IgnoreCardStates)
+            if (Card.IsFaceDown && !IgnoreCardStates)
             {
                 if (Hovered)
                 {
-                    Color4 outlineColor = (Card.Highlighted) ? OutlineHighlighted : OutlineHovered;
+                    Color4 outlineColor = (Card.IsValidTarget) ? OutlineHighlighted : OutlineHovered;
                     renderer.AddOutlineTask(CardInfo.CardBack, Position, Size, new Color4(1f, 1f, 1f, 0.85f), rotation, new Vector2(0.5f, 0.5f), outlineColor, -0.1f);
                 }
                 else
                     renderer.AddRenderTask(CardInfo.CardBack, Position, Size, rotation, new Vector2(0.5f, 0.5f), new Color4(1f, 1f, 1f, 0.85f), -0.1f);
-            }*/
+            }
 
             base.Draw(gameTime, renderer);
         }

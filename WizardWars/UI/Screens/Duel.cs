@@ -184,6 +184,20 @@ namespace WizardWars.UI.Screens
                 endTurnButton.Text = "Cancel";
             }
         }
+        private void castCard()
+        {
+            //Drain the mana required from the mana pool to cover the cost
+            int manaDrain = castedCard.Cost - costPaid;
+            gameState.PlayerOne.Mana -= manaDrain;
+            costPaid = 0;
+
+            //Finally cast the card and update the UI
+            isCasting = false;
+            gameState.AddStateAction(new CardCastAction(castedCard, gameState.PlayerOne));
+            gameState.ContinueGame();
+            endTurnButton.Text = "End Turn";
+            promptBox.Text = string.Empty;
+        }
         private void attemptDevoteCard(Card card, bool facedown)
         {
             if (gameState.PlayerOne.TryDevoteCard(card))
@@ -228,7 +242,7 @@ namespace WizardWars.UI.Screens
         private void PlayerOneElysium_CardSelected(object sender, CardSelectionArgs e)
         {
             //Can't get mana out of Mana Drained Elysium cards
-            /*if (!e.SelectedCard.IsManaDrained)
+            if (!e.SelectedCard.IsManaDrained)
             {
                 //You may untap cards if they're not drained
                 e.SelectedCard.IsTapped = !e.SelectedCard.IsTapped;
@@ -237,14 +251,17 @@ namespace WizardWars.UI.Screens
                 //If the player is casting a spell, add the mana directly to the cost paid, otherwise add it to their mana pool
                 if (isCasting)
                 {
-                    costPaid += e.SelectedCard.GetManaValue() * mod;
+                    costPaid += e.SelectedCard.ManaValue * mod;
                     promptBox.Text = string.Format("Pay ({0}).", castedCard.Cost - costPaid);
+
+                    if (costPaid == e.SelectedCard.Cost)
+                        castCard();
                 }
                 else
                 {
-                    gameState.PlayerOne.Mana += e.SelectedCard.Meta.ManaValue * mod;
+                    gameState.PlayerOne.Mana += e.SelectedCard.ManaValue * mod;
                 }
-            }*/
+            }
         }
         private void PlayerOneElysium_CardContextSelected(object sender, CardSelectionArgs e)
         {
@@ -322,24 +339,7 @@ namespace WizardWars.UI.Screens
                 //Count the mana both intentionally paid towards the spell and the mana in the mana pool
                 if (costPaid + gameState.PlayerOne.Mana >= castedCard.Cost)
                 {
-                    //Drain the mana required from the mana pool to cover the cost
-                    int manaDrain = castedCard.Cost - costPaid;
-                    gameState.PlayerOne.Mana -= manaDrain;
-                    costPaid = 0;
-
-                    //set IsManaDrained true to every card tapped in Elysium (redundant)
-                    foreach (Card card in gameState.PlayerOne.Elysium)
-                    {
-                        /*if (card.IsTapped)
-                            card.IsManaDrained = true;*/
-                    }
-
-                    //Finally cast the card and update the UI
-                    isCasting = false;
-                    gameState.AddStateAction(new CardCastAction(castedCard, gameState.PlayerOne));
-                    gameState.ContinueGame();
-                    endTurnButton.Text = "End Turn";
-                    promptBox.Text = string.Empty;
+                    castCard();
                 }
             }
         }
@@ -355,6 +355,13 @@ namespace WizardWars.UI.Screens
                 costPaid = 0;
 
                 isCasting = false;
+
+                //Untap all lands used to cast the casting card
+                foreach (Card card in gameState.PlayerOne.Elysium)
+                {
+                    if (card.IsTapped && !card.IsManaDrained)
+                        card.IsTapped = false;
+                }
             }
         }
     }

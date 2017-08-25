@@ -23,12 +23,8 @@ namespace WizardWars
         public Phases CurrentPhase { get { return PhaseSequence[PhaseCounter]; } }
         public bool RequiresTarget { get { return TargetedAbilities.Count > 0; } }
 
-        private Core.MainGame Game;
-
-        public GameState(Core.MainGame game)
+        public GameState()
         {
-            Game = game;
-
             PlayerOne = new Player(this);
             PlayerTwo = new Player(this);
 
@@ -414,7 +410,18 @@ namespace WizardWars
             Card = card;
             Caster = caster;
         }
-        
+
+        public override void Resolve(GameState gameState)
+        {
+            foreach (Card card in Caster.Elysium)
+            {
+                if (card.IsTapped)
+                    card.IsManaDrained = true;
+            }
+
+            base.Resolve(gameState);
+        }
+
         public override string ToString()
         {
             return string.Format("Player #{0} cast card ({1})", Caster.ID + 1, Card.ToString());
@@ -473,7 +480,7 @@ namespace WizardWars
                 foreach (Card card in gameState.CurrentTurn.Elysium)
                 {
                     card.IsTapped = false;
-                    //card.IsManaDrained = false;
+                    card.IsManaDrained = false;
                 }
             }
             else if (Phase == Phases.DeclareBlock)
@@ -503,8 +510,8 @@ namespace WizardWars
                 //Ensure all tapped lands are considered drained between phases
                 foreach (Card card in player.Elysium)
                 {
-                    /*if (card.IsTapped)
-                        card.IsManaDrained = true;*/
+                    if (card.IsTapped)
+                        card.IsManaDrained = true;
                 }
             }
 
