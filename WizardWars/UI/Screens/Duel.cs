@@ -247,7 +247,7 @@ namespace WizardWars.UI.Screens
                 List<ContextInfo> contextOptions = new List<ContextInfo>();
                 foreach (Ability ability in gameState.PlayerOne.PlayerCard.Abilities)
                 {
-                    contextOptions.Add(new ContextInfo(ability.ToString(), ContextInfoTypes.Ability, gameState.PlayerOne.PlayerCard, ability));
+                    contextOptions.Add(new ContextInfo(ability.Name, ContextInfoTypes.Ability, gameState.PlayerOne.PlayerCard, ability));
                 }
                 Menu.SetMenuOptions(contextOptions.ToArray());
                 Menu.SetDisplay(new Vector2(e.X, e.Y), true);
@@ -284,7 +284,7 @@ namespace WizardWars.UI.Screens
                 if (castingController.CastingState != CastingState.None)
                 {
                     castingController.PayMana(e.SelectedCard.ManaValue * mod);
-                    promptBox.Text = string.Format("Pay ({0}).", castingController.RemainingCost);
+                    promptBox.Text = string.Format("Pay ({0}).", castingController.RemainingManaCost);
                 }
                 else
                 {

@@ -13,7 +13,7 @@ namespace WizardWars
         public GameState GameState { get; private set; }
         public Player Player { get; private set; }
         public CastingState CastingState { get { return castingState; } }
-        public int RemainingCost { get { return currentCost.ManaValue - paidCost.ManaValue; } }
+        public int RemainingManaCost { get { return currentCost.ManaValue - paidCost.ManaValue; } }
 
         public CastingController(GameState gameState, Player player)
         {
@@ -79,6 +79,7 @@ namespace WizardWars
         private bool costPaid()
         {
             if (castingState == CastingState.None) return false;
+
             return (paidCost.ManaValue >= currentCost.ManaValue);
         }
         private void cleanup()
@@ -91,10 +92,9 @@ namespace WizardWars
         public event Action<CastingEventArgs> CostPaid, Canceled;
     }
 
-    public struct Cost
+    public class Cost
     {
         public int ManaValue { get; set; }
-        //Add creature sacrificing, card discard, etc.
 
         public Cost(int value)
         {

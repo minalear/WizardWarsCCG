@@ -3,12 +3,15 @@ from WizardWars import *
 
 class DrawCard(Ability):
     def __init__(self):
+        self.Name = "Draw a card."
         self.Type = AbilityTypes.Activated
         self.Cost = 2
     def Execute(self, gameState, card):
         card.Controller.DrawCards(1)
 class AshnodValue(Ability):
     def __init__(self):
+        self.Name = "Sacrifice a creature, add 2 mana to your mana pool."
+        self.Prompt = "Sacrifice a creature."
         self.Type = AbilityTypes.Activated
         self.TargetRequired = True
     def IsValidTarget(self, source, target):

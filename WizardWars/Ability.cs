@@ -4,6 +4,8 @@ namespace WizardWars
 {
     public class Ability
     {
+        public string Name;
+        public string Prompt;
         public AbilityTypes Type;
         public int Cost = 0;
 
